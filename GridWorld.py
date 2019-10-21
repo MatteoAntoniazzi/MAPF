@@ -25,7 +25,6 @@ class GridWorld:
 
     def add_agents(self, agents):   # agents are in X,Y Coordinates
         self.agents = convert_agents_in_grid_coordinates(agents)
-        print(self.agents)
         if agents:
             for (i, ((s_row, s_col), (g_row, g_col))) in enumerate(self.agents):
                 if not self.grid[s_row][s_col] == IS_OBSTACLE and not self.grid[g_row][g_col] == IS_OBSTACLE:
@@ -55,11 +54,31 @@ class GridWorld:
     def get_size(self):
         return self.h, self.w
 
+    def get_possible_moves_cells(self, cell_pos):
+        neighbour_cells = []
+        row, col = cell_pos[0], cell_pos[1]
+
+        # WAIT
+        neighbour_cells.append((row, col))
+        # MOVE LEFT
+        if col > 0 and not self.grid[row][col-1] == IS_OBSTACLE:
+            neighbour_cells.append((row, col-1))
+        # MOVE RIGHT
+        if col < self.w-1 and not self.grid[row][col+1] == IS_OBSTACLE:
+            neighbour_cells.append((row, col+1))
+        # MOVE UP
+        if row > 0 and not self.grid[row-1][col] == IS_OBSTACLE:
+            neighbour_cells.append((row-1, col))
+        # MOVE DOWN
+        if row < self.h-1 and not self.grid[row+1][col] == IS_OBSTACLE:
+            neighbour_cells.append((row+1, col))
+
+        return neighbour_cells
+
 
 def convert_obstacles_in_grid_coordinates(obstacles):
     return [(y, x) for x, y in obstacles]
 
 
 def convert_agents_in_grid_coordinates(agents):
-    print(agents)
     return [((sy, sx), (gy, gx)) for (sx, sy), (gx, gy) in agents]

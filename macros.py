@@ -2,7 +2,7 @@ from colorama import Fore
 
 
 FRAME_HEIGHT = 600
-FRAME_WIDTH = 1400
+FRAME_WIDTH = 1000
 
 FRAME_MARGIN = 10
 

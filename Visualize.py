@@ -11,6 +11,7 @@ class Visualize:
         self.canvas.grid()
         self.cell_h, self.cell_w = self.get_cell_size()
         self.vis_cells = np.zeros_like(self.grid_world.grid, dtype=int)
+        self.agents_colors = []
 
     def draw_world(self):
         n_rows, n_cols = self.grid_world.get_size()
@@ -26,12 +27,19 @@ class Visualize:
     def draw_agents(self):
         for (i, ((s_row, s_col), (g_row, g_col))) in enumerate(self.grid_world.agents):
             random_color = '#%02x%02x%02x' % tuple(np.random.choice(range(256), size=3))
+            self.agents_colors.append(random_color)
             self.canvas.itemconfig(self.vis_cells[s_row][s_col], fill=random_color, width=1.5)
             self.canvas.itemconfig(self.vis_cells[g_row][g_col], fill=random_color, width=1.5)
             self.canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w/2,
                                     FRAME_MARGIN + self.cell_h * s_row + self.cell_h/2, font=("Purisa", 12), text="S")
             self.canvas.create_text(FRAME_MARGIN + self.cell_w * g_col + self.cell_w/2,
                                     FRAME_MARGIN + self.cell_h * g_row + self.cell_h/2, font=("Purisa", 12), text="G")
+
+    def draw_paths(self):
+        for i, path in enumerate(self.grid_world.paths):
+            color = self.agents_colors[i]
+            for p in path[1:-1]:
+                self.canvas.itemconfig(self.vis_cells[p[0]][p[1]], fill=color, width=1.5)
 
     def get_cell_size(self):
         avail_h = FRAME_HEIGHT - 2 * FRAME_MARGIN

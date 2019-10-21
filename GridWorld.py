@@ -16,6 +16,7 @@ class GridWorld:
         self.grid = np.zeros((h, w), dtype=int)
         self.add_obstacles(self.obstacles)
         self.agents = []    # in Grid Coordinates
+        self.paths = []
 
     def add_obstacles(self, obstacles):
         if obstacles:
@@ -33,14 +34,21 @@ class GridWorld:
                 else:
                     raise Exception('An agent position or goal position is on an obstacle')
 
+    def compute_paths(self, solver):
+        for i in self.agents:
+            self.paths.append(solver(self, i[0], i[1]))
+
     def print_grid_on_terminal(self):
         grid = [[Fore.BLACK + Back.RESET + '·' for i in range(self.w)] for j in range(self.h)]
         for i, j in self.obstacles:
             grid[i][j] = Fore.LIGHTWHITE_EX + Back.LIGHTWHITE_EX + '#'
-        for ((s_row, s_col), (g_row, g_col)) in self.agents:
+        for (i, ((s_row, s_col), (g_row, g_col))) in enumerate(self.agents):
             color = choice(FORES)
             grid[s_row][s_col] = color + Back.RESET + '⚉'
             grid[g_row][g_col] = color + Back.RESET + '⚇'
+            if self.paths:
+                for p in self.paths[i][1:-1]:
+                    grid[p[0]][p[1]] = color + Back.RESET + '●'
         for i in range(len(grid)):
             print(*grid[i], Fore.BLUE + Back.RESET + '', sep='')
         print(Fore.RESET + Back.RESET + '')
@@ -49,6 +57,8 @@ class GridWorld:
         window = Visualize(self)
         window.draw_world()
         window.draw_agents()
+        if self.paths:
+            window.draw_paths()
         window.do_loop()
 
     def get_size(self):

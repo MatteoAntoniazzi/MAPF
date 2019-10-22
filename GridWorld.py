@@ -17,6 +17,7 @@ class GridWorld:
         self.add_obstacles(self.obstacles)
         self.agents = []    # in Grid Coordinates
         self.paths = []
+        self.n_of_agents = 0
 
     def add_obstacles(self, obstacles):
         if obstacles:
@@ -26,6 +27,7 @@ class GridWorld:
 
     def add_agents(self, agents):   # agents are in X,Y Coordinates
         self.agents = convert_agents_in_grid_coordinates(agents)
+        self.n_of_agents = len(self.agents)
         if agents:
             for (i, ((s_row, s_col), (g_row, g_col))) in enumerate(self.agents):
                 if not self.grid[s_row][s_col] == IS_OBSTACLE and not self.grid[g_row][g_col] == IS_OBSTACLE:
@@ -58,7 +60,8 @@ class GridWorld:
         window.draw_world()
         window.draw_agents()
         if self.paths:
-            window.draw_paths()
+            # window.draw_paths()
+            window.start_animation()
         window.do_loop()
 
     def get_size(self):

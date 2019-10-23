@@ -16,6 +16,13 @@ class Visualize:
         self.agents_ovals = []
         self.agents_colors = []
 
+        # For animation
+        self.animating = True
+        self.path_to_visit = []
+        self.steps_count = [N_OF_STEPS] * len(self._agents)
+        self.x_moves = [0] * len(self._agents)
+        self.y_moves = [0] * len(self._agents)
+
     def draw_world(self):
         n_rows, n_cols = self._map.get_height(), self._map.get_width()
         for row in range(n_rows):
@@ -53,17 +60,10 @@ class Visualize:
                 self.canvas.itemconfig(self.vis_cells[p[1]][p[0]], fill=color, width=1.5)
 
     def start_animation(self, paths):
-        # For animation
-        self.animating = True
         self.path_to_visit = copy.deepcopy(paths)  # In order to copy by value also the nested lists
-        self.steps_count = [N_OF_STEPS] * len(self._agents)
-        self.x_moves = [0] * len(self._agents)
-        self.y_moves = [0] * len(self._agents)
         self.frame.after(2000, self.animation_function)
 
     def animation_function(self):
-
-
         if self.animating:
             self.frame.after(150, self.animation_function)
             for i, agent in enumerate(self.agents_ovals):

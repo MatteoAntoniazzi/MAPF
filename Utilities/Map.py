@@ -4,10 +4,11 @@ class Map:
         self._w = w
         self._obstacles_xy = obstacles  # In (x, y) Coordinates
 
-    def get_neighbours_xy(self, x, y):
+    def get_neighbours_xy(self, xy):
         """
         Returns the positions of the neighbours in (x, y) Coordinates
         """
+        x, y = xy
         neighbours = []
 
         # MOVE LEFT

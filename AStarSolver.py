@@ -30,7 +30,7 @@ class AStarSolver(Solver):
             start -> is the robot starting position (sx, sy)
             end -> is the robot ending position (gx, gy)
 
-            return the path as list of Grid positions
+            return the path as list of (x, y) positions
             """
             print("FIND_PATHS")
             starter_node = Node(start, 0, self._heuristic(start, goal))
@@ -45,7 +45,7 @@ class AStarSolver(Solver):
                 if cur.position == goal:
                     return cur.get_path_to_parent()
 
-                possible_moves = self._map.get_neighbours_xy(cur.position[0], cur.position[1])
+                possible_moves = self._map.get_neighbours_xy(cur.position)
                 possible_moves = [move for move in possible_moves if move not in closed_list]
                 for i in possible_moves:
                     n = Node(i, cur.g + 1, self._heuristic(i, goal), cur)

@@ -1,6 +1,6 @@
 class Node(object):
     def __init__(self, position, path_cost, heuristic_cost, parent=None):
-        self.position = position  # In Grid coordinates
+        self.position = position  # In (x, y) Coordinates
         self.g = path_cost
         self.h = heuristic_cost
         self.f = self.g + self.h
@@ -10,7 +10,7 @@ class Node(object):
         path = []
         node = self
         while node.parent is not None:
-            path.append(node.position)
+            path.append((node.position[0], (node.position[1])))
             node = node.parent
         path.append(node.position)
         path.reverse()

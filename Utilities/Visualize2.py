@@ -16,13 +16,6 @@ class Visualize2:
         self.agents_ovals = []
         self.agents_colors = []
 
-        # For animation
-        # self.animating = True
-        # self.path_to_visit = copy.deepcopy(self.grid_world.paths)  # In order to copy by value also the nested lists
-        # self.steps_count = [N_OF_STEPS] * self.grid_world.n_of_agents
-        # self.x_moves = [0] * self.grid_world.n_of_agents
-        # self.y_moves = [0] * self.grid_world.n_of_agents
-
     def draw_world(self):
         n_rows, n_cols = self._map.get_height(), self._map.get_width()
         for row in range(n_rows):
@@ -57,28 +50,36 @@ class Visualize2:
         for i, path in enumerate(paths):
             color = self.agents_colors[i]
             for p in path[1:-1]:
-                self.canvas.itemconfig(self.vis_cells[p[0]][p[1]], fill=color, width=1.5)
+                self.canvas.itemconfig(self.vis_cells[p[1]][p[0]], fill=color, width=1.5)
 
-    # def start_animation(self):
-    #     self.frame.after(2000, self.animation_function)
-    #
-    # def animation_function(self):
-    #     if self.animating:
-    #         self.frame.after(150, self.animation_function)
-    #         for i, agent in enumerate(self.agents_ovals):
-    #             if self.steps_count[i] < N_OF_STEPS:
-    #                 self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
-    #                 self.steps_count[i] += 1
-    #             elif self.path_to_visit[i]:
-    #                 current_position = self.path_to_visit[i].pop(0)
-    #                 if self.path_to_visit[i]:
-    #                     next_position = self.path_to_visit[i][0]
-    #                     self.x_moves[i] = int((next_position[1] - current_position[1]) * self.cell_w) / N_OF_STEPS
-    #                     self.y_moves[i] = int((next_position[0] - current_position[0]) * self.cell_h) / N_OF_STEPS
-    #                     self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
-    #                     self.steps_count[i] = 1
-    #         if not [i for i in self.path_to_visit if i]:  # For checking that all the arrays are empty
-    #             self.animating = False
+    def start_animation(self, paths):
+        # For animation
+        self.animating = True
+        self.path_to_visit = copy.deepcopy(paths)  # In order to copy by value also the nested lists
+        self.steps_count = [N_OF_STEPS] * len(self._agents)
+        self.x_moves = [0] * len(self._agents)
+        self.y_moves = [0] * len(self._agents)
+        self.frame.after(2000, self.animation_function)
+
+    def animation_function(self):
+
+
+        if self.animating:
+            self.frame.after(150, self.animation_function)
+            for i, agent in enumerate(self.agents_ovals):
+                if self.steps_count[i] < N_OF_STEPS:
+                    self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
+                    self.steps_count[i] += 1
+                elif self.path_to_visit[i]:
+                    current_position = self.path_to_visit[i].pop(0)
+                    if self.path_to_visit[i]:
+                        next_position = self.path_to_visit[i][0]
+                        self.x_moves[i] = int((next_position[0] - current_position[0]) * self.cell_w) / N_OF_STEPS
+                        self.y_moves[i] = int((next_position[1] - current_position[1]) * self.cell_h) / N_OF_STEPS
+                        self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
+                        self.steps_count[i] = 1
+            if not [i for i in self.path_to_visit if i]:  # For checking that all the arrays are empty
+                self.animating = False
 
     def get_cell_size(self):
         avail_h = FRAME_HEIGHT - 2 * FRAME_MARGIN

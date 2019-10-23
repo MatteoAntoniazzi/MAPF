@@ -11,17 +11,17 @@ class Map:
         neighbours = []
 
         # MOVE LEFT
-        if x > 0 and not (x, y-1) in self._obstacles_xy:
-            neighbours.append((x, y-1))
-        # MOVE RIGHT
-        if x < self._w-1 and not (x, y+1) in self._obstacles_xy:
-            neighbours.append((x, y+1))
-        # MOVE UP
-        if y > 0 and not (x-1, y) in self._obstacles_xy:
+        if x > 0 and not (x-1, y) in self._obstacles_xy:
             neighbours.append((x-1, y))
-        # MOVE DOWN
-        if y < self._h-1 and not (x+1, y) in self._obstacles_xy:
+        # MOVE RIGHT
+        if x < self._w-1 and not (x+1, y) in self._obstacles_xy:
             neighbours.append((x+1, y))
+        # MOVE UP
+        if y > 0 and not (x, y-1) in self._obstacles_xy:
+            neighbours.append((x, y-1))
+        # MOVE DOWN
+        if y < self._h-1 and not (x, y+1) in self._obstacles_xy:
+            neighbours.append((x, y+1))
         return neighbours
 
     def get_height(self):

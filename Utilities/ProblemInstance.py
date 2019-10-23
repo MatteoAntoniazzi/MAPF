@@ -33,11 +33,11 @@ class ProblemInstance:
         window.draw_world()
         window.draw_agents()
         if paths is not None:
-            window.draw_paths()
-            # window.start_animation()
+            window.draw_paths(paths)
+            window.start_animation(paths)
         window.do_loop()
 
-    def plot_on_terminal(self):
+    def plot_on_terminal(self, paths=None):
         grid = [[Fore.BLACK + Back.RESET + '·' for i in range(self._map.get_width())] for j in range(self._map.get_height())]
         for x, y in self._map.get_obstacles_xy():
             grid[y][x] = Fore.LIGHTWHITE_EX + Back.LIGHTWHITE_EX + '#'
@@ -47,9 +47,9 @@ class ProblemInstance:
             agent_color = choice(FORES)
             grid[sy][sx] = agent_color + Back.RESET + '⚉'
             grid[gy][gx] = agent_color + Back.RESET + '⚇'
-            # if self.paths:
-            #     for p in self.paths[i][1:-1]:
-            #         grid[p[0]][p[1]] = color + Back.RESET + '●'
+            if paths:
+                for p in paths[a.get_id()][1:-1]:
+                    grid[p[1]][p[0]] = agent_color + Back.RESET + '●'
         for i in range(len(grid)):
             print(*grid[i], Fore.BLUE + Back.RESET + '', sep='')
         print(Fore.RESET + Back.RESET + '')

@@ -1,5 +1,5 @@
-from Visualize import *
-from macros import *
+from Utilities.Visualize import *
+from Utilities.macros import *
 from colorama import Fore, Back
 from random import choice
 

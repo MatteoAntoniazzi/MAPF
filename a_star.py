@@ -1,4 +1,4 @@
-from Node import *
+from Utilities.Node import *
 
 
 def manhattan_dist(a, b):

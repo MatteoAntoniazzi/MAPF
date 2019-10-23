@@ -1,7 +1,6 @@
 import numpy as np
-from macros import *
+from Utilities.macros import *
 from tkinter import *
-import time
 import copy
 
 

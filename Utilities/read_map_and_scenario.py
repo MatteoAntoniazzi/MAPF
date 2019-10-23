@@ -6,7 +6,6 @@ def setup_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("map", type=str, help=".map Map file")
     parser.add_argument("scenario", type=str, help=".scen Scenario file")
-    # parser.add_argument("output_prefix", type=str, help=".yaml Output file prefix")
     return parser.parse_args()
 
 

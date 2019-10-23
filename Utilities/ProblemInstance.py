@@ -1,4 +1,4 @@
-from Utilities.Visualize2 import Visualize2
+from Utilities.Visualize import Visualize
 from Utilities.macros import *
 from colorama import Fore, Back
 from random import choice
@@ -29,7 +29,7 @@ class ProblemInstance:
         return self._agents
 
     def plot_on_gui(self, paths=None):
-        window = Visualize2(self._map, self._agents)
+        window = Visualize(self._map, self._agents)
         window.draw_world()
         window.draw_agents()
         if paths is not None:

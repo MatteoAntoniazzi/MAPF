@@ -4,7 +4,7 @@ from tkinter import *
 import copy
 
 
-class Visualize2:
+class Visualize:
     def __init__(self, map, agents):
         self._map = map
         self._agents = agents

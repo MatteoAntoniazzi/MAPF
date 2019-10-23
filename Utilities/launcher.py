@@ -23,6 +23,8 @@ problem_instance = ProblemInstance(map, agents)
 solver = AStarSolver(problem_instance)
 paths = solver.compute_paths()
 
+print(paths)
+
 problem_instance.plot_on_terminal(paths)
 problem_instance.plot_on_gui(paths)
 

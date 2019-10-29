@@ -28,6 +28,12 @@ class ProblemInstance:
     def get_agents(self):
         return self._agents
 
+    def get_agent_by_id(self, agent_id):
+        for agent in self._agents:
+            if agent.get_id() == agent_id:
+                return agent
+        return None
+
     def plot_on_gui(self, paths=None):
         window = Visualize(self._map, self._agents)
         window.draw_world()

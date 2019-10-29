@@ -13,6 +13,3 @@ class Agent(object):
 
     def get_goal(self):
         return self._goal
-
-    def __lt__(self, other):
-        return self._id < other.get_id()

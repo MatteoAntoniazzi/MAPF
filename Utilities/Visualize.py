@@ -41,9 +41,9 @@ class Visualize:
 
             random_color = '#%02x%02x%02x' % tuple(np.random.choice(range(256), size=3))
             self.agents_colors.append(random_color)
-            self.agents_ovals.append(self.canvas.create_oval(FRAME_MARGIN + self.cell_w * s_col + self.cell_w/2 - self.cell_h/2,
+            self.agents_ovals.append(self.canvas.create_oval(FRAME_MARGIN + self.cell_w * s_col,
                                                              FRAME_MARGIN + self.cell_h * s_row,
-                                                             FRAME_MARGIN + self.cell_w * (s_col + 1) - self.cell_w/2 + self.cell_h/2,
+                                                             FRAME_MARGIN + self.cell_w * (s_col + 1),
                                                              FRAME_MARGIN + self.cell_h * (s_row + 1),
                                                              outline='black', fill=random_color))
             self.canvas.itemconfig(self.vis_cells[s_row][s_col], fill=random_color, width=1.5)

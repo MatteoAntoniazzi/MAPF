@@ -1,8 +1,17 @@
+import abc
+
+
 class Solver:
+    """
+    Abstract class for any solver
+    """
+    __metaclass__ = abc.ABCMeta
+
     def __init__(self, problem_instance):
         self._problem_instance = problem_instance
-        self._map = problem_instance.get_map()
-        self._agents = problem_instance.get_agents()
 
+    @abc.abstractmethod
     def compute_paths(self):
-        pass
+        """
+        compute the paths
+        """

@@ -19,7 +19,8 @@ class AStarMultiAgentSolver(Solver):
         return the path as list of (x, y) positions
         """
 
-        single_agents_states = [SingleAgentState(self._problem_instance, agent.get_id(), agent.get_start(), 0)
+        single_agents_states = [SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_goal(),
+                                                 agent.get_start(), 0, 0)
                                 for agent in self._problem_instance.get_agents()]
 
         print("INITIAL STATES: ", len(single_agents_states))

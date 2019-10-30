@@ -8,7 +8,7 @@ class AStarSingleAgentSolver(Solver):
 
     def compute_paths(self):
         paths = []
-        for agent in self._agents:
+        for agent in self._problem_instance.get_agents():
             path = self.find_path(agent)
             paths.append(path)
         return paths
@@ -24,7 +24,8 @@ class AStarSingleAgentSolver(Solver):
 
         return the path as list of (x, y) positions
         """
-        starter_state = SingleAgentState(self._problem_instance, agent.get_id(), agent.get_start(), 0)
+        starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_goal(),
+                                         agent.get_start(), 0, 0)
         frontier = [starter_state]
         closed_list = set()
 

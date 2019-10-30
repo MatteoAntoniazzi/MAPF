@@ -31,8 +31,7 @@ class CooperativeAStar(Solver):
             paths.append(path)
 
             for i, pos in enumerate(path):
-                if not self._reservation_table[i]:
-                    print("RESERVATION TABLE ", pos)
+                if not self._reservation_table.get(i):
                     self._reservation_table[pos] = []
-                self._reservation_table[i].append(i)
+                self._reservation_table[pos].append(i)
         return paths

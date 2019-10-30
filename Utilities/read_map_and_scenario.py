@@ -59,4 +59,5 @@ def load_scenario_file(scen_file, occupancy_list, map_width, map_height, number_
     for start, goal in instances:
         assert(start not in occupancy_list)
         assert(goal not in occupancy_list)
+    # return [instances[26], instances[37]]
     return instances[:number_of_agents]

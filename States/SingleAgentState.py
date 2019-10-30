@@ -63,3 +63,8 @@ class SingleAgentState(State):
     def equal_position(self, other):
         assert isinstance(other, SingleAgentState)
         return self._position == other._position
+
+    def equal_position_and_timestamps(self, other):
+        assert isinstance(other, SingleAgentState)
+        return self._position == other._position and self._time_step == other._time_step
+

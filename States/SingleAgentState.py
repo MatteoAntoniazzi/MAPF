@@ -14,8 +14,11 @@ class SingleAgentState(State):
         self.compute_heuristic("manhattan")
 
     def expand(self):
-        if self.goal_test():  # If already in goal no expansion.
-            return [self]       # Time_step remain blocked so once arrived it doesn't block others
+        # if self.goal_test():  # If already in goal no expansion.
+        #     return [self]       # Time_step remain blocked so once arrived it doesn't block others
+        if self.goal_test():
+            return SingleAgentState(self._map, self._agent_id, self._agent_goal, self._position, self._time_step+1,
+                                    self._g, self)
         expanded_nodes_list = [self.wait_state()]
         possible_moves = self._map.get_neighbours_xy(self._position)
         for i in possible_moves:

@@ -34,4 +34,9 @@ class CooperativeAStar(Solver):
                 if not self._reservation_table.get(i):
                     self._reservation_table[pos] = []
                 self._reservation_table[pos].append(i)
+                if pos == agent.get_goal():
+                    # devo tenerlo occupato anche per i timestamp successivi se non voglio che vada sopra ai goals
+                    for c in range(i+1, i+100):
+                        self._reservation_table[pos].append(c)
+                    print(self._reservation_table[pos])
         return paths

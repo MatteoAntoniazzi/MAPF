@@ -54,3 +54,7 @@ class SingleAgentState(State):
 
     def get_agent_id(self):
         return self._agent_id
+
+    def equal_position(self, other):
+        assert isinstance(other, SingleAgentState)
+        return self._position == other._position

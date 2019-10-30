@@ -37,6 +37,16 @@ class AStarMultiAgentSolver(Solver):
 
             expanded_nodes_list = cur_state.expand()
 
+            print("front bef", len(frontier))
             print("EXPANDED NODES", len(expanded_nodes_list))
-            [frontier.append(multi_state) for multi_state in expanded_nodes_list if multi_state not in closed_list]
+            # DA OTTIMIZZARE!!!
+            for new_state in expanded_nodes_list:
+                flag = False
+                for state in frontier:
+                    if new_state.equal_positions(state):
+                        flag = True
+                        break
+                if not flag:
+                    frontier.append(new_state)
+            print("front aft", len(frontier))
         return []

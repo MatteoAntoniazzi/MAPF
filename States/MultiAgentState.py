@@ -68,11 +68,25 @@ class MultiAgentState(State):
     def get_positions_list(self):
         return [state.get_position() for state in self._single_agents_states]
 
+    def get_state_by_agent_id(self, agent_id):
+        for single_state in self._single_agents_states:
+            if single_state.get_agent_id() == agent_id:
+                return single_state
+        print("The state of that agent doesn't exist!")
+        return
+
     def print_infos(self):
         print("gValue=", self.get_g_value(), "hValue=", self.get_h_value(), "fValue=", self.get_f_value(), end=' ')
         for agent_state in self._single_agents_states:
             print(" ID:", agent_state.get_agent_id(), " POS:", agent_state.get_position(), end=' ')
         print('')
+
+    def equal_positions(self, other):
+        assert isinstance(other, MultiAgentState)
+        for single_state in self._single_agents_states:
+            if not single_state.equal_position(other.get_state_by_agent_id(single_state.get_agent_id())):
+                return False
+        return True
 
 
 def is_valid(multi_state):

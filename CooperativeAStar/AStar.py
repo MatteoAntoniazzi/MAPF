@@ -24,14 +24,13 @@ class AStar:
         to_print = False
 
         while not self._frontier.is_empty():
-            if self._closed_list.size() % 10000 == 0:
+            if self._closed_list.size() % 2000 == 0 and self._closed_list.size() != 0:
                 to_print = True
-            else:
-                to_print = False
 
             if to_print:
-                print("\nOpenList size: {0};  closedList size ~: {1}".format(self._frontier.qsize(),
-                                                                             self._closed_list.size()))
+                print("OpenList size: {0}.  closedList size: {1}".format(self._frontier.size(),
+                                                                         self._closed_list.size()))
+                to_print = False
 
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()

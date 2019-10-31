@@ -45,3 +45,6 @@ class StateClosedList:
             if s.get_position() == pos:
                 lst.append(s.get_timestamp())
         return lst
+
+    def size(self):
+        return len(self._close_set)

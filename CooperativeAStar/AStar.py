@@ -37,7 +37,10 @@ class AStar:
 
                 for state in expanded_nodes:
                     busy_timestamps = reservation_table.get(state.get_position(), [])
-                    if state.get_timestamp() in busy_timestamps:
+                    cur_pos_busy_timestamps = reservation_table.get(cur_state.get_position(), [])
+
+                    passing = state.get_timestamp()-1 in busy_timestamps and state.get_timestamp() in cur_pos_busy_timestamps
+                    if state.get_timestamp() in busy_timestamps or passing:
                         print("CONFLICT IN:", state.get_position(), " AT TIME:", state.get_timestamp())
                         expanded_nodes.remove(state)
                         self._closed_list_of_positions = PositionClosedList()  # Empty the list to allow waiting moves

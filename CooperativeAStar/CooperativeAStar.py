@@ -35,7 +35,7 @@ class CooperativeAStar(Solver):
                     self._reservation_table[pos] = []
                 self._reservation_table[pos].append(i)
                 if pos == agent.get_goal():
-                    # devo tenerlo occupato anche per i timestamp successivi se non voglio che vada sopra ai goals
+                    # I need to keep the place busy also after the agent reach his goal
                     for c in range(i+1, i+100):
                         self._reservation_table[pos].append(c)
         return paths

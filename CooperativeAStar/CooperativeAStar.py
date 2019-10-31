@@ -38,5 +38,4 @@ class CooperativeAStar(Solver):
                     # devo tenerlo occupato anche per i timestamp successivi se non voglio che vada sopra ai goals
                     for c in range(i+1, i+100):
                         self._reservation_table[pos].append(c)
-                    print(self._reservation_table[pos])
         return paths

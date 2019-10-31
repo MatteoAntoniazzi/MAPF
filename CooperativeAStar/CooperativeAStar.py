@@ -24,14 +24,16 @@ class CooperativeAStar(Solver):
 
     def compute_paths(self):
         paths = []
+
         for agent in self._problem_instance.get_agents():
+            print("AGENT N:", agent.get_id(), "OF ", len(self._problem_instance.get_agents()))
             # Compute AStar on every agent
             solver = AStar(self._problem_instance.get_map())
             path = solver.find_path_with_reservation_table(agent, self._reservation_table)
             paths.append(path)
 
             for i, pos in enumerate(path):
-                if not self._reservation_table.get(i):
+                if not self._reservation_table.get(pos):
                     self._reservation_table[pos] = []
                 self._reservation_table[pos].append(i)
                 if pos == agent.get_goal():

@@ -65,7 +65,7 @@ class Visualize:
 
     def animation_function(self):
         if self.animating:
-            self.frame.after(150, self.animation_function)
+            self.frame.after(50, self.animation_function)
             for i, agent in enumerate(self.agents_ovals):
                 if self.steps_count[i] < N_OF_STEPS:
                     self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])

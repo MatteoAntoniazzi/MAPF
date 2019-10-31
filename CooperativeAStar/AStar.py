@@ -21,8 +21,18 @@ class AStar:
         """
         starter_state = SingleAgentState(self._map, agent.get_id(), agent.get_goal(), agent.get_start(), 0, 0)
         self._frontier.add(starter_state)
+        to_print = False
 
         while not self._frontier.is_empty():
+            if self._closed_list.size() % 10000 == 0:
+                to_print = True
+            else:
+                to_print = False
+
+            if to_print:
+                print("\nOpenList size: {0};  closedList size ~: {1}".format(self._frontier.qsize(),
+                                                                             self._closed_list.size()))
+
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
@@ -35,15 +45,16 @@ class AStar:
 
                 expanded_nodes = cur_state.expand()
 
+                expanded_nodes_no_conflicts = []
                 for state in expanded_nodes:
-                    busy_timestamps = reservation_table.get(state.get_position(), [])
-                    cur_pos_busy_timestamps = reservation_table.get(cur_state.get_position(), [])
+                    busy_times = reservation_table.get(state.get_position(), [])
+                    cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
 
-                    passing = state.get_timestamp()-1 in busy_timestamps and state.get_timestamp() in cur_pos_busy_timestamps
-                    if state.get_timestamp() in busy_timestamps or passing:
-                        print("CONFLICT IN:", state.get_position(), " AT TIME:", state.get_timestamp())
-                        expanded_nodes.remove(state)
+                    if state.get_timestamp() in busy_times or (state.get_timestamp()-1 in busy_times and
+                                                               state.get_timestamp() in cur_pos_busy_times):
                         self._closed_list_of_positions = PositionClosedList()  # Empty the list to allow waiting moves
+                    else:
+                        expanded_nodes_no_conflicts.append(state)
 
-                self._frontier.add_list_of_states(expanded_nodes)
+                self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
         return []

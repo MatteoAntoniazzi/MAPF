@@ -11,7 +11,6 @@ class StateClosedList:
             if s.get_position() == item.get_position() and s.get_timestamp() == item.get_timestamp():
                 return True
         return False
-        # return all([s.get_position() != item.get_position() and s.get_timestamp() != item.get_timestamp() for s in self._close_set])  # not item.equal_position_and_timestamps(s)
 
     def add(self, state):
         assert isinstance(state, SingleAgentState)
@@ -39,3 +38,10 @@ class StateClosedList:
         for s in self._close_set:
             string = string + '[' + str(s.get_position()) + ' TS:' + str(s.get_timestamp()) + ']'
         return string
+
+    def test(self, pos):
+        lst = []
+        for s in self._close_set:
+            if s.get_position() == pos:
+                lst.append(s.get_timestamp())
+        return lst

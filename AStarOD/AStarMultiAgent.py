@@ -4,7 +4,7 @@ from States.MultiAgentState import MultiAgentState
 from QueueStructures.MultiAgentQueue import MultiAgentQueue
 
 
-class AStarMultiAgentSolver(Solver):
+class AStarMultiAgent(Solver):
     def __init__(self, problem_instance):
         super().__init__(problem_instance)
 

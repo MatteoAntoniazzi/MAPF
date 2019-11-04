@@ -4,7 +4,7 @@ from Utilities.Agent import *
 from Utilities.Map import *
 from CooperativeAStar.CooperativeAStar import CooperativeAStar
 from CooperativeAStar.HiearachicalCooperativeAStar import HierarchicalCooperativeAStar
-from AStarOD.AStarMultiAgentSolver import AStarMultiAgentSolver
+from AStarOD.AStarMultiAgent import AStarMultiAgent
 
 import time
 
@@ -26,7 +26,7 @@ problem_instance = ProblemInstance(map, agents)
 
 start_time = time.time()
 
-solver = AStarMultiAgentSolver(problem_instance)
+solver = AStarMultiAgent(problem_instance)
 paths = solver.compute_paths()
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

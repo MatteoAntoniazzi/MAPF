@@ -3,15 +3,14 @@ from Utilities.distances_functions import *
 
 
 class SingleAgentState(State):
-    def __init__(self, map, agent_id, agent_goal, position, time_step, path_cost, parent=None, heuristic="Manhattan", rra=None):
-        super().__init__(parent)
+    def __init__(self, map, agent_id, goal, position, time_step, path_cost, parent=None, heuristic="Manhattan", rra=None):
+        super().__init__(parent, time_step)
         self._map = map
         self._agent_id = agent_id
-        self._agent_goal = agent_goal
         self._position = position  # In (x, y) Coordinates
-        self._time_step = time_step
-        self._g = path_cost
+        self._goal = goal
         self._heuristic = heuristic
+        self._g = path_cost
         self._rra = rra
         self.compute_heuristic(heuristic)
 
@@ -19,21 +18,22 @@ class SingleAgentState(State):
         # if self.goal_test():  # If already in goal no expansion.
         #     return [self]       # Time_step remain blocked so once arrived it doesn't block others
         if self.goal_test():
-            return SingleAgentState(self._map, self._agent_id, self._agent_goal, self._position, self._time_step+1,
-                                    self._g, self, heuristic=self._heuristic, rra=self._rra)
+            return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._time_step + 1,
+                                     self._g, self, heuristic=self._heuristic, rra=self._rra)]
         expanded_nodes_list = [self.wait_state()]
         possible_moves = self._map.get_neighbours_xy(self._position)
         for i in possible_moves:
-            expanded_nodes_list.append(SingleAgentState(self._map, self._agent_id, self._agent_goal, i,
-                                                        self._time_step+1, self._g+1, self, heuristic=self._heuristic, rra=self._rra))
+            expanded_nodes_list.append(SingleAgentState(self._map, self._agent_id, self._goal, i,
+                                                        self._time_step + 1, self._g + 1, self,
+                                                        heuristic=self._heuristic, rra=self._rra))
         return expanded_nodes_list
 
     def goal_test(self):
-        return self._position == self._agent_goal
+        return self._position == self._goal
 
     def compute_heuristic(self, mode):
         if mode == "Manhattan":
-            self._h = manhattan_dist(self._position, self._agent_goal)
+            self._h = manhattan_dist(self._position, self._goal)
         if mode == "RRA":
             self._h = self._rra.abstract_distance(self._position)
 
@@ -45,8 +45,8 @@ class SingleAgentState(State):
         return
 
     def wait_state(self):
-        return SingleAgentState(self._map, self._agent_id, self._agent_goal, self._position, self._time_step+1,
-                                self._g+1, self, heuristic=self._heuristic, rra=self._rra)
+        return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._time_step + 1,
+                                self._g + 1, self, heuristic=self._heuristic, rra=self._rra)
 
     def get_position(self):
         return self._position
@@ -71,7 +71,7 @@ class SingleAgentState(State):
         assert isinstance(other, SingleAgentState)
         return self._position == other._position
 
-    def equal_position_and_timestamps(self, other):
+    def equal(self, other):
         assert isinstance(other, SingleAgentState)
-        return self._position == other._position and self._time_step == other._time_step
+        return self._position == other._position and self._time_step == other._time_step and self._g == other._g
 

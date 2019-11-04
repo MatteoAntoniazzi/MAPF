@@ -1,6 +1,6 @@
 from States.SingleAgentState import SingleAgentState
-from CooperativeAStar.StateClosedList import StateClosedList
-from CooperativeAStar.PositionClosedList import PositionClosedList
+from QueueStructures.SingleAgentQueue import SingleAgentQueue
+from QueueStructures.PositionClosedList import PositionClosedList
 
 
 class AStar:
@@ -18,8 +18,8 @@ class AStar:
         Closed lists are used to accelerate the process. When a state with a conflict is found the closed list with the
         positions empty in order to allow the wait moves.
         """
-        frontier = StateClosedList()
-        closed_list = StateClosedList()  # Keep all the states already expanded
+        frontier = SingleAgentQueue()
+        closed_list = SingleAgentQueue()  # Keep all the states already expanded
         closed_list_of_positions = PositionClosedList()  # Keep all the positions already visited
 
         starter_state = SingleAgentState(self._map, agent.get_id(), agent.get_goal(), agent.get_start(), 0, 0,
@@ -40,7 +40,7 @@ class AStar:
             if cur_state.goal_test():
                 return cur_state.get_path_to_parent()
 
-            if cur_state not in closed_list and cur_state.get_position not in closed_list_of_positions:
+            if not closed_list.contains_state(cur_state) and cur_state.get_position() not in closed_list_of_positions:
                 closed_list.add(cur_state)
                 closed_list_of_positions.add(cur_state.get_position())
 

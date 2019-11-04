@@ -2,10 +2,9 @@ from Utilities.read_map_and_scenario import *
 from Utilities.ProblemInstance import *
 from Utilities.Agent import *
 from Utilities.Map import *
-from AStarSingleAgentSolver import AStarSingleAgentSolver
-from AStarMultiAgentSolver import AStarMultiAgentSolver
 from CooperativeAStar.CooperativeAStar import CooperativeAStar
 from CooperativeAStar.HiearachicalCooperativeAStar import HierarchicalCooperativeAStar
+from AStarOD.AStarMultiAgentSolver import AStarMultiAgentSolver
 
 import time
 
@@ -16,7 +15,7 @@ map_width, map_height, occupancy_list = load_map_file(args.map)
 print("Map loaded")
 
 print("Loading scenario file")
-agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 42)
+agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 10)
 print("Scenario loaded")
 
 map = Map(map_height, map_width, occupancy_list)
@@ -27,7 +26,7 @@ problem_instance = ProblemInstance(map, agents)
 
 start_time = time.time()
 
-solver = HierarchicalCooperativeAStar(problem_instance)
+solver = AStarMultiAgentSolver(problem_instance)
 paths = solver.compute_paths()
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

@@ -2,7 +2,6 @@ from States.State import State
 from States.SingleAgentState import SingleAgentState
 
 import itertools
-import time, sys
 
 
 class MultiAgentState(State):
@@ -22,12 +21,14 @@ class MultiAgentState(State):
     def expand(self):
         candidate_list = []
         for single_state in self._single_agents_states:
+
             single_state_neighbor_list = single_state.expand()
+
             if len(single_state_neighbor_list) == 0:
                 return []
             candidate_list.append(single_state_neighbor_list)
 
-        candidate_state_list = itertools.product(*candidate_list)
+        candidate_state_list = list(itertools.product(*candidate_list))
 
         valid_states = []
         for i, multi_state in enumerate(candidate_state_list):
@@ -85,6 +86,13 @@ class MultiAgentState(State):
         assert isinstance(other, MultiAgentState)
         for single_state in self._single_agents_states:
             if not single_state.equal_position(other.get_state_by_agent_id(single_state.get_agent_id())):
+                return False
+        return True
+
+    def equal(self, other):
+        assert isinstance(other, MultiAgentState)
+        for single_state in self._single_agents_states:
+            if not single_state.equal(other.get_state_by_agent_id(single_state.get_agent_id())):
                 return False
         return True
 

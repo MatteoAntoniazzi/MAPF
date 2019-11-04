@@ -1,6 +1,6 @@
 from CooperativeAStar import CooperativeAStar
 from CooperativeAStar.AStar import AStar
-from CooperativeAStar.ReverseResumableAStar import ReverseResumableAStar
+from CooperativeAStar.RRAStar import RRAStar
 from Solver import Solver
 
 
@@ -15,7 +15,7 @@ class HierarchicalCooperativeAStar(Solver):
         for agent in self._problem_instance.get_agents():
             print("AGENT N:", agent.get_id(), "OF ", len(self._problem_instance.get_agents()))
             # Compute AStar on every agent
-            rra = ReverseResumableAStar(self._problem_instance.get_map(), agent)
+            rra = RRAStar(self._problem_instance.get_map(), agent)
             solver = AStar(self._problem_instance.get_map(), heuristic="RRA", rra=rra)
             path = solver.find_path_with_reservation_table(agent, self._reservation_table)
             paths.append(path)

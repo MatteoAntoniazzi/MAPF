@@ -1,6 +1,7 @@
 from Solver import Solver
 from States.SingleAgentState import SingleAgentState
 from States.MultiAgentState import MultiAgentState
+from QueueStructures.MultiAgentQueue import MultiAgentQueue
 
 
 class AStarMultiAgentSolver(Solver):
@@ -18,36 +19,28 @@ class AStarMultiAgentSolver(Solver):
 
         return the path as list of (x, y) positions
         """
+        frontier = MultiAgentQueue()
+        closed_list = MultiAgentQueue()
 
         single_agents_states = [SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_goal(),
                                                  agent.get_start(), 0, 0)
                                 for agent in self._problem_instance.get_agents()]
 
-        print("INITIAL STATES: ", len(single_agents_states))
         starter_state = MultiAgentState(self._problem_instance, single_agents_states)
-        frontier = [starter_state]
-        closed_list = set()
+        frontier.add(starter_state)
 
-        while frontier:
-            frontier.sort(key=lambda x: (x.get_f_value(), x.get_h_value()), reverse=False)
-            cur_state = frontier.pop(0)
-            closed_list.add(cur_state)
+        while not frontier.is_empty():
+            frontier.sort_by_f_value()
+            cur_state = frontier.pop()
 
             if cur_state.goal_test():
                 return cur_state.get_paths_to_parent()
 
-            expanded_nodes_list = cur_state.expand()
+            if not closed_list.contains(cur_state):
+                closed_list.add(cur_state)
 
-            print("front bef", len(frontier))
-            print("EXPANDED NODES", len(expanded_nodes_list))
-            # DA OTTIMIZZARE!!!
-            for new_state in expanded_nodes_list:
-                flag = False
-                for state in frontier:
-                    if new_state.equal_positions(state):
-                        flag = True
-                        break
-                if not flag:
-                    frontier.append(new_state)
-            print("front aft", len(frontier))
+                expanded_nodes = cur_state.expand()
+                print("Expanded Nodes: ", len(expanded_nodes))
+                frontier.add_list_of_states(expanded_nodes)
+
         return []

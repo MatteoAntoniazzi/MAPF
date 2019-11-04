@@ -57,7 +57,7 @@ def load_scenario_file(scen_file, occupancy_list, map_width, map_height, number_
     # ((sx, sy), (gx, gy))
     instances = [((i[4], i[5]), (i[6], i[7])) for i in instances]
     for start, goal in instances:
-        assert(start not in occupancy_list)
-        assert(goal not in occupancy_list)
-    # return [instances[21], instances[33]]
+        assert(start not in occupancy_list), "Overlapping error"
+        assert(goal not in occupancy_list), "Overlapping error"
+    # return [instances[43], instances[33]]
     return instances[:number_of_agents]

@@ -6,12 +6,12 @@ import time, sys
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, parent=None):
+    def __init__(self, problem_instance, single_agents_states, parent=None, heuristic="Manhattan"):
         super().__init__(parent)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
         self.calculate_cost()
-        self.compute_heuristic("manhattan")
+        self.compute_heuristic(heuristic)
 
     def get_paths_to_parent(self):
         paths = []

@@ -35,14 +35,14 @@ class AStarMultiAgent(Solver):
             cur_state = frontier.pop()
 
             if cur_state.goal_test():
-                print("Total Expanded Nodes: ", self._n_of_expanded_nodes)
+                # print("Total Expanded Nodes: ", self._n_of_expanded_nodes)
                 return cur_state.get_paths_to_parent()
 
             if not closed_list.contains_state_same_positions(cur_state):
                 closed_list.add(cur_state)
 
                 expanded_nodes = cur_state.expand()
-                print("Expanded Nodes: ", len(expanded_nodes))
+                # print("Expanded Nodes: ", len(expanded_nodes))
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 frontier.add_list_of_states(expanded_nodes)
 

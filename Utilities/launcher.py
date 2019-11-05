@@ -6,6 +6,7 @@ from CooperativeAStar.CooperativeAStar import CooperativeAStar
 from CooperativeAStar.HiearachicalCooperativeAStar import HierarchicalCooperativeAStar
 from AStarOD.AStarMultiAgent import AStarMultiAgent
 from AStarOD.AStarOD import AStarOD
+from IndependeceDetection.IndependenceDetection import IndependenceDetection
 
 import time
 
@@ -16,7 +17,7 @@ map_width, map_height, occupancy_list = load_map_file(args.map)
 print("Map loaded")
 
 print("Loading scenario file")
-agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 10)
+agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 30)
 print("Scenario loaded")
 
 map = Map(map_height, map_width, occupancy_list)
@@ -27,7 +28,7 @@ problem_instance = ProblemInstance(map, agents)
 
 start_time = time.time()
 
-solver = AStarOD(problem_instance)
+solver = IndependenceDetection(problem_instance)
 paths = solver.compute_paths()
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

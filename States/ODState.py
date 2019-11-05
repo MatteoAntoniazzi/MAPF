@@ -19,7 +19,7 @@ class ODState(MultiAgentState):
         return paths
 
     def expand(self):
-        state_to_expand = self.get_state_by_agent_id(self._next_to_move)
+        state_to_expand = self.get_single_agent_states()[self._next_to_move]
         expanded_states_list = state_to_expand.expand()
 
         candidate_list = []

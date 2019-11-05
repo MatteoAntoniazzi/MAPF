@@ -26,7 +26,6 @@ class CooperativeAStar(Solver):
         paths = []
 
         for agent in self._problem_instance.get_agents():
-            print("AGENT N:", agent.get_id(), "OF ", len(self._problem_instance.get_agents()))
             # Compute AStar on every agent
             solver = AStar(self._problem_instance.get_map())
             path = solver.find_path_with_reservation_table(agent, self._reservation_table)

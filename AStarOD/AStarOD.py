@@ -29,8 +29,8 @@ class AStarOD(Solver):
             rra.append(RRAStar(self._problem_instance.get_map(), agent))
 
         single_agents_states = [SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_goal(),
-                                                 agent.get_start(), 0, 0, heuristic="RRA", rra=rra[agent.get_id()])
-                                for agent in self._problem_instance.get_agents()]
+                                                 agent.get_start(), 0, 0, heuristic="RRA", rra=rra[i])
+                                for i, agent in enumerate(self._problem_instance.get_agents())]
 
         starter_state = ODState(self._problem_instance, single_agents_states, 0)
         frontier.add(starter_state)

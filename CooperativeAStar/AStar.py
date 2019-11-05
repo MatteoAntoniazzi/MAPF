@@ -9,6 +9,38 @@ class AStar:
         self._heuristic = heuristic
         self._rra = rra
 
+    def find_path(self, agent):
+        """
+        Returns the path between two nodes as a list of nodes using the A* algorithm.
+        If no path could be found, an empty list is returned.
+
+        grid -> is the map with obstacles
+        start -> is the robot starting position (sx, sy)
+        end -> is the robot ending position (gx, gy)
+
+        return the path as list of (x, y) positions
+        """
+        frontier = SingleAgentQueue()
+        closed_list_of_positions = PositionClosedList()  # Keep all the positions already visited
+
+        starter_state = SingleAgentState(self._map, agent.get_id(), agent.get_goal(), agent.get_start(), 0, 0,
+                                         heuristic=self._heuristic, rra=self._rra)
+        frontier.add(starter_state)
+
+        while not frontier.is_empty():
+            frontier.sort_by_f_value()
+            cur_state = frontier.pop()
+
+            if cur_state.goal_test():
+                return cur_state.get_path_to_parent()
+
+            if cur_state.get_position() not in closed_list_of_positions:
+                closed_list_of_positions.add(cur_state.get_position())
+                expanded_nodes = cur_state.expand()
+                frontier.add_list_of_states(expanded_nodes)
+
+        return []
+
     def find_path_with_reservation_table(self, agent, reservation_table):
         """
         Returns the path between two nodes as a list of nodes using the A* algorithm.

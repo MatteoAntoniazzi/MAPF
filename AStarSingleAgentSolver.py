@@ -17,11 +17,9 @@ class AStarSingleAgentSolver(Solver):
         """
         Returns the path between two nodes as a list of nodes using the A* algorithm.
         If no path could be found, an empty list is returned.
-
         grid -> is the map with obstacles
         start -> is the robot starting position (sx, sy)
         end -> is the robot ending position (gx, gy)
-
         return the path as list of (x, y) positions
         """
         starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_goal(),

@@ -71,13 +71,6 @@ class MultiAgentState(State):
     def get_positions_list(self):
         return [state.get_position() for state in self._single_agents_states]
 
-    def get_state_by_agent_id(self, agent_id):
-        for single_state in self._single_agents_states:
-            if single_state.get_agent_id() == agent_id:
-                return single_state
-        print("The state of that agent doesn't exist!")
-        return
-
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
         return MultiAgentState(self._problem_instance, clone_states, parent=self._parent, time_step=self._time_step,
@@ -94,15 +87,15 @@ class MultiAgentState(State):
 
     def equal_positions(self, other):
         assert isinstance(other, MultiAgentState)
-        for single_state in self._single_agents_states:
-            if not single_state.equal_position(other.get_state_by_agent_id(single_state.get_agent_id())):
+        for i, single_state in enumerate(self._single_agents_states):
+            if not single_state.equal_position(other.get_single_agent_states()[i]):
                 return False
         return True
 
     def equal(self, other):
         assert isinstance(other, MultiAgentState)
-        for single_state in self._single_agents_states:
-            if not single_state.equal(other.get_state_by_agent_id(single_state.get_agent_id())):
+        for i, single_state in enumerate(self._single_agents_states):
+            if not single_state.equal(other.get_single_agent_states()[i]):
                 return False
         return True
 

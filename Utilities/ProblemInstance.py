@@ -8,6 +8,8 @@ class ProblemInstance:
     def __init__(self, map, agents):
         self._map = map
         self._agents = agents
+        self._agents.sort(key=lambda x: x.get_id(), reverse=False)
+
         assert not self._duplicate_goals_or_starts(), "Agent initial or goal positions duplicates."
 
     def _duplicate_goals_or_starts(self):
@@ -27,6 +29,9 @@ class ProblemInstance:
 
     def get_agents(self):
         return self._agents
+
+    def get_agents_id_list(self):
+        return [a.get_id() for a in self._agents]
 
     def get_agent_by_id(self, agent_id):
         for agent in self._agents:

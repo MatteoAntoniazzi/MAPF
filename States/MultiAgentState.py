@@ -5,10 +5,11 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, parent=None, heuristic="Manhattan"):
-        super().__init__(parent)
+    def __init__(self, problem_instance, single_agents_states, parent=None, time_step=0, heuristic="Manhattan"):
+        super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
+        self._heuristic = heuristic
         self.calculate_cost()
         self.compute_heuristic(heuristic)
 
@@ -33,7 +34,8 @@ class MultiAgentState(State):
         valid_states = []
         for i, multi_state in enumerate(candidate_state_list):
             if is_valid(multi_state):  # a shallow copy to prevent change of multi_state
-                valid_states.append(MultiAgentState(self._problem_instance, multi_state, self))
+                valid_states.append(MultiAgentState(self._problem_instance, multi_state, parent=self,
+                                                    time_step=self.time_step()+1, heuristic=self._heuristic))
         return valid_states
 
     def goal_test(self):
@@ -75,6 +77,14 @@ class MultiAgentState(State):
                 return single_state
         print("The state of that agent doesn't exist!")
         return
+
+    def clone_state(self):
+        clone_states = [state.clone_state() for state in self._single_agents_states]
+        return MultiAgentState(self._problem_instance, clone_states, parent=self._parent, time_step=self._time_step,
+                               heuristic=self._heuristic)
+
+    def clone_states(self):
+        return [state.clone_state() for state in self._single_agents_states]
 
     def print_infos(self):
         print("gValue=", self.get_g_value(), "hValue=", self.get_h_value(), "fValue=", self.get_f_value(), end=' ')

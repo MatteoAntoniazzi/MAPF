@@ -5,7 +5,14 @@ class MultiAgentQueue:
     def __init__(self):
         self._queue = []
 
-    def contains(self, item):
+    def contains_state(self, item):
+        assert isinstance(item, MultiAgentState)
+        for state in self._queue:
+            if state.equal(item):
+                return True
+        return False
+
+    def contains_state_same_positions(self, item):
         assert isinstance(item, MultiAgentState)
         for state in self._queue:
             if state.equal_positions(item):

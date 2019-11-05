@@ -18,7 +18,7 @@ class SingleAgentState(State):
         # if self.goal_test():  # If already in goal no expansion.
         #     return [self]       # Time_step remain blocked so once arrived it doesn't block others
         if self.goal_test():
-            return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._time_step + 1,
+            return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._time_step+1,
                                      self._g, self, heuristic=self._heuristic, rra=self._rra)]
         expanded_nodes_list = [self.wait_state()]
         possible_moves = self._map.get_neighbours_xy(self._position)
@@ -67,11 +67,15 @@ class SingleAgentState(State):
     def get_timestamp(self):
         return self._time_step
 
+    def clone_state(self):
+        return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._time_step, self._g,
+                                parent=self._parent, heuristic=self._heuristic, rra=self._rra)
+
     def equal_position(self, other):
         assert isinstance(other, SingleAgentState)
         return self._position == other._position
 
     def equal(self, other):
         assert isinstance(other, SingleAgentState)
-        return self._position == other._position and self._time_step == other._time_step and self._g == other._g
+        return self._position == other._position and self._time_step == other._time_step
 

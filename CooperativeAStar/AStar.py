@@ -83,8 +83,8 @@ class AStar:
                     busy_times = reservation_table.get(state.get_position(), [])
                     cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
 
-                    if state.get_timestamp() in busy_times or (state.get_timestamp()-1 in busy_times and
-                                                               state.get_timestamp() in cur_pos_busy_times):
+                    if state.time_step() in busy_times or (state.time_step()-1 in busy_times and
+                                                               state.time_step() in cur_pos_busy_times):
                         closed_list_of_positions = PositionClosedList()  # Empty the list to allow waiting moves
                     else:
                         expanded_nodes_no_conflicts.append(state)

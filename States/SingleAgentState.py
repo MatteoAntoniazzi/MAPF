@@ -14,7 +14,7 @@ class SingleAgentState(State):
         self._rra = rra
         self.compute_heuristic(heuristic)
 
-    def expand(self):
+    def expand(self, verbose=False):
         # if self.goal_test():  # If already in goal no expansion.
         #     return [self]       # Time_step remain blocked so once arrived it doesn't block others
         if self.goal_test():
@@ -46,7 +46,7 @@ class SingleAgentState(State):
 
     def wait_state(self):
         return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._time_step + 1,
-                                self._g + 1, self, heuristic=self._heuristic, rra=self._rra)
+                                self._g+1, self, heuristic=self._heuristic, rra=self._rra)
 
     def get_position(self):
         return self._position
@@ -63,9 +63,6 @@ class SingleAgentState(State):
 
     def get_agent_id(self):
         return self._agent_id
-
-    def get_timestamp(self):
-        return self._time_step
 
     def clone_state(self):
         return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._time_step, self._g,

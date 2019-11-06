@@ -9,6 +9,7 @@ class AStarOD(Solver):
     def __init__(self, problem_instance):
         super().__init__(problem_instance)
         self._n_of_expanded_nodes = 0
+        self._n_of_loops = 0
 
     def compute_paths(self):
         """
@@ -32,7 +33,7 @@ class AStarOD(Solver):
                                                  agent.get_start(), 0, 0, heuristic="RRA", rra=rra[i])
                                 for i, agent in enumerate(self._problem_instance.get_agents())]
 
-        starter_state = ODState(self._problem_instance, single_agents_states, 0)
+        starter_state = ODState(self._problem_instance, single_agents_states)
         frontier.add(starter_state)
 
         while not frontier.is_empty():
@@ -40,15 +41,19 @@ class AStarOD(Solver):
             cur_state = frontier.pop()
 
             if cur_state.goal_test():
-                print("Total Expanded Nodes: ", self._n_of_expanded_nodes)
+                print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
+                      " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
                 return cur_state.get_paths_to_parent()
 
             if not closed_list.contains_state(cur_state):
                 if cur_state.is_a_standard_state():
                     closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand()
-                print("Expanded Nodes: ", len(expanded_nodes))
+
+                expanded_nodes = cur_state.expand(verbose=True)
+
                 self._n_of_expanded_nodes += len(expanded_nodes)
+                self._n_of_loops += 1
+
                 frontier.add_list_of_states(expanded_nodes)
 
         return []

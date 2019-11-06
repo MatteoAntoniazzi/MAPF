@@ -40,6 +40,7 @@ class MultiAgentQueue:
 
     def __str__(self):
         string = ''
-        for s in self._queue:
-            string = string + '[' + str(s.get_position()) + ' TS:' + str(s.get_timestamp()) + ']'
+        for s in self._queue[:5]:
+            string = string + ' [F: ' + str(s.f_value()) + ' ' + str(s.get_positions_list()) + \
+                     ' TS:' + str(s.time_step()) + '] '
         return string

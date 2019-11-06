@@ -8,7 +8,7 @@ class SingleAgentQueue:
     def contains_state(self, item):
         assert isinstance(item, SingleAgentState)
         for s in self._queue:
-            if s.get_position() == item.get_position() and s.get_timestamp() == item.get_timestamp():
+            if s.get_position() == item.get_position() and s.time_step() == item.time_step():
                 return True
         return False
 
@@ -54,5 +54,5 @@ class SingleAgentQueue:
     def __str__(self):
         string = ''
         for s in self._queue:
-            string = string + '[' + str(s.get_position()) + ' TS:' + str(s.get_timestamp()) + ']'
+            string = string + '[' + str(s.get_position()) + ' TS:' + str(s.time_step()) + ']'
         return string

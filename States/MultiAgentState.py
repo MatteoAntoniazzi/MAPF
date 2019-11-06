@@ -19,7 +19,9 @@ class MultiAgentState(State):
             paths.append(single_state.get_path_to_parent())
         return paths
 
-    def expand(self):
+    def expand(self, verbose=False):
+        if verbose:
+            print("Expansion in progress...", end=' ')
         candidate_list = []
         for single_state in self._single_agents_states:
 
@@ -34,9 +36,35 @@ class MultiAgentState(State):
         valid_states = []
         for i, multi_state in enumerate(candidate_state_list):
             if is_valid(multi_state):  # a shallow copy to prevent change of multi_state
-                valid_states.append(MultiAgentState(self._problem_instance, multi_state, parent=self,
-                                                    time_step=self.time_step()+1, heuristic=self._heuristic))
-        return valid_states
+                valid_states.append(multi_state)
+
+        free_conflict_states = []
+        for i, multi_state in enumerate(valid_states):
+            if not self.is_conflict(multi_state):
+                free_conflict_states.append(MultiAgentState(self._problem_instance, multi_state, parent=self,
+                                                            time_step=self.time_step()+1, heuristic=self._heuristic))
+
+        if verbose:
+            print("DONE! Number of expanded states:", len(free_conflict_states))
+        return free_conflict_states
+
+    def is_conflict(self, multi_state):  # multi-state is a list of single agents
+        current_positions = self.get_positions_list()
+        next_positions = [state.get_position() for state in multi_state]
+
+        # Check not 2 states in the same position
+        if len(next_positions) != len(set(next_positions)):
+            print("CONFLICT: ", current_positions, next_positions, " TS:", self.time_step())
+            return True
+
+        # Check not overlapping. (Check no exists an agent that goes on an other agent previous position.
+        for i, next_pos in enumerate(next_positions):
+            for j, cur_pos in enumerate(current_positions):
+                if i != j:
+                    if next_pos == cur_pos:
+                        if next_positions[j] == current_positions[i]:
+                            return True
+        return False
 
     def goal_test(self):
         for single_state in self._single_agents_states:
@@ -51,19 +79,10 @@ class MultiAgentState(State):
 
     def calculate_cost(self):
         self._g = 0
-        if self.predecessor() is None:
+        if self.is_root():
             return
         for single_state in self._single_agents_states:
             self._g += single_state.g_value()
-
-    def get_g_value(self):
-        return self._g
-
-    def get_h_value(self):
-        return self._h
-
-    def get_f_value(self):
-        return self._g + self._h
 
     def get_single_agent_states(self):
         return self._single_agents_states
@@ -80,7 +99,7 @@ class MultiAgentState(State):
         return [state.clone_state() for state in self._single_agents_states]
 
     def print_infos(self):
-        print("gValue=", self.get_g_value(), "hValue=", self.get_h_value(), "fValue=", self.get_f_value(), end=' ')
+        print("gValue=", self.g_value(), "hValue=", self.h_value(), "fValue=", self.f_value(), end=' ')
         for agent_state in self._single_agents_states:
             print(" ID:", agent_state.get_agent_id(), " POS:", agent_state.get_position(), end=' ')
         print('')
@@ -98,6 +117,12 @@ class MultiAgentState(State):
             if not single_state.equal(other.get_single_agent_states()[i]):
                 return False
         return True
+
+    def __str__(self):
+        string = ''
+        string = string + ' [F: ' + str(self.f_value()) + ' ' + str(self.get_positions_list()) + \
+                 ' TS:' + str(self.time_step()) + '] '
+        return string
 
 
 def is_valid(multi_state):

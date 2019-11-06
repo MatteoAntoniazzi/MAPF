@@ -35,7 +35,7 @@ class State(object):
     ================== A* functions =================
     """
     @abc.abstractmethod
-    def expand(self):
+    def expand(self, verbose=False):
         """
         expand current state according to problemInstance
         """

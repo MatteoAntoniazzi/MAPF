@@ -9,38 +9,36 @@ from Utilities.Agent import Agent
 
 
 class IndependenceDetection(Solver):
-    def __init__(self, problem_instance):
-        super().__init__(problem_instance)
+    def __init__(self, solver):
         self._paths = []
         self._problems = []
-        self._solver = None
+        self._solver = solver
 
-    def compute_paths(self):
-        if not self.initialize_paths():
+    def solve(self, problem_instance, verbose=False):
+        if not self.initialize_paths(problem_instance):
             return False
 
         # Check collisions
         conflict = self.check_conflicts()
 
         while conflict is not None:
-            self.merge_group(conflict)
+            self.merge_group(conflict, problem_instance, verbose=verbose)
             conflict = self.check_conflicts()
 
         return self._paths
 
-    def initialize_paths(self):
-        for agent in self._problem_instance.get_agents():
-            self._problems.append(ProblemInstance(self._problem_instance.get_map(), [agent]))
+    def initialize_paths(self, problem_instance):
+        for agent in problem_instance.get_agents():
+            self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            solver = AStarMultiAgent(problem)
-            paths = solver.compute_paths()
+            paths = self._solver.solve(problem)
             if not paths:
                 return False
             self._paths.extend(paths)
         return True
 
-    def merge_group(self, conflicting_agents):
+    def merge_group(self, conflicting_agents, problem_instance, verbose=False):
         new_problems = []
 
         j, k = conflicting_agents
@@ -53,20 +51,23 @@ class IndependenceDetection(Solver):
             else:
                 new_problems.append(problem)
 
-        merged_problem = ProblemInstance(self._problem_instance.get_map(),
+        merged_problem = ProblemInstance(problem_instance.get_map(),
                                          conflicting_problems[0].get_agents() + conflicting_problems[1].get_agents())
 
         new_problems.append(merged_problem)
+
+        if verbose:
+            print("Merged problem: {:<24} with problem: {:<24} ---> New problem: {:<24}"
+                  .format(str(conflicting_problems[0].get_agents_id_list()),
+                          str(conflicting_problems[1].get_agents_id_list()),
+                          str(merged_problem.get_agents_id_list())))
 
         self._problems = new_problems
         self.update_paths()
 
     def update_paths(self):
         for problem in self._problems:
-            solver = CooperativeAStar(problem)
-            print("PPPPPPPPP", problem.get_agents_id_list())
-            paths = solver.compute_paths()
-            print("dioc")
+            paths = self._solver.solve(problem)
 
             if not paths:
                 return False
@@ -86,7 +87,6 @@ class IndependenceDetection(Solver):
         for i, path in enumerate(self._paths):
             for ts, pos in enumerate(path):
                 if reservation_table.get((pos, ts)) is not None:
-                    print("CONFLICT IN:", pos, "at", ts, "BETWEEN", (reservation_table[(pos, ts)], i))
                     return reservation_table[(pos, ts)], i
                 reservation_table[(pos, ts)] = i
                 if ts == len(path)-1 and ts < largest_time_step:

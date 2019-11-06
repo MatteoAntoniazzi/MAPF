@@ -5,18 +5,17 @@ from Solver import Solver
 
 
 class HierarchicalCooperativeAStar(Solver):
-    def __init__(self, problem_instance):
-        super().__init__(problem_instance)
+    def __init__(self):
         self._reservation_table = dict()
 
-    def compute_paths(self):
+    def solve(self, problem_instance):
         paths = []
 
-        for agent in self._problem_instance.get_agents():
-            print("AGENT N:", agent.get_id(), "OF ", len(self._problem_instance.get_agents()))
+        for agent in problem_instance.get_agents():
+            print("AGENT N:", agent.get_id(), "OF ", len(problem_instance.get_agents()))
             # Compute AStar on every agent
-            rra = RRAStar(self._problem_instance.get_map(), agent)
-            solver = AStar(self._problem_instance.get_map(), heuristic="RRA", rra=rra)
+            rra = RRAStar(problem_instance.get_map(), agent)
+            solver = AStar(problem_instance.get_map(), heuristic="RRA", rra=rra)
             path = solver.find_path_with_reservation_table(agent, self._reservation_table)
             paths.append(path)
 

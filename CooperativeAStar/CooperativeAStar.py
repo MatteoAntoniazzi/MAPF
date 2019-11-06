@@ -18,16 +18,16 @@ from CooperativeAStar.AStar import AStar
 
 
 class CooperativeAStar(Solver):
-    def __init__(self, problem_instance):
-        super().__init__(problem_instance)
+    def __init__(self):
         self._reservation_table = dict()
 
-    def compute_paths(self):
+    def solve(self, problem_instance):
         paths = []
 
-        for agent in self._problem_instance.get_agents():
+        for agent in problem_instance.get_agents():
+            print("AGENT N:", agent.get_id(), "OF ", len(problem_instance.get_agents()))
             # Compute AStar on every agent
-            solver = AStar(self._problem_instance.get_map())
+            solver = AStar(problem_instance.get_map())
             path = solver.find_path_with_reservation_table(agent, self._reservation_table)
             paths.append(path)
 
@@ -39,4 +39,5 @@ class CooperativeAStar(Solver):
                     # I need to keep the place busy also after the agent reach his goal
                     for c in range(i+1, i+100):
                         self._reservation_table[pos].append(c)
+
         return paths

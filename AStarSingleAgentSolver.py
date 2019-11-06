@@ -3,17 +3,17 @@ from States.SingleAgentState import SingleAgentState
 
 
 class AStarSingleAgentSolver(Solver):
-    def __init__(self, problem_instance):
-        super().__init__(problem_instance)
+    def __init__(self):
+        pass
 
-    def compute_paths(self):
+    def solve(self, problem_instance):
         paths = []
-        for agent in self._problem_instance.get_agents():
-            path = self.find_path(agent)
+        for agent in problem_instance.get_agents():
+            path = self.find_path(agent, problem_instance)
             paths.append(path)
         return paths
 
-    def find_path(self, agent):
+    def find_path(self, agent, problem_instance):
         """
         Returns the path between two nodes as a list of nodes using the A* algorithm.
         If no path could be found, an empty list is returned.
@@ -22,16 +22,14 @@ class AStarSingleAgentSolver(Solver):
         end -> is the robot ending position (gx, gy)
         return the path as list of (x, y) positions
         """
-        starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_goal(),
+        starter_state = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(),
                                          agent.get_start(), 0, 0)
         frontier = [starter_state]
         closed_list = set()
 
         while frontier:
-            print("FRONTIER")
             frontier.sort(key=lambda x: x.f_value(), reverse=False)
             cur_state = frontier.pop(0)
-            print("CUR: ", cur_state.get_position())
             closed_list.add(cur_state.get_position())
 
             if cur_state.goal_test():
@@ -41,7 +39,6 @@ class AStarSingleAgentSolver(Solver):
             # [frontier.append(state) for state in expanded_nodes_list if state.get_position() not in closed_list]
             for state in expanded_nodes_list:
                 if state.get_position() not in closed_list:
-                    print("POS: ", state.get_position(), "CLOSED LIST: ", closed_list)
                     frontier.append(state)
 
         return []

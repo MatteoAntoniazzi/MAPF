@@ -60,6 +60,7 @@ def load_scenario_file(scen_file, occupancy_list, map_width, map_height, number_
         assert(start not in occupancy_list), "Overlapping error"
         assert(goal not in occupancy_list), "Overlapping error"
     # return [instances[1], instances[22], instances[28]]
+    return [instances[2], instances[24], instances[30]]
     # return [instances[26], instances[37]]
-    return [instances[21], instances[33]]
+    # return [instances[21], instances[33]]
     # return instances[:number_of_agents]

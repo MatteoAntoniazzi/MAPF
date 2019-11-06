@@ -54,7 +54,6 @@ class MultiAgentState(State):
 
         # Check not 2 states in the same position
         if len(next_positions) != len(set(next_positions)):
-            print("CONFLICT: ", current_positions, next_positions, " TS:", self.time_step())
             return True
 
         # Check not overlapping. (Check no exists an agent that goes on an other agent previous position.

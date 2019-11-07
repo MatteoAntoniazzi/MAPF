@@ -19,6 +19,7 @@ from CooperativeAStar.AStar import AStar
 
 class CooperativeAStar(Solver):
     def __init__(self):
+        super().__init__(None)
         self._reservation_table = dict()
 
     def solve(self, problem_instance):

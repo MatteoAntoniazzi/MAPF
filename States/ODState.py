@@ -2,10 +2,11 @@ from States.MultiAgentState import MultiAgentState
 
 
 class ODState(MultiAgentState):
-    def __init__(self, problem_instance, single_agent_states, next_to_move=0, pre_state=None, parent=None,
-                 time_step=0, heuristic="Manhattan"):
-        super().__init__(problem_instance, single_agent_states, parent=parent, time_step=time_step, heuristic=heuristic)
+    def __init__(self, problem_instance, single_agent_states, heuristics, next_to_move=0, pre_state=None, parent=None,
+                 time_step=0):
+        super().__init__(problem_instance, single_agent_states, heuristics, parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
+        self._heuristics = heuristics
         if pre_state is None:
             self._pre_state = self     # Previous Intermediate State
         else:
@@ -31,14 +32,17 @@ class ODState(MultiAgentState):
             single_agent_states[self._next_to_move] = state
 
             if self.next_next_to_move() == 0:
-                s = ODState(self._problem_instance, single_agent_states, next_to_move=self.next_next_to_move(),
-                            pre_state=self._pre_state, parent=self, time_step=self.time_step()+1, heuristic=self._heuristic)
+                s = ODState(self._problem_instance, single_agent_states, self._heuristics,
+                            next_to_move=self.next_next_to_move(), pre_state=self._pre_state, parent=self,
+                            time_step=self.time_step()+1)
             elif self.next_next_to_move() == 1:
-                s = ODState(self._problem_instance, single_agent_states, next_to_move=self.next_next_to_move(),
-                            pre_state=self, parent=self, time_step=self.time_step(), heuristic=self._heuristic)
+                s = ODState(self._problem_instance, single_agent_states, self._heuristics,
+                            next_to_move=self.next_next_to_move(), pre_state=self, parent=self,
+                            time_step=self.time_step())
             else:
-                s = ODState(self._problem_instance, single_agent_states, next_to_move=self.next_next_to_move(),
-                            pre_state=self._pre_state, parent=self, time_step=self.time_step(), heuristic=self._heuristic)
+                s = ODState(self._problem_instance, single_agent_states, self._heuristics,
+                            next_to_move=self.next_next_to_move(), pre_state=self._pre_state, parent=self,
+                            time_step=self.time_step())
 
             if s.is_a_standard_state():
                 if not s.is_conflict(s._pre_state.get_single_agent_states()):

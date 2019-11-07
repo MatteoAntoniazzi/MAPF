@@ -29,7 +29,7 @@ problem_instance = ProblemInstance(map, agents)
 
 start_time = time.time()
 
-solver = IndependenceDetection(AStarMultiAgent())
+solver = CooperativeAStar("RRA")
 paths = solver.solve(problem_instance, verbose=True)
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

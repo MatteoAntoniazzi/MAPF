@@ -7,8 +7,12 @@ class Solver:
     """
     __metaclass__ = abc.ABCMeta
 
+    def __init__(self, heuristics_str):
+        self._heuristics_str = heuristics_str
+        self._heuristics = None
+
     @abc.abstractmethod
     def solve(self, problem_instance):
         """
-        compute the paths
+        Compute the paths
         """

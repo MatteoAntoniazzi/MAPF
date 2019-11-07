@@ -1,43 +1,27 @@
-from CooperativeAStar.RRAStar import RRAStar
 from Solver import Solver
 from States.SingleAgentState import SingleAgentState
 from States.MultiAgentState import MultiAgentState
 from QueueStructures.MultiAgentQueue import MultiAgentQueue
+from Heuristics.initialize_heuristics import *
 
 
 class AStarMultiAgent(Solver):
-    def __init__(self):
+    def __init__(self, heuristics_str):
+        super().__init__(heuristics_str)
+        self._frontier = None
+        self._closed_list = None
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
     def solve(self, problem_instance, verbose=False):
         """
-        Returns the path between two nodes as a list of nodes using the A* algorithm.
-        If no path could be found, an empty list is returned.
-
-        grid -> is the map with obstacles
-        start -> is the robot starting position (sx, sy)
-        end -> is the robot ending position (gx, gy)
-
-        return the path as list of (x, y) positions
+        Solve the MAPF problem using the A* algorithm returning the path as list of (x, y) positions.
         """
-        frontier = MultiAgentQueue()
-        closed_list = MultiAgentQueue()
+        self.initialize_problem(problem_instance)
 
-        rra = []
-        for agent in problem_instance.get_agents():
-            rra.append(RRAStar(problem_instance.get_map(), agent))
-
-        single_agents_states = [SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(),
-                                                 agent.get_start(), 0, 0, heuristic="RRA", rra=rra[i])
-                                for i, agent in enumerate(problem_instance.get_agents())]
-
-        starter_state = MultiAgentState(problem_instance, single_agents_states)
-        frontier.add(starter_state)
-
-        while not frontier.is_empty():
-            frontier.sort_by_f_value()
-            cur_state = frontier.pop()
+        while not self._frontier.is_empty():
+            self._frontier.sort_by_f_value()
+            cur_state = self._frontier.pop()
 
             if cur_state.goal_test():
                 if verbose:
@@ -45,14 +29,27 @@ class AStarMultiAgent(Solver):
                           " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
                 return cur_state.get_paths_to_parent()
 
-            if not closed_list.contains_state_same_positions(cur_state):
-                closed_list.add(cur_state)
-
+            if not self._closed_list.contains_state_same_positions(cur_state):
+                self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=False)
-
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 self._n_of_loops += 1
-
-                frontier.add_list_of_states(expanded_nodes)
+                self._frontier.add_list_of_states(expanded_nodes)
 
         return []
+
+    def initialize_problem(self, problem_instance):
+        self._heuristics = initialize_heuristics(self._heuristics_str, problem_instance)
+        self._frontier = MultiAgentQueue()
+        self._closed_list = MultiAgentQueue()
+        self._n_of_expanded_nodes = 0
+        self._n_of_loops = 0
+
+        single_agents_states = []
+        for i, agent in enumerate(problem_instance.get_agents()):
+            s = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(), agent.get_start(), 0,
+                                 self._heuristics)
+            single_agents_states.append(s)
+
+        starter_state = MultiAgentState(problem_instance, single_agents_states, self._heuristics)
+        self._frontier.add(starter_state)

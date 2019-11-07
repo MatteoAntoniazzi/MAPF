@@ -5,13 +5,13 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, parent=None, time_step=0, heuristic="Manhattan"):
+    def __init__(self, problem_instance, single_agents_states, heuristics, parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
-        self._heuristic = heuristic
+        self._heuristics = heuristics
         self.calculate_cost()
-        self.compute_heuristic(heuristic)
+        self.compute_heuristics()
 
     def get_paths_to_parent(self):
         paths = []
@@ -41,8 +41,8 @@ class MultiAgentState(State):
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
             if not self.is_conflict(multi_state):
-                free_conflict_states.append(MultiAgentState(self._problem_instance, multi_state, parent=self,
-                                                            time_step=self.time_step()+1, heuristic=self._heuristic))
+                free_conflict_states.append(MultiAgentState(self._problem_instance, multi_state, self._heuristics,
+                                                            parent=self, time_step=self.time_step()+1))
 
         if verbose:
             print("DONE! Number of expanded states:", len(free_conflict_states))
@@ -71,7 +71,7 @@ class MultiAgentState(State):
                 return False
         return True
 
-    def compute_heuristic(self, mode):
+    def compute_heuristics(self):
         self._h = 0
         for single_state in self._single_agents_states:
             self._h += single_state.h_value()
@@ -91,8 +91,8 @@ class MultiAgentState(State):
 
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
-        return MultiAgentState(self._problem_instance, clone_states, parent=self._parent, time_step=self._time_step,
-                               heuristic=self._heuristic)
+        return MultiAgentState(self._problem_instance, clone_states, self._heuristics, parent=self._parent,
+                               time_step=self._time_step)
 
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]

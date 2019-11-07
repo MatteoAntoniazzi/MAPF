@@ -50,10 +50,9 @@ class State(object):
     =========== functions to update member variables =========
     """
     @abc.abstractmethod
-    def compute_heuristic(self, mode):
+    def compute_heuristics(self):
         """
         Set hValue
-        :param mode: manhattan or others
         """
 
     @abc.abstractmethod

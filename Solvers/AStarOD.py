@@ -25,15 +25,14 @@ class AStarOD(MAPFSolver):
             cur_state = self._frontier.pop()
 
             if cur_state.goal_test():
-                if verbose:
-                    print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
-                          " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
+                print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
+                      " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
                 return cur_state.get_paths_to_parent()
 
             if not self._closed_list.contains_state(cur_state):
                 if cur_state.is_a_standard_state():
                     self._closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand(verbose=True)
+                expanded_nodes = cur_state.expand(verbose)
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 self._n_of_loops += 1
                 self._frontier.add_list_of_states(expanded_nodes)

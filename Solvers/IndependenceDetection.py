@@ -20,6 +20,8 @@ class IndependenceDetection(MAPFSolver):
             self.merge_group(conflict, problem_instance, verbose=verbose)
             conflict = self.check_conflicts()
 
+        print("Total time: ", max([len(path)-1 for path in self._paths]),
+              " Total cost:", sum([len(path)-1 for path in self._paths]))
         return self._paths
 
     def initialize_paths(self, problem_instance):

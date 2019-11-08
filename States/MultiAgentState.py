@@ -22,13 +22,10 @@ class MultiAgentState(State):
     def expand(self, verbose=False):
         if verbose:
             print("Expansion in progress...", end=' ')
+
         candidate_list = []
         for single_state in self._single_agents_states:
-
             single_state_neighbor_list = single_state.expand()
-
-            if len(single_state_neighbor_list) == 0:
-                return []
             candidate_list.append(single_state_neighbor_list)
 
         candidate_state_list = list(itertools.product(*candidate_list))
@@ -38,22 +35,36 @@ class MultiAgentState(State):
             if is_valid(multi_state):  # a shallow copy to prevent change of multi_state
                 valid_states.append(multi_state)
 
+        boool = False
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
-            if not self.is_conflict(multi_state):
-                free_conflict_states.append(MultiAgentState(self._problem_instance, multi_state, self._heuristics,
-                                                            parent=self, time_step=self.time_step()+1))
+            m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, parent=self,
+                                time_step=self.time_step()+1)
+            if not self.is_conflict(m):
+                free_conflict_states.append(m)
+            else:
+                print("KKKKONFLIKKKKT: ", m, " ooooooooooooooooooooooooooooo")
+                print("analisi", end=' ')
+                [print(s.is_completed()) for s in m._single_agents_states]
+                boool = True
+        if boool:
+            print("PER0' HO ESPANSOOOO;", end=' ')
+            [print(s, end=' ')for s in free_conflict_states]
 
         if verbose:
             print("DONE! Number of expanded states:", len(free_conflict_states))
+
         return free_conflict_states
 
-    def is_conflict(self, multi_state):  # multi-state is a list of single agents
+    def is_conflict(self, multi_state):
         current_positions = self.get_positions_list()
-        next_positions = [state.get_position() for state in multi_state]
+        next_positions = multi_state.get_positions_list()
+
+        next_active_positions = multi_state.get_active_positions_list()
 
         # Check not 2 states in the same position
-        if len(next_positions) != len(set(next_positions)):
+        if len(next_active_positions) != len(set(next_active_positions)):
+            print("RCODDDDDDDD", )
             return True
 
         # Check not overlapping. (Check no exists an agent that goes on an other agent previous position.
@@ -62,6 +73,7 @@ class MultiAgentState(State):
                 if i != j:
                     if next_pos == cur_pos:
                         if next_positions[j] == current_positions[i]:
+                            print("RCAMADONNA")
                             return True
         return False
 
@@ -88,6 +100,13 @@ class MultiAgentState(State):
 
     def get_positions_list(self):
         return [state.get_position() for state in self._single_agents_states]
+
+    def get_active_positions_list(self):
+        pos_list = []
+        for state in self._single_agents_states:
+            if not state.is_completed():
+                pos_list.append(state.get_position())
+        return pos_list
 
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
@@ -118,9 +137,10 @@ class MultiAgentState(State):
         return True
 
     def __str__(self):
-        string = ''
-        string = string + ' [F: ' + str(self.f_value()) + ' ' + str(self.get_positions_list()) + \
-                 ' TS:' + str(self.time_step()) + '] '
+        string = '[F: ' + str(self.f_value())
+        for s in self._single_agents_states:
+            string += s.__str__()
+        string += ']'
         return string
 
 

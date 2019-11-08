@@ -36,6 +36,7 @@ class MultiAgentQueue:
         return len(self._queue)
 
     def sort_by_f_value(self):
+        # self._queue.sort(key=lambda x: (x.f_value(), -x.time_step()), reverse=False)
         self._queue.sort(key=lambda x: x.f_value(), reverse=False)
 
     def __str__(self):

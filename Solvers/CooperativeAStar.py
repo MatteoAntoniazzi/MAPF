@@ -31,12 +31,12 @@ class CooperativeAStar(MAPFSolver):
         paths = []
 
         for i, agent in enumerate(problem_instance.get_agents()):
-            # print("AGENT N:", i+1, "OF ", len(problem_instance.get_agents()))
+            if verbose:
+                print("Agent n:", i+1, "of", len(problem_instance.get_agents()))
 
-            # Compute AStar on every agent
             solver = AStar(self._heuristics_str)
-            path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(), agent.get_goal(), self._reservation_table)
-
+            path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(),
+                                                           agent.get_goal(), self._reservation_table)
             paths.append(path)
 
             for j, pos in enumerate(path):
@@ -48,6 +48,5 @@ class CooperativeAStar(MAPFSolver):
                     for c in range(j+1, j+1+GOAL_OCCUPATION_TIME):
                         self._reservation_table[pos].append(c)
 
-        if verbose:
-            print("Total time: ", max([len(path)-1 for path in paths]), " Total cost:", sum([len(path)-1 for path in paths]))
+        print("Total time: ", max([len(path)-1 for path in paths]), " Total cost:", sum([len(path)-1 for path in paths]))
         return paths

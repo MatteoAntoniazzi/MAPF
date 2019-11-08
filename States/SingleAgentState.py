@@ -14,7 +14,7 @@ class SingleAgentState(State):
 
     def expand(self, verbose=False):
         # if self.goal_test():  # If already in goal no expansion.
-        #     return [self]       # Time_step remain blocked so once arrived it doesn't block others
+        #     return [self.clone_state()]       # Time_step remain blocked so once arrived it doesn't block others
         if self.goal_test():
             return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g, self._heuristics,
                                      parent=self, time_step=self._time_step+1)]

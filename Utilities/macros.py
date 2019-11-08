@@ -14,3 +14,5 @@ FORES = [Fore.BLACK, Fore.LIGHTBLACK_EX, Fore.RED, Fore.LIGHTRED_EX, Fore.GREEN,
          Fore.LIGHTCYAN_EX, Fore.WHITE, Fore.LIGHTWHITE_EX]
 
 N_OF_STEPS = 20  # N of step for a move
+
+GOAL_OCCUPATION_TIME = 100

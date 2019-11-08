@@ -1,18 +1,13 @@
-from Solver import Solver
-from CooperativeAStar.AStar import AStar
-from AStarOD.AStarOD import AStarOD
+from MAPFSolver import MAPFSolver
 from Utilities.ProblemInstance import ProblemInstance
-from CooperativeAStar.CooperativeAStar import CooperativeAStar
-from CooperativeAStar.HiearachicalCooperativeAStar import HierarchicalCooperativeAStar
-from AStarOD.AStarMultiAgent import AStarMultiAgent
-from Utilities.Agent import Agent
 
 
-class IndependenceDetection(Solver):
+class IndependenceDetection(MAPFSolver):
     def __init__(self, solver):
-        self._paths = []
-        self._problems = []
+        super().__init__(None)
         self._solver = solver
+        self._problems = []
+        self._paths = []
 
     def solve(self, problem_instance, verbose=False):
         if not self.initialize_paths(problem_instance):
@@ -36,6 +31,7 @@ class IndependenceDetection(Solver):
             if not paths:
                 return False
             self._paths.extend(paths)
+
         return True
 
     def merge_group(self, conflicting_agents, problem_instance, verbose=False):

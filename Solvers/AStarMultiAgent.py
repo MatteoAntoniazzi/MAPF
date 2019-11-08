@@ -1,11 +1,11 @@
-from Solver import Solver
+from MAPFSolver import MAPFSolver
 from States.SingleAgentState import SingleAgentState
 from States.MultiAgentState import MultiAgentState
 from QueueStructures.MultiAgentQueue import MultiAgentQueue
 from Heuristics.initialize_heuristics import *
 
 
-class AStarMultiAgent(Solver):
+class AStarMultiAgent(MAPFSolver):
     def __init__(self, heuristics_str):
         super().__init__(heuristics_str)
         self._frontier = None
@@ -18,7 +18,6 @@ class AStarMultiAgent(Solver):
         Solve the MAPF problem using the A* algorithm returning the path as list of (x, y) positions.
         """
         self.initialize_problem(problem_instance)
-
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
@@ -31,7 +30,7 @@ class AStarMultiAgent(Solver):
 
             if not self._closed_list.contains_state_same_positions(cur_state):
                 self._closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand(verbose=False)
+                expanded_nodes = cur_state.expand(verbose=True)
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 self._n_of_loops += 1
                 self._frontier.add_list_of_states(expanded_nodes)

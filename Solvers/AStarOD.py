@@ -1,11 +1,11 @@
-from Solver import Solver
+from MAPFSolver import MAPFSolver
 from States.ODState import ODState
 from States.SingleAgentState import SingleAgentState
 from QueueStructures.MultiAgentQueue import MultiAgentQueue
 from Heuristics.initialize_heuristics import initialize_heuristics
 
 
-class AStarOD(Solver):
+class AStarOD(MAPFSolver):
     def __init__(self, heuristics_str):
         super().__init__(heuristics_str)
         self._frontier = None
@@ -33,7 +33,7 @@ class AStarOD(Solver):
             if not self._closed_list.contains_state(cur_state):
                 if cur_state.is_a_standard_state():
                     self._closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand(verbose=False)
+                expanded_nodes = cur_state.expand(verbose=True)
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 self._n_of_loops += 1
                 self._frontier.add_list_of_states(expanded_nodes)

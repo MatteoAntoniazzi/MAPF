@@ -13,32 +13,41 @@ for precisely the duration of the intersection, thus preventing any other agent 
 small proportion of grid locations will be touched, and so the grid can be efficiently implemented as a hash table,
 hashing on a randomly distributed function of the (x, y, t) key.
 """
-from Solver import Solver
-from CooperativeAStar.AStar import AStar
+from MAPFSolver import MAPFSolver
+from AStar import AStar
+from Utilities.macros import *
 
 
-class CooperativeAStar(Solver):
-    def __init__(self):
-        super().__init__(None)
+class CooperativeAStar(MAPFSolver):
+    """
+    With RRA as heuristics it became HierarchicalCooperativeA*
+    """
+    def __init__(self, heuristics_str):
+        super().__init__(heuristics_str)
+        self._reservation_table = None
+
+    def solve(self, problem_instance, verbose=False):
         self._reservation_table = dict()
-
-    def solve(self, problem_instance):
         paths = []
 
-        for agent in problem_instance.get_agents():
-            print("AGENT N:", agent.get_id(), "OF ", len(problem_instance.get_agents()))
+        for i, agent in enumerate(problem_instance.get_agents()):
+            # print("AGENT N:", i+1, "OF ", len(problem_instance.get_agents()))
+
             # Compute AStar on every agent
-            solver = AStar(problem_instance.get_map())
-            path = solver.find_path_with_reservation_table(agent, self._reservation_table)
+            solver = AStar(self._heuristics_str)
+            path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(), agent.get_goal(), self._reservation_table)
+
             paths.append(path)
 
-            for i, pos in enumerate(path):
+            for j, pos in enumerate(path):
                 if not self._reservation_table.get(pos):
                     self._reservation_table[pos] = []
-                self._reservation_table[pos].append(i)
+                self._reservation_table[pos].append(j)
                 if pos == agent.get_goal():
                     # I need to keep the place busy also after the agent reach his goal
-                    for c in range(i+1, i+100):
+                    for c in range(j+1, j+1+GOAL_OCCUPATION_TIME):
                         self._reservation_table[pos].append(c)
 
+        if verbose:
+            print("Total time: ", max([len(path)-1 for path in paths]), " Total cost:", sum([len(path)-1 for path in paths]))
         return paths

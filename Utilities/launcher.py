@@ -2,12 +2,11 @@ from Utilities.read_map_and_scenario import *
 from Utilities.ProblemInstance import *
 from Utilities.Agent import *
 from Utilities.Map import *
-from CooperativeAStar.CooperativeAStar import CooperativeAStar
-from CooperativeAStar.HiearachicalCooperativeAStar import HierarchicalCooperativeAStar
-from AStarSingleAgentSolver import AStarSingleAgentSolver
-from AStarOD.AStarMultiAgent import AStarMultiAgent
-from AStarOD.AStarOD import AStarOD
-from IndependeceDetection.IndependenceDetection import IndependenceDetection
+from Solvers.AStarSingleAgent import AStarSingleAgent
+from Solvers.AStarMultiAgent import AStarMultiAgent
+from Solvers.AStarOD import AStarOD
+from Solvers.CooperativeAStar import CooperativeAStar
+from Solvers.IndependenceDetection import IndependenceDetection
 
 import time
 
@@ -18,7 +17,7 @@ map_width, map_height, occupancy_list = load_map_file(args.map)
 print("Map loaded")
 
 print("Loading scenario file")
-agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 40)
+agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 10)
 print("Scenario loaded")
 
 map = Map(map_height, map_width, occupancy_list)
@@ -29,7 +28,8 @@ problem_instance = ProblemInstance(map, agents)
 
 start_time = time.time()
 
-solver = CooperativeAStar("RRA")
+# solver = IndependenceDetection(CooperativeAStar("Manhattan"))
+solver = AStarOD("Manhattan")
 paths = solver.solve(problem_instance, verbose=True)
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

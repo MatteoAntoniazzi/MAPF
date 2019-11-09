@@ -1,4 +1,4 @@
-from MAPFSolver import MAPFSolver
+from Solvers.MAPFSolver import MAPFSolver
 from States.ODState import ODState
 from States.SingleAgentState import SingleAgentState
 from QueueStructures.MultiAgentQueue import MultiAgentQueue
@@ -24,7 +24,7 @@ class AStarOD(MAPFSolver):
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
-            if cur_state.goal_test():
+            if cur_state.is_completed():
                 print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
                       " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
                 return cur_state.get_paths_to_parent()

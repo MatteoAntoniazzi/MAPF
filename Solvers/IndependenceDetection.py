@@ -1,4 +1,4 @@
-from MAPFSolver import MAPFSolver
+from Solvers.MAPFSolver import MAPFSolver
 from Utilities.ProblemInstance import ProblemInstance
 
 
@@ -15,7 +15,6 @@ class IndependenceDetection(MAPFSolver):
 
         # Check collisions
         conflict = self.check_conflicts()
-
         while conflict is not None:
             self.merge_group(conflict, problem_instance, verbose=verbose)
             conflict = self.check_conflicts()

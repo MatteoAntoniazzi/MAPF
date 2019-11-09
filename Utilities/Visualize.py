@@ -78,6 +78,8 @@ class Visualize:
                         self.y_moves[i] = int((next_position[1] - current_position[1]) * self.cell_h) / N_OF_STEPS
                         self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
                         self.steps_count[i] = 1
+                if not self.path_to_visit[i]:
+                    self.canvas.delete(self.agents_ovals[i])
             if not [i for i in self.path_to_visit if i]:  # For checking that all the arrays are empty
                 self.animating = False
 

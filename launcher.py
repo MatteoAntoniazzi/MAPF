@@ -17,7 +17,7 @@ map_width, map_height, occupancy_list = load_map_file(args.map)
 print("Map loaded")
 
 print("Loading scenario file")
-agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 42)
+agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 10)
 print("Scenario loaded")
 
 map = Map(map_height, map_width, occupancy_list)
@@ -29,10 +29,12 @@ problem_instance = ProblemInstance(map, agents)
 start_time = time.time()
 
 # solver = IndependenceDetection(CooperativeAStar("Manhattan"))
-solver = CooperativeAStar("RRA")
-paths = solver.solve(problem_instance, verbose=True)
+solver = AStarMultiAgent("RRA")
+paths = solver.solve(problem_instance)
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))
+
+print(paths)
 
 # problem_instance.plot_on_terminal(paths)
 problem_instance.plot_on_gui(paths)

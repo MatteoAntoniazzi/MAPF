@@ -1,5 +1,4 @@
-from MAPFSolver import MAPFSolver
-from States.SingleAgentState import SingleAgentState
+from Solvers.MAPFSolver import MAPFSolver
 from AStar import AStar
 
 

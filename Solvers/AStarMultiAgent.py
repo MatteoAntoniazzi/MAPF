@@ -1,4 +1,4 @@
-from MAPFSolver import MAPFSolver
+from Solvers.MAPFSolver import MAPFSolver
 from States.SingleAgentState import SingleAgentState
 from States.MultiAgentState import MultiAgentState
 from QueueStructures.MultiAgentQueue import MultiAgentQueue
@@ -18,29 +18,22 @@ class AStarMultiAgent(MAPFSolver):
         Solve the MAPF problem using the A* algorithm returning the path as list of (x, y) positions.
         """
         self.initialize_problem(problem_instance)
+
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
-
-            print("FRONTIER:", end=' ')
-            [print(s, end=' ') for s in self._frontier._queue[:5]]
-            print("")
-
             cur_state = self._frontier.pop()
 
-            if cur_state.goal_test():
+            if cur_state.is_completed():
                 print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
                       " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
                 return cur_state.get_paths_to_parent()
 
             if not self._closed_list.contains_state(cur_state):
-                print("EXPAND: ", cur_state)
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 self._n_of_loops += 1
                 self._frontier.add_list_of_states(expanded_nodes)
-            else:
-                print("ALREADY DONE", cur_state)
 
         return []
 

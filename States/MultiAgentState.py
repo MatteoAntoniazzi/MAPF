@@ -35,21 +35,12 @@ class MultiAgentState(State):
             if is_valid(multi_state):  # a shallow copy to prevent change of multi_state
                 valid_states.append(multi_state)
 
-        boool = False
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
             m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, parent=self,
                                 time_step=self.time_step()+1)
             if not self.is_conflict(m):
                 free_conflict_states.append(m)
-            else:
-                print("KKKKONFLIKKKKT: ", m, " ooooooooooooooooooooooooooooo")
-                print("analisi", end=' ')
-                [print(s.is_completed()) for s in m._single_agents_states]
-                boool = True
-        if boool:
-            print("PER0' HO ESPANSOOOO;", end=' ')
-            [print(s, end=' ')for s in free_conflict_states]
 
         if verbose:
             print("DONE! Number of expanded states:", len(free_conflict_states))
@@ -64,7 +55,6 @@ class MultiAgentState(State):
 
         # Check not 2 states in the same position
         if len(next_active_positions) != len(set(next_active_positions)):
-            print("RCODDDDDDDD", )
             return True
 
         # Check not overlapping. (Check no exists an agent that goes on an other agent previous position.
@@ -73,13 +63,18 @@ class MultiAgentState(State):
                 if i != j:
                     if next_pos == cur_pos:
                         if next_positions[j] == current_positions[i]:
-                            print("RCAMADONNA")
                             return True
         return False
 
-    def goal_test(self):
+    def goal_test(self):    # If the agent is arrived into the goal state
         for single_state in self._single_agents_states:
             if not single_state.goal_test():
+                return False
+        return True
+
+    def is_completed(self):    # If the agent is arrived into the goal state and stayed there for the time needed.
+        for single_state in self._single_agents_states:
+            if not single_state.is_completed():
                 return False
         return True
 
@@ -137,7 +132,7 @@ class MultiAgentState(State):
         return True
 
     def __str__(self):
-        string = '[F: ' + str(self.f_value())
+        string = '[F:' + str(self.f_value()) + ' TS:' + str(self.time_step())
         for s in self._single_agents_states:
             string += s.__str__()
         string += ']'

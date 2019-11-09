@@ -19,16 +19,20 @@ class SingleAgentState(State):
         if self.goal_test():
             if self.is_completed():
                 return [self.clone_state()]   # Time_step remain blocked so once arrived it doesn't block others
+            elif self._time_remained_in_goal == 1:
+                return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
+                                         self._heuristics, parent=self, time_step=self._time_step+1,
+                                         time_remained_in_goal=0)]
             else:
-                print("GOAL ", self._time_remained_in_goal)
                 return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
                                          self._heuristics, parent=self, time_step=self._time_step+1,
                                          time_remained_in_goal=self._time_remained_in_goal-1)]
-        expanded_nodes_list = [self.wait_state()]
+        expanded_nodes_list = []
         possible_moves = self._map.get_neighbours_xy(self._position)
         for i in possible_moves:
             expanded_nodes_list.append(SingleAgentState(self._map, self._agent_id, self._goal, i, self._g + 1,
                                                         self._heuristics, parent=self, time_step=self._time_step + 1))
+        expanded_nodes_list.append(self.wait_state())
         return expanded_nodes_list
 
     def goal_test(self):
@@ -58,7 +62,8 @@ class SingleAgentState(State):
         path = []
         node = self
         while node._parent is not None:
-            path.append(node._position)
+            if not node.is_completed():
+                path.append(node._position)
             node = node._parent
         path.append(node._position)
         path.reverse()

@@ -10,14 +10,17 @@ class IndependenceDetection(MAPFSolver):
         self._paths = []
 
     def solve(self, problem_instance, verbose=False):
+        print("STEP A")
         if not self.initialize_paths(problem_instance):
             return False
+        print("STEP B")
 
         # Check collisions
         conflict = self.check_conflicts()
         while conflict is not None:
             self.merge_group(conflict, problem_instance, verbose=verbose)
             conflict = self.check_conflicts()
+        print("STEP C")
 
         print("Total time: ", max([len(path)-1 for path in self._paths]),
               " Total cost:", sum([len(path)-1 for path in self._paths]))
@@ -65,7 +68,7 @@ class IndependenceDetection(MAPFSolver):
     def update_paths(self):
         for problem in self._problems:
             paths = self._solver.solve(problem)
-
+            print(paths)
             if not paths:
                 return False
 
@@ -77,7 +80,7 @@ class IndependenceDetection(MAPFSolver):
         """
         :return: the two paths (agents) that has a conflict
         """
-        largest_time_step = max([len(path) for path in self._paths])
+        # largest_time_step = max([len(path) for path in self._paths])
 
         reservation_table = dict()
 
@@ -86,8 +89,8 @@ class IndependenceDetection(MAPFSolver):
                 if reservation_table.get((pos, ts)) is not None:
                     return reservation_table[(pos, ts)], i
                 reservation_table[(pos, ts)] = i
-                if ts == len(path)-1 and ts < largest_time_step:
-                    for j in range(ts+1, largest_time_step):
-                        reservation_table[(pos, j)] = i
+                # if ts == len(path)-1 and ts < largest_time_step:    --> dovrebbe essere quello vecchio per tenere occupata la posizione
+                #     for j in range(ts+1, largest_time_step):
+                #         reservation_table[(pos, j)] = i
 
         return None

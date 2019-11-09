@@ -28,9 +28,9 @@ problem_instance = ProblemInstance(map, agents)
 
 start_time = time.time()
 
-# solver = IndependenceDetection(CooperativeAStar("Manhattan"))
-solver = AStarMultiAgent("RRA")
-paths = solver.solve(problem_instance)
+solver = IndependenceDetection(CooperativeAStar("Manhattan"))
+# solver = AStarMultiAgent("RRA")
+paths = solver.solve(problem_instance, verbose=True)
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))
 

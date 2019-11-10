@@ -18,6 +18,7 @@ class Visualize:
 
         # For animation
         self.animating = True
+        self._footsteps = False
         self.path_to_visit = []
         self.steps_count = [N_OF_STEPS] * len(self._agents)
         self.x_moves = [0] * len(self._agents)
@@ -59,6 +60,9 @@ class Visualize:
             for p in path[1:-1]:
                 self.canvas.itemconfig(self.vis_cells[p[1]][p[0]], fill=color, width=1.5)
 
+    def draw_footsteps(self):
+        self._footsteps = True
+
     def start_animation(self, paths):
         self.path_to_visit = copy.deepcopy(paths)  # In order to copy by value also the nested lists
         self.frame.after(2000, self.animation_function)
@@ -72,6 +76,10 @@ class Visualize:
                     self.steps_count[i] += 1
                 elif self.path_to_visit[i]:
                     current_position = self.path_to_visit[i].pop(0)
+                    if self._footsteps:
+                        color = self.agents_colors[i]
+                        self.canvas.itemconfig(self.vis_cells[current_position[1]][current_position[0]],
+                                               fill=color, width=1.5)
                     if self.path_to_visit[i]:
                         next_position = self.path_to_visit[i][0]
                         self.x_moves[i] = int((next_position[0] - current_position[0]) * self.cell_w) / N_OF_STEPS

@@ -7,7 +7,10 @@ class ODState(MultiAgentState):
         super().__init__(problem_instance, single_agent_states, heuristics, parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._heuristics = heuristics
-        self._pre_state = pre_state
+        if pre_state is None:
+            self._pre_state = self
+        else:
+            self._pre_state = pre_state
         self._to_move = to_move   # Next Agent To Move
         self._to_expand = self.get_single_agent_states()[self._to_move]
 

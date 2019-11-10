@@ -1,5 +1,6 @@
 from Solvers.MAPFSolver import MAPFSolver
 from Utilities.ProblemInstance import ProblemInstance
+from Utilities.macros import *
 
 
 class IndependenceDetection(MAPFSolver):
@@ -9,21 +10,19 @@ class IndependenceDetection(MAPFSolver):
         self._problems = []
         self._paths = []
 
-    def solve(self, problem_instance, verbose=False):
-        print("STEP A")
+    def solve(self, problem_instance, verbose=False, print_output=True):
         if not self.initialize_paths(problem_instance):
             return False
-        print("STEP B")
 
         # Check collisions
         conflict = self.check_conflicts()
         while conflict is not None:
             self.merge_group(conflict, problem_instance, verbose=verbose)
             conflict = self.check_conflicts()
-        print("STEP C")
 
-        print("Total time: ", max([len(path)-1 for path in self._paths]),
-              " Total cost:", sum([len(path)-1 for path in self._paths]))
+        if print_output:
+            print("Total time: ", max([len(path)-1 for path in self._paths]),
+                  " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in self._paths]))
         return self._paths
 
     def initialize_paths(self, problem_instance):
@@ -31,7 +30,8 @@ class IndependenceDetection(MAPFSolver):
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            paths = self._solver.solve(problem)
+            paths = self._solver.solve(problem, print_output=False)
+
             if not paths:
                 return False
             self._paths.extend(paths)
@@ -67,8 +67,7 @@ class IndependenceDetection(MAPFSolver):
 
     def update_paths(self):
         for problem in self._problems:
-            paths = self._solver.solve(problem)
-            print(paths)
+            paths = self._solver.solve(problem, print_output=False)
             if not paths:
                 return False
 

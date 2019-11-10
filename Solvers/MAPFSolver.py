@@ -12,7 +12,7 @@ class MAPFSolver:
         self._heuristics = None
 
     @abc.abstractmethod
-    def solve(self, problem_instance, verbose=False):
+    def solve(self, problem_instance, verbose=False, print_output=True):
         """
         Compute the paths
         """

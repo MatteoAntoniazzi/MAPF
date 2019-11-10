@@ -13,7 +13,7 @@ class AStarMultiAgent(MAPFSolver):
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
-    def solve(self, problem_instance, verbose=False):
+    def solve(self, problem_instance, verbose=False, print_output=True):
         """
         Solve the MAPF problem using the A* algorithm returning the path as list of (x, y) positions.
         """
@@ -24,8 +24,9 @@ class AStarMultiAgent(MAPFSolver):
             cur_state = self._frontier.pop()
 
             if cur_state.is_completed():
-                print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
-                      " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
+                if print_output:
+                    print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
+                          " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
                 return cur_state.get_paths_to_parent()
 
             if not self._closed_list.contains_state(cur_state):

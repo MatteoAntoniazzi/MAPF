@@ -45,6 +45,7 @@ class ProblemInstance:
         window.draw_agents()
         if paths is not None:
             # window.draw_paths(paths)
+            window.draw_footsteps()
             window.start_animation(paths)
         window.do_loop()
 

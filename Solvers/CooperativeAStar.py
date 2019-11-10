@@ -26,7 +26,7 @@ class CooperativeAStar(MAPFSolver):
         super().__init__(heuristics_str)
         self._reservation_table = None
 
-    def solve(self, problem_instance, verbose=False):
+    def solve(self, problem_instance, verbose=False, print_output=True):
         self._reservation_table = dict()
         paths = []
 
@@ -53,6 +53,6 @@ class CooperativeAStar(MAPFSolver):
                 #     for c in range(j+1, j+1+GOAL_OCCUPATION_TIME):
                 #         self._reservation_table[pos].append(c)
 
-        print("Total time: ", max([len(path)-1 for path in paths]),
-              " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
+        if print_output:
+            print("Total time: ", max([len(path)-1 for path in paths]), " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
         return paths

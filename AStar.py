@@ -45,11 +45,13 @@ class AStar:
         """
         self.initialize_problem(map, start_pos, goal_pos)
 
+        # print("START POSITION:", start_pos)
+
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
-            if cur_state.goal_test():
+            if cur_state.is_completed():
                 return cur_state.get_path_to_parent()
 
             if not self._closed_list.contains_state(cur_state):
@@ -57,13 +59,23 @@ class AStar:
 
                 expanded_nodes = cur_state.expand()
 
+                # if start_pos == (1, 0):
+                #     print("TS:", cur_state.time_step(), " EXPANDED NODES:", len(expanded_nodes))
+
                 expanded_nodes_no_conflicts = []
                 for state in expanded_nodes:
+
+                    # if start_pos == (1, 0):
+                    #     print("state:", state)
+
                     busy_times = reservation_table.get(state.get_position(), [])
                     cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
+                    # if start_pos == (1, 0):
+                    #     print(busy_times)
 
                     if not (state.time_step() in busy_times or (state.time_step()-1 in busy_times and
                                                                 state.time_step() in cur_pos_busy_times)):
+                        # print("APPEND")
                         expanded_nodes_no_conflicts.append(state)
 
                 self._frontier.add_list_of_states(expanded_nodes_no_conflicts)

@@ -38,20 +38,12 @@ class CooperativeAStar(MAPFSolver):
             path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(),
                                                            agent.get_goal(), self._reservation_table)
 
-            goal_pos = path[len(path)-1]
-            for k in range(GOAL_OCCUPATION_TIME-1):
-                path.append(goal_pos)
             paths.append(path)
 
             for j, pos in enumerate(path):
                 if not self._reservation_table.get(pos):
                     self._reservation_table[pos] = []
                 self._reservation_table[pos].append(j)
-                # if pos == agent.get_goal():           --> Instead of this piece of code a change the path
-                #                                           putting the goal as times as he need to stay in the goal.
-                #     # I need to keep the place busy also after the agent reach his goal
-                #     for c in range(j+1, j+1+GOAL_OCCUPATION_TIME):
-                #         self._reservation_table[pos].append(c)
 
         if print_output:
             print("Total time: ", max([len(path)-1 for path in paths]), " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))

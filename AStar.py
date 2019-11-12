@@ -45,7 +45,41 @@ class AStar:
         """
         self.initialize_problem(map, start_pos, goal_pos)
 
-        # print("START POSITION:", start_pos)
+        while not self._frontier.is_empty():
+            self._frontier.sort_by_f_value()
+            cur_state = self._frontier.pop()
+
+            if cur_state.is_completed():
+                return cur_state.get_path_to_parent()
+
+            if not self._closed_list.contains_state(cur_state):
+                self._closed_list.add(cur_state)
+
+                expanded_nodes = cur_state.expand()
+
+                expanded_nodes_no_conflicts = []
+                for state in expanded_nodes:
+
+                    busy_times = reservation_table.get(state.get_position(), [])
+                    cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
+
+                    if not (state.time_step() in busy_times or (state.time_step()-1 in busy_times and
+                                                                state.time_step() in cur_pos_busy_times)):
+                        expanded_nodes_no_conflicts.append(state)
+
+                self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
+
+        return []
+
+    def find_path_with_constraints(self, map, start_pos, goal_pos, constraints, transactional_constraints):
+        """
+        It computes the path from his start position to his goal position using the A* algorithm with reservation table.
+        It return the path as list of (x, y) positions.
+
+        Closed lists are used to accelerate the process. When a state with a conflict is found the closed list with the
+        positions empty in order to allow the wait moves.
+        """
+        self.initialize_problem(map, start_pos, goal_pos)
 
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
@@ -59,25 +93,12 @@ class AStar:
 
                 expanded_nodes = cur_state.expand()
 
-                # if start_pos == (1, 0):
-                #     print("TS:", cur_state.time_step(), " EXPANDED NODES:", len(expanded_nodes))
-
                 expanded_nodes_no_conflicts = []
                 for state in expanded_nodes:
-
-                    # if start_pos == (1, 0):
-                    #     print("state:", state)
-
-                    busy_times = reservation_table.get(state.get_position(), [])
-                    cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
-                    # if start_pos == (1, 0):
-                    #     print(busy_times)
-
-                    if not (state.time_step() in busy_times or (state.time_step()-1 in busy_times and
-                                                                state.time_step() in cur_pos_busy_times)):
-                        # print("APPEND")
-                        expanded_nodes_no_conflicts.append(state)
-
+                    if (state.get_position(), state.time_step()) not in constraints:
+                        if (state.predecessor().get_position(), state.get_position(), state.time_step()) not in \
+                                transactional_constraints:
+                            expanded_nodes_no_conflicts.append(state)
                 self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
 
         return []

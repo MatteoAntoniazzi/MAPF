@@ -19,6 +19,8 @@ class ConflictBasedSearch(MAPFSolver):
             self._frontier.sort_by_total_cost()
             cur_state = self._frontier.pop()
 
+            print("Number of constraints: ", len(cur_state.constraints()) + len(cur_state.transactional_constraints()))
+
             conflict = cur_state.check_conflicts()
             if conflict is None:
                 if print_output:

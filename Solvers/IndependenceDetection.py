@@ -88,8 +88,13 @@ class IndependenceDetection(MAPFSolver):
                 if reservation_table.get((pos, ts)) is not None:
                     return reservation_table[(pos, ts)], i
                 reservation_table[(pos, ts)] = i
-                # if ts == len(path)-1 and ts < largest_time_step:    --> dovrebbe essere quello vecchio per tenere occupata la posizione
-                #     for j in range(ts+1, largest_time_step):
-                #         reservation_table[(pos, j)] = i
+
+        for ag_i, path in enumerate(self._paths):
+            for ts, pos in enumerate(path):
+                ag_j = reservation_table.get((pos, ts-1))  # Agent in the pos position at the previous time step
+                if ag_j is not None and ag_j != ag_i:
+                    if len(self._paths[ag_j]) > ts:
+                        if self._paths[ag_j][ts] == path[ts-1]:
+                            return ag_i, ag_j
 
         return None

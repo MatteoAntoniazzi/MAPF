@@ -15,15 +15,24 @@ class IncreasingCostTreeSearch(MAPFSolver):
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
-            # self._frontier.sort_by_total_cost()
             cur_state = self._frontier.pop()
 
+            if verbose:
+                print("NODE: ", cur_state.path_costs_vector())
+
             if cur_state.is_goal():
-                return cur_state.solution()
+                solution = cur_state.solution()
+                if print_output:
+                    print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
+                          " Total time: ", max([len(path)-1 for path in solution]), " Total cost:", cur_state.total_cost())
+                return solution
 
-        print(self._frontier.pop()._path_costs_vector)
-
-
+            if not self._closed_list.contains_node(cur_state):
+                self._closed_list.add(cur_state)
+                expanded_nodes = cur_state.expand()
+                self._n_of_expanded_nodes += len(expanded_nodes)
+                self._n_of_loops += 1
+                self._frontier.add_list_of_nodes(expanded_nodes)
 
     def initialize_problem(self, problem_instance):
         self._frontier = IncreasingCostTreeQueue()

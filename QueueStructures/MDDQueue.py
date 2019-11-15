@@ -1,19 +1,19 @@
-from IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
+from IncreasingCostTreeSearch.MDDNode import MDDNode
 
 
-class IncreasingCostTreeQueue:
+class MDDQueue:
     def __init__(self):
         self._queue = []
 
     def contains_node(self, item):
-        assert isinstance(item, IncreasingCostTreeNode)
-        for node in self._queue:
-            if item.path_costs_vector() == node.path_costs_vector():
+        assert isinstance(item, MDDNode)
+        for n in self._queue:
+            if n.position() == item.position() and n.time_step() == item.time_step():
                 return True
         return False
 
     def add(self, item):
-        assert isinstance(item, IncreasingCostTreeNode)
+        assert isinstance(item, MDDNode)
         self._queue.append(item)
 
     def add_list_of_nodes(self, node_list):
@@ -28,5 +28,5 @@ class IncreasingCostTreeQueue:
     def size(self):
         return len(self._queue)
 
-    def add_list_of_nodes(self, node_list):
-        self._queue.extend(node_list)
+    def sort_by_time_step(self):
+        self._queue.sort(key=lambda x: x.time_step(), reverse=False)

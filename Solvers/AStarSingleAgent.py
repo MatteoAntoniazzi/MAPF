@@ -1,5 +1,6 @@
 from Solvers.MAPFSolver import MAPFSolver
 from AStar import AStar
+from Utilities.macros import *
 
 
 class AStarSingleAgent(MAPFSolver):
@@ -13,5 +14,6 @@ class AStarSingleAgent(MAPFSolver):
             path = a_star.find_path(problem_instance.get_map(), agent.get_start(), agent.get_goal())
             paths.append(path)
         if print_output:
-            print("Total time: ", max([len(path)-1 for path in paths]), " Total cost:", sum([len(path)-1 for path in paths]))
+            print("Total time: ", max([len(path)-1 for path in paths]),
+                  " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
         return paths

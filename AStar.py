@@ -4,6 +4,7 @@ from QueueStructures.SingleAgentQueue import SingleAgentQueue
 from QueueStructures.PositionClosedList import PositionClosedList
 from Utilities.Agent import Agent
 from Utilities.ProblemInstance import ProblemInstance
+from Utilities.macros import *
 
 
 class AStar:
@@ -26,7 +27,11 @@ class AStar:
             cur_state = self._frontier.pop()
 
             if cur_state.goal_test():
-                return cur_state.get_path_to_parent()
+                path = cur_state.get_path_to_parent()
+                goal = cur_state.get_position()
+                for i in range(GOAL_OCCUPATION_TIME-1):
+                    path.append(goal)
+                return path
 
             if cur_state.get_position() not in self._closed_list_of_positions:
                 self._closed_list_of_positions.add(cur_state.get_position())

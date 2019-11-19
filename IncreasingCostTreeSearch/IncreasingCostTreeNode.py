@@ -18,10 +18,6 @@ class IncreasingCostTreeNode:
 
         self._solution = None
         self._mdd_vector = self.compute_mdds()
-        if self._path_costs_vector == [8, 8]:
-            print("MDD 8 8", end=" ")
-            [print(i.get_paths(), end=" ") for i in self._mdd_vector]
-            print(" ")
         self._total_mdd = self.compute_total_mdd()
 
     def expand(self):
@@ -55,11 +51,6 @@ class IncreasingCostTreeNode:
         return None
 
     def check_validity(self, solution):
-        # print("COST:", len(solution[0]) - 5 + len(solution[1]) - 5)
-        # print("sol: ")
-        # print(solution[0])
-        # print(solution[1])
-
         reservation_table = dict()
 
         for i, path in enumerate(solution):

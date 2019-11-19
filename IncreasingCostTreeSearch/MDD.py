@@ -1,6 +1,5 @@
 from IncreasingCostTreeSearch.MDDNode import MDDNode
 from QueueStructures.MDDQueue import MDDQueue
-from Utilities.macros import *
 
 
 class MDD:
@@ -10,10 +9,12 @@ class MDD:
         self._cost = cost
         self._paths = []
         self._ending_nodes = []
+        self._nodes = MDDQueue()
         self.build_mdd()
 
     def build_mdd(self):
         root = MDDNode(self._map, self._agent.get_start())
+        self._nodes.add(root)
 
         frontier = MDDQueue()
         frontier.add(root)
@@ -28,14 +29,16 @@ class MDD:
             if cur_node.time_step() == self._cost:
                 if cur_node.position() == self._agent.get_goal():
                     self._ending_nodes.append(cur_node)
-                    path = cur_node.get_path_to_parent()
-                    goal_pos = cur_node.position()
-                    for i in range(GOAL_OCCUPATION_TIME-1):
-                        path.append(goal_pos)
-                    self._paths.append(path)
+                    self._paths = cur_node.get_paths_to_parent()
 
             expanded_nodes = cur_node.expand()
-            frontier.add_list_of_nodes(expanded_nodes)
+
+            for node in expanded_nodes:
+                if self._nodes.contains_node(node):
+                    self._nodes.add_parent_to_node(node, cur_node)
+                else:
+                    frontier.add(node)
+                    self._nodes.add(node)
 
     def get_paths(self):
         return self._paths

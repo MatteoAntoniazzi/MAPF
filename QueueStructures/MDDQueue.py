@@ -12,6 +12,21 @@ class MDDQueue:
                 return True
         return False
 
+    def add_parent_to_node(self, item, parent):
+        assert isinstance(item, MDDNode)
+        for n in self._queue:
+            if n.position() == item.position() and n.time_step() == item.time_step():
+                n.add_parent(parent)
+                return True
+        return False
+
+    def node(self, item):
+        assert isinstance(item, MDDNode)
+        for n in self._queue:
+            if n.position() == item.position() and n.time_step() == item.time_step():
+                return n
+        return None
+
     def add(self, item):
         assert isinstance(item, MDDNode)
         self._queue.append(item)

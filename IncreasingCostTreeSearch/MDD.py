@@ -8,7 +8,6 @@ class MDD:
         self._agent = agent
         self._cost = cost
         self._paths = []
-        self._ending_nodes = []
         self._nodes = MDDQueue()
         self.build_mdd()
 
@@ -28,7 +27,6 @@ class MDD:
 
             if cur_node.time_step() == self._cost:
                 if cur_node.position() == self._agent.get_goal():
-                    self._ending_nodes.append(cur_node)
                     self._paths = cur_node.get_paths_to_parent()
 
             expanded_nodes = cur_node.expand()

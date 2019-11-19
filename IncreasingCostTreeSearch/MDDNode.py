@@ -28,16 +28,6 @@ class MDDNode:
     def time_step(self):
         return self._time_step
 
-    def get_path_to_parent(self):
-        path = []
-        node = self
-        while node._parent is not None:
-            path.append(node._position)
-            node = node._parent
-        path.append(node._position)
-        path.reverse()
-        return path
-
     def get_paths_to_parent_fun(self):
         paths = []
         path = []

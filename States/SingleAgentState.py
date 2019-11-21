@@ -1,4 +1,3 @@
-from AStar import AStar
 from States.State import State
 from Utilities.macros import *
 
@@ -38,21 +37,22 @@ class SingleAgentState(State):
     def expand_optimal_policy(self):
         if self.goal_test():
             if self.is_completed():
-                return [self.clone_state()]   # Time_step remain blocked so once arrived it doesn't block others
+                return self.clone_state()   # Time_step remain blocked so once arrived it doesn't block others
             elif self._time_remained_in_goal == 1:
-                return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
-                                         self._heuristics, parent=self, time_step=self._time_step+1,
-                                         time_remained_in_goal=0)]
+                return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
+                                        self._heuristics, parent=self, time_step=self._time_step+1,
+                                        time_remained_in_goal=0)
             else:
-                return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
-                                         self._heuristics, parent=self, time_step=self._time_step+1,
-                                         time_remained_in_goal=self._time_remained_in_goal-1)]
+                return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
+                                        self._heuristics, parent=self, time_step=self._time_step+1,
+                                        time_remained_in_goal=self._time_remained_in_goal-1)
 
         next_node = self.get_next_optimal_state()
 
         return next_node
 
     def get_next_optimal_state(self):
+        from AStar import AStar
         solver = AStar()
         path = solver.find_path(self._map, self._position, self._goal)
         next_pos = path[1]

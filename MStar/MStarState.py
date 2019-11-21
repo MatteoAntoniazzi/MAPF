@@ -23,7 +23,7 @@ class MStarState(State):
 
     def expand(self, verbose=False):
         if verbose:
-            print("Expansion in progress...", end=' ')
+            print("Expansion in progress... COLLISIONS SET {:<24}".format(str(self._collisions_set)), end=" ")
 
         candidate_list = []
         for i, single_state in enumerate(self._single_agents_states):
@@ -31,8 +31,8 @@ class MStarState(State):
                 single_state_neighbor_list = single_state.expand()
                 candidate_list.append(single_state_neighbor_list)
             else:
-                single_state_neighbor_list = single_state.expand_optimal_policy()
-                candidate_list.append(single_state_neighbor_list)
+                next_optimal_state = single_state.expand_optimal_policy()
+                candidate_list.append([next_optimal_state])
 
         candidate_state_list = list(itertools.product(*candidate_list))
 
@@ -41,27 +41,27 @@ class MStarState(State):
             if is_valid(multi_state):  # a shallow copy to prevent change of multi_state
                 valid_states.append(multi_state)
 
-        free_conflict_states = []
+        expanded_states = []
         for i, multi_state in enumerate(valid_states):
             m = MStarState(self._problem_instance, multi_state, self._heuristics, parent=self,
                            time_step=self.time_step()+1)
-            m.set_back_propagation_set(self)
+            m.set_back_propagation_set([self])
             m.set_collisions_set(self.colliding_robots(m))
+            expanded_states.append(m)
 
         if verbose:
-            print("DONE! Number of expanded states:", len(free_conflict_states))
+            print("DONE! Number of expanded states:", len(expanded_states))
 
-        return free_conflict_states
+        return expanded_states
 
     def colliding_robots(self, multi_state):
-
         colliding_robots = set()
 
         # Check not 2 states in the same position
         for i, next_state_i in enumerate(multi_state.get_single_agent_states()):
             for j, next_state_j in enumerate(multi_state.get_single_agent_states()):
                 if i != j and next_state_i.get_position() == next_state_j.get_position() and \
-                        next_state_i.is_completed() and next_state_j.is_completed():
+                        not next_state_i.is_completed() and not next_state_j.is_completed():
                     colliding_robots.add(i)
                     colliding_robots.add(j)
 

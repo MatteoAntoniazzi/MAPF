@@ -1,8 +1,8 @@
-from Heuristics.initialize_heuristics import initialize_heuristics
+from Solvers.MAPFSolver import MAPFSolver
 from MStar.MStarQueue import MStarQueue
 from MStar.MStarState import MStarState
-from Solvers.MAPFSolver import MAPFSolver
 from States.SingleAgentState import SingleAgentState
+from Heuristics.initialize_heuristics import initialize_heuristics
 
 
 class MStarSearch(MAPFSolver):
@@ -47,7 +47,7 @@ class MStarSearch(MAPFSolver):
 
         if not cl.issubset(ck):
             vk.set_collisions_set(ck.union(cl))
-            if not self._frontier.contains_state():
+            if not self._frontier.contains_state(vk):
                 self._frontier.add(vk)
 
             for vm in vk.get_back_propagation_set():

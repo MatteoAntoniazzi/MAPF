@@ -1,11 +1,11 @@
 from Utilities.MAPFSolver import MAPFSolver
+from Utilities.StatesQueue import StatesQueue
 from Utilities.SingleAgentState import SingleAgentState
 from AStarMultiAgent.MultiAgentState import MultiAgentState
-from AStarMultiAgent.MultiAgentQueue import MultiAgentQueue
 from Heuristics.initialize_heuristics import *
 
 
-class AStarMultiAgent(MAPFSolver):
+class SolverAStarMultiAgent(MAPFSolver):
     def __init__(self, heuristics_str):
         super().__init__(heuristics_str)
         self._frontier = None
@@ -40,8 +40,8 @@ class AStarMultiAgent(MAPFSolver):
 
     def initialize_problem(self, problem_instance):
         self._heuristics = initialize_heuristics(self._heuristics_str, problem_instance)
-        self._frontier = MultiAgentQueue()
-        self._closed_list = MultiAgentQueue()
+        self._frontier = StatesQueue()
+        self._closed_list = StatesQueue()
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 

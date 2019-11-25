@@ -1,6 +1,11 @@
+"""
+This class represent the single state (node) object for the M* algorithm.
+The state is a multi agent state, so it stores all the single agent states (the positions and time step of each agent),
+and in addition it keeps a collision set, which contains the agents that has a conflict in that node or in one of his
+successors, and a back propagation set, which contains the set of state where back propagate the collision set.
+"""
 from Utilities.State import State
 from Utilities.SingleAgentState import SingleAgentState
-
 import itertools
 
 
@@ -16,12 +21,22 @@ class MStarState(State):
         self.compute_heuristics()
 
     def get_paths_to_parent(self):
+        """
+        Compute and return the list of paths for each agent.
+        """
         paths = []
         for single_state in self._single_agents_states:
             paths.append(single_state.get_path_to_parent())
         return paths
 
     def expand(self, verbose=False):
+        """
+        Expand the current state. For each single state, if the corresponding agent is not in the collision set, the
+        next single state will be the one obtained by following the optimal policy, otherwise if it is in the collision
+        set all the possible moves will be considered for that agent.
+        Then these states are iterated in order to obtain all the possible multi agent state combinations.
+        :return: the list of possible next states.
+        """
         if verbose:
             print("Expansion in progress... COLLISIONS SET {:<24}".format(str(self._collisions_set)), end=" ")
 
@@ -55,20 +70,23 @@ class MStarState(State):
         return expanded_states
 
     def colliding_robots(self, multi_state):
+        """
+        Return the set of robots which collide in the given multi agent state.
+        Will be checked that:
+        1. no agents occupy the same position in the same time step;
+        2. no agent overlap (switch places).
+        """
         colliding_robots = set()
 
-        # Check not 2 states in the same position
         for i, next_state_i in enumerate(multi_state.get_single_agent_states()):
             for j, next_state_j in enumerate(multi_state.get_single_agent_states()):
                 if i != j and next_state_i.get_position() == next_state_j.get_position() and \
                         not next_state_i.is_completed() and not next_state_j.is_completed():
                     colliding_robots.add(i)
                     colliding_robots.add(j)
-
         current_positions = self.get_positions_list()
         next_positions = multi_state.get_positions_list()
 
-        # Check not overlapping. (Check no exists an agent that goes on an other agent previous position.
         for i, next_pos in enumerate(next_positions):
             for j, cur_pos in enumerate(current_positions):
                 if i != j:
@@ -79,9 +97,23 @@ class MStarState(State):
 
         return colliding_robots
 
-    def goal_test(self):    # If the agent is arrived into the goal state
+    def goal_test(self):
+        """
+        Return True if all agents have arrived to the goal position. Remember that it not consider the occupation time,
+        so if the agents will remain in the goal position for tot time step this will continue to occupy that position.
+        """
         for single_state in self._single_agents_states:
             if not single_state.goal_test():
+                return False
+        return True
+
+    def is_completed(self):
+        """
+        Return True if all agents have arrived to the goal position and stayed there for the time needed.
+        So, all the agents will have completed and will be disappeared.
+        """
+        for single_state in self._single_agents_states:
+            if not single_state.is_completed():
                 return False
         return True
 
@@ -96,12 +128,6 @@ class MStarState(State):
 
     def get_collisions_set(self):
         return self._collisions_set
-
-    def is_completed(self):    # If the agent is arrived into the goal state and stayed there for the time needed.
-        for single_state in self._single_agents_states:
-            if not single_state.is_completed():
-                return False
-        return True
 
     def compute_heuristics(self):
         self._h = 0
@@ -135,12 +161,6 @@ class MStarState(State):
 
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]
-
-    def print_infos(self):
-        print("gValue=", self.g_value(), "hValue=", self.h_value(), "fValue=", self.f_value(), end=' ')
-        for agent_state in self._single_agents_states:
-            print(" ID:", agent_state.get_agent_id(), " POS:", agent_state.get_position(), end=' ')
-        print('')
 
     def equal_positions(self, other):
         assert isinstance(other, MStarState)

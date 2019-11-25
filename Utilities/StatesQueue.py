@@ -1,26 +1,25 @@
-from MStar.MStarState import MStarState
+"""
+Structure used as queue of states.
+"""
 
 
-class MStarQueue:
+class StatesQueue:
     def __init__(self):
         self._queue = []
 
     def contains_state(self, item):
-        assert isinstance(item, MStarState)
         for state in self._queue:
             if state.equal(item):
                 return True
         return False
 
     def contains_state_same_positions(self, item):
-        assert isinstance(item, MStarState)
         for state in self._queue:
             if state.equal_positions(item):
                 return True
         return False
 
     def add(self, item):
-        assert isinstance(item, MStarState)
         self._queue.append(item)
 
     def add_list_of_states(self, state_list):
@@ -36,7 +35,6 @@ class MStarQueue:
         return len(self._queue)
 
     def sort_by_f_value(self):
-        # self._queue.sort(key=lambda x: (x.f_value(), -x.time_step()), reverse=False)
         self._queue.sort(key=lambda x: x.f_value(), reverse=False)
 
     def __str__(self):

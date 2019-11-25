@@ -1,8 +1,7 @@
-import itertools
-
-from AStar import AStar
 from IncreasingCostTreeSearch.MDD import MDD
+from Utilities.AStar import AStar
 from Utilities.macros import *
+import itertools
 
 
 class IncreasingCostTreeNode:
@@ -71,15 +70,6 @@ class IncreasingCostTreeNode:
 
         return True
 
-    def is_goal(self):
-        return self._solution is not None
-
-    def solution(self):
-        return self._solution
-
-    def path_costs_vector(self):
-        return self._path_costs_vector
-
     def compute_root_path_costs_vector(self):
         path_costs_vector = []
         solver = AStar(self._heuristics_str)
@@ -88,6 +78,15 @@ class IncreasingCostTreeNode:
             cost = len(path) - GOAL_OCCUPATION_TIME
             path_costs_vector.append(cost)
         return path_costs_vector
+
+    def is_goal(self):
+        return self._solution is not None
+
+    def solution(self):
+        return self._solution
+
+    def path_costs_vector(self):
+        return self._path_costs_vector
 
     def total_cost(self):
         return sum(self._path_costs_vector)

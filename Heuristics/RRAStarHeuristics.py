@@ -1,6 +1,6 @@
 from Heuristics.Heuristics import Heuristics
 from Heuristics.ManhattanHeuristics import ManhattanHeuristics
-from States.SingleAgentState import SingleAgentState
+from AStarMultiAgent.SingleAgentState import SingleAgentState
 from QueueStructures.SingleAgentQueue import SingleAgentQueue
 
 

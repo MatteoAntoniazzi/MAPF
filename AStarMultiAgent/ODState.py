@@ -1,4 +1,4 @@
-from States.MultiAgentState import MultiAgentState
+from AStarMultiAgent.MultiAgentState import MultiAgentState
 
 
 class ODState(MultiAgentState):

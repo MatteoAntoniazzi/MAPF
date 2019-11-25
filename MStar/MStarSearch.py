@@ -1,7 +1,7 @@
-from Solvers.MAPFSolver import MAPFSolver
+from Utilities.MAPFSolver import MAPFSolver
 from MStar.MStarQueue import MStarQueue
 from MStar.MStarState import MStarState
-from States.SingleAgentState import SingleAgentState
+from AStarMultiAgent.SingleAgentState import SingleAgentState
 from Heuristics.initialize_heuristics import initialize_heuristics
 
 

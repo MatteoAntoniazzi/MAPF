@@ -1,4 +1,4 @@
-from Solvers.MAPFSolver import MAPFSolver
+from Utilities.MAPFSolver import MAPFSolver
 from Utilities.ProblemInstance import ProblemInstance
 from Utilities.macros import *
 

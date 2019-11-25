@@ -1,5 +1,5 @@
 from Heuristics.initialize_heuristics import initialize_heuristics
-from States.SingleAgentState import SingleAgentState
+from AStarMultiAgent.SingleAgentState import SingleAgentState
 from QueueStructures.SingleAgentQueue import SingleAgentQueue
 from QueueStructures.PositionClosedList import PositionClosedList
 from Utilities.Agent import Agent

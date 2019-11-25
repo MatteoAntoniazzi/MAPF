@@ -1,4 +1,4 @@
-from AStar import AStar
+from Utilities.AStar import AStar
 from Utilities.macros import *
 
 
@@ -17,9 +17,6 @@ class ConstraintTreeNode:
             self._transactional_constraints = set()
         else:
             self._transactional_constraints = transactional_constraints
-
-        # self._solution = self.low_level_search()  # paths
-
 
         if agent_to_recompute is None:
             self._solution = self.low_level_search()  # paths
@@ -58,24 +55,6 @@ class ConstraintTreeNode:
                                                  agent_transactional_constraints)
 
         return path
-
-    def calculate_cost(self):
-        return sum([len(path)-GOAL_OCCUPATION_TIME for path in self._solution])
-
-    def total_cost(self):
-        return self._total_cost
-
-    def total_time(self):
-        return max([len(path)-1 for path in self._solution])
-
-    def constraints(self):
-        return self._constraints
-
-    def transactional_constraints(self):
-        return self._transactional_constraints
-
-    def solution(self):
-        return self._solution
 
     def check_conflicts(self):
         """
@@ -141,6 +120,24 @@ class ConstraintTreeNode:
                                         previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self,
                                         heuristics_str=self._heuristics_str)
         return [node_a, node_b]
+
+    def calculate_cost(self):
+        return sum([len(path)-GOAL_OCCUPATION_TIME for path in self._solution])
+
+    def total_cost(self):
+        return self._total_cost
+
+    def total_time(self):
+        return max([len(path)-1 for path in self._solution])
+
+    def constraints(self):
+        return self._constraints
+
+    def transactional_constraints(self):
+        return self._transactional_constraints
+
+    def solution(self):
+        return self._solution
 
     def __str__(self):
         string = '[Constraints:' + str(self._constraints) + \

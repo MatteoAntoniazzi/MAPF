@@ -1,4 +1,4 @@
-from States.SingleAgentState import SingleAgentState
+from AStarMultiAgent.SingleAgentState import SingleAgentState
 
 
 class SingleAgentQueue:

@@ -1,5 +1,5 @@
-from Solvers.MAPFSolver import MAPFSolver
-from AStar import AStar
+from Utilities.MAPFSolver import MAPFSolver
+from Utilities.AStar import AStar
 from Utilities.macros import *
 
 

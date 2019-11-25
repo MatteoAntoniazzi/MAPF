@@ -27,6 +27,3 @@ class IncreasingCostTreeQueue:
 
     def size(self):
         return len(self._queue)
-
-    def add_list_of_nodes(self, node_list):
-        self._queue.extend(node_list)

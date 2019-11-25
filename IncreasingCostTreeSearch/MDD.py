@@ -1,5 +1,5 @@
 from IncreasingCostTreeSearch.MDDNode import MDDNode
-from QueueStructures.MDDQueue import MDDQueue
+from IncreasingCostTreeSearch.MDDQueue import MDDQueue
 
 
 class MDD:

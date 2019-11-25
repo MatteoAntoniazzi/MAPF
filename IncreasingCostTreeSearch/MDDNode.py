@@ -1,4 +1,4 @@
-from Utilities.macros import GOAL_OCCUPATION_TIME
+from Utilities.macros import *
 
 
 class MDDNode:

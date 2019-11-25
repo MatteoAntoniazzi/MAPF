@@ -1,6 +1,6 @@
-from Solvers.MAPFSolver import MAPFSolver
+from Utilities.MAPFSolver import MAPFSolver
 from IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
-from QueueStructures.IncreasingCostTreeQueue import IncreasingCostTreeQueue
+from IncreasingCostTreeSearch.IncreasingCostTreeQueue import IncreasingCostTreeQueue
 
 
 class IncreasingCostTreeSearch(MAPFSolver):
@@ -33,6 +33,8 @@ class IncreasingCostTreeSearch(MAPFSolver):
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 self._n_of_loops += 1
                 self._frontier.add_list_of_nodes(expanded_nodes)
+
+        return []
 
     def initialize_problem(self, problem_instance):
         self._frontier = IncreasingCostTreeQueue()

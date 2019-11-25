@@ -2,16 +2,11 @@ from Utilities.read_map_and_scenario import *
 from Utilities.ProblemInstance import *
 from Utilities.Agent import *
 from Utilities.Map import *
-from Solvers.AStarSingleAgent import AStarSingleAgent
-from Solvers.AStarMultiAgent import AStarMultiAgent
-from Solvers.AStarOD import AStarOD
-from Solvers.CooperativeAStar import CooperativeAStar
-from Solvers.IndependenceDetection import IndependenceDetection
-from ConflictBasedSearch.ConflictBasedSearch import ConflictBasedSearch
-from IncreasingCostTreeSearch.IncreasingCostTreeSearch import IncreasingCostTreeSearch
-from MStar.MStarSearch import MStarSearch
-
+from AStarMultiAgent.SolverAStarMultiAgent import AStarMultiAgent
+from ConflictBasedSearch.SolverConflictBasedSearch import ConflictBasedSearch
+from IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import IncreasingCostTreeSearch
 import time
+
 
 
 args = setup_args()
@@ -32,7 +27,7 @@ problem_instance = ProblemInstance(map, agents)
 start_time = time.time()
 
 # solver = IndependenceDetection(ConflictBasedSearch("RRA"))
-solver = MStarSearch("RRA")
+solver = ConflictBasedSearch("RRA")
 paths = solver.solve(problem_instance, verbose=True)
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

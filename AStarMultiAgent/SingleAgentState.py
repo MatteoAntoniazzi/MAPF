@@ -52,7 +52,7 @@ class SingleAgentState(State):
         return next_node
 
     def get_next_optimal_state(self):
-        from AStar import AStar
+        from Utilities.AStar import AStar
         solver = AStar()
         path = solver.find_path(self._map, self._position, self._goal)
         next_pos = path[1]

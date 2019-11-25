@@ -37,7 +37,6 @@ class CooperativeAStar(MAPFSolver):
             solver = AStar(self._heuristics_str)
             path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(),
                                                            agent.get_goal(), self._reservation_table)
-
             paths.append(path)
 
             for j, pos in enumerate(path):

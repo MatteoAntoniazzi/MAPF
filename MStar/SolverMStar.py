@@ -1,8 +1,8 @@
 from Utilities.MAPFSolver import MAPFSolver
+from Utilities.SingleAgentState import SingleAgentState
+from Heuristics.initialize_heuristics import initialize_heuristics
 from MStar.MStarQueue import MStarQueue
 from MStar.MStarState import MStarState
-from AStarMultiAgent.SingleAgentState import SingleAgentState
-from Heuristics.initialize_heuristics import initialize_heuristics
 
 
 class MStarSearch(MAPFSolver):

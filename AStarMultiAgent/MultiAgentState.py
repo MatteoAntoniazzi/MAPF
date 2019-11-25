@@ -1,5 +1,5 @@
-from States.State import State
-from AStarMultiAgent.SingleAgentState import SingleAgentState
+from Utilities.State import State
+from Utilities.SingleAgentState import SingleAgentState
 
 import itertools
 

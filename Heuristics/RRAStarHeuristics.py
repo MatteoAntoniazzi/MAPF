@@ -1,7 +1,7 @@
 from Heuristics.Heuristics import Heuristics
 from Heuristics.ManhattanHeuristics import ManhattanHeuristics
-from AStarMultiAgent.SingleAgentState import SingleAgentState
-from QueueStructures.SingleAgentQueue import SingleAgentQueue
+from Utilities.SingleAgentState import SingleAgentState
+from Utilities.SingleAgentQueue import SingleAgentQueue
 
 
 class RRAStarHeuristics(Heuristics):

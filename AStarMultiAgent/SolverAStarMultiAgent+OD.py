@@ -1,6 +1,6 @@
 from Utilities.MAPFSolver import MAPFSolver
 from AStarMultiAgent.ODState import ODState
-from AStarMultiAgent.SingleAgentState import SingleAgentState
+from Utilities.SingleAgentState import SingleAgentState
 from AStarMultiAgent.MultiAgentQueue import MultiAgentQueue
 from Heuristics.initialize_heuristics import initialize_heuristics
 

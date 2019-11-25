@@ -1,6 +1,10 @@
+"""
+This class represent the single state (node) object for the A* algorithm.
+It is a subclass of the state Class and in addition it stores all the single agent states
+(the positions and time step) of each agent.
+"""
 from Utilities.State import State
 from Utilities.SingleAgentState import SingleAgentState
-
 import itertools
 
 
@@ -14,12 +18,20 @@ class MultiAgentState(State):
         self.compute_heuristics()
 
     def get_paths_to_parent(self):
+        """
+        Compute and return the list of paths for each agent.
+        """
         paths = []
         for single_state in self._single_agents_states:
             paths.append(single_state.get_path_to_parent())
         return paths
 
     def expand(self, verbose=False):
+        """
+        Expand the current state. For each single state it computes all the possible moves for that agent.
+        Then these states are iterated in order to obtain all the possible multi agent state combinations.
+        :return: the list of possible next states.
+        """
         if verbose:
             print("Expansion in progress...", end=' ')
 
@@ -48,16 +60,20 @@ class MultiAgentState(State):
         return free_conflict_states
 
     def is_conflict(self, multi_state):
+        """
+        Return True if a conflict occur in the given multi agent state.
+        Will be checked that:
+        1. no agents occupy the same position in the same time step;
+        2. no agent overlap (switch places).
+        """
         current_positions = self.get_positions_list()
         next_positions = multi_state.get_positions_list()
 
         next_active_positions = multi_state.get_active_positions_list()
 
-        # Check not 2 states in the same position
         if len(next_active_positions) != len(set(next_active_positions)):
             return True
 
-        # Check not overlapping. (Check no exists an agent that goes on an other agent previous position.
         for i, next_pos in enumerate(next_positions):
             for j, cur_pos in enumerate(current_positions):
                 if i != j:
@@ -66,13 +82,21 @@ class MultiAgentState(State):
                             return True
         return False
 
-    def goal_test(self):    # If the agent is arrived into the goal state
+    def goal_test(self):
+        """
+        Return True if all agents have arrived to the goal position. Remember that it not consider the occupation time,
+        so if the agents will remain in the goal position for tot time step this will continue to occupy that position.
+        """
         for single_state in self._single_agents_states:
             if not single_state.goal_test():
                 return False
         return True
 
-    def is_completed(self):    # If the agent is arrived into the goal state and stayed there for the time needed.
+    def is_completed(self):
+        """
+        Return True if all agents have arrived to the goal position and stayed there for the time needed.
+        So, all the agents will have completed and will be disappeared.
+        """
         for single_state in self._single_agents_states:
             if not single_state.is_completed():
                 return False
@@ -145,16 +169,3 @@ def is_valid(multi_state):
     for s in multi_state:
         assert isinstance(s, SingleAgentState)
     return True
-
-
-# start_time = time.time()
-# start_time_print_batch = start_time
-#
-# if (time.time() - start_time_print_batch) > 5:
-#     print("Processed {} ( {:.2f}% ) in {:.2f} minutes.".format(
-#         single_state.get_agent_id(),
-#         100.0 * float(single_state.get_agent_id()) / len(self._single_agents_states),
-#         (time.time() - start_time) / 60, ))
-#     sys.stdout.flush()
-#     sys.stderr.flush()
-#     start_time_print_batch = time.time()

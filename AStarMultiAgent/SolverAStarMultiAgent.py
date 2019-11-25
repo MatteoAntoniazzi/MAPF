@@ -1,3 +1,6 @@
+"""
+Classical A* multi agent algorithm. It is complete and optimal.
+"""
 from Utilities.MAPFSolver import MAPFSolver
 from Utilities.StatesQueue import StatesQueue
 from Utilities.SingleAgentState import SingleAgentState
@@ -39,6 +42,9 @@ class SolverAStarMultiAgent(MAPFSolver):
         return []
 
     def initialize_problem(self, problem_instance):
+        """
+        Initialize the frontier and the heuristic for the given problem.
+        """
         self._heuristics = initialize_heuristics(self._heuristics_str, problem_instance)
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()

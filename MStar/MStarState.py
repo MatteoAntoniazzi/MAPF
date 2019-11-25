@@ -1,6 +1,6 @@
 """
 This class represent the single state (node) object for the M* algorithm.
-The state is a multi agent state, so it stores all the single agent states (the positions and time step of each agent),
+The state is a multi agent state, so it stores all the single agent states (the positions and time step) of each agent,
 and in addition it keeps a collision set, which contains the agents that has a conflict in that node or in one of his
 successors, and a back propagation set, which contains the set of state where back propagate the collision set.
 """

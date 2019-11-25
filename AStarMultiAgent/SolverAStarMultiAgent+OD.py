@@ -1,3 +1,9 @@
+"""
+A* multi agent algorithm with Operator Decomposition.
+Agents are considered one at a time and a state requires n operators to advance to the next time step.
+An operator in this representation consists of assigning a move to the next unassigned agent in a fixed order,
+leaving the moves of the remaining agents to descendant nodes within the same search.
+"""
 from Utilities.MAPFSolver import MAPFSolver
 from AStarMultiAgent.ODState import ODState
 from Utilities.SingleAgentState import SingleAgentState
@@ -41,6 +47,9 @@ class SolverAStarOD(MAPFSolver):
         return []
 
     def initialize_problem(self, problem_instance):
+        """
+        Initialize the frontier and the heuristic for the given problem.
+        """
         self._heuristics = initialize_heuristics(self._heuristics_str, problem_instance)
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()

@@ -16,7 +16,7 @@ from Utilities.MAPFSolver import MAPFSolver
 from Utilities.SingleAgentState import SingleAgentState
 from Heuristics.initialize_heuristics import initialize_heuristics
 from Utilities.StatesQueue import StatesQueue
-from MStar.MStarState import MStarState
+from SearchBasedAlgorithms.MStar.MStarState import MStarState
 
 
 class SolverMStar(MAPFSolver):

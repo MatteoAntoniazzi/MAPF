@@ -2,10 +2,7 @@ from Utilities.read_map_and_scenario import *
 from Utilities.ProblemInstance import *
 from Utilities.Agent import *
 from Utilities.Map import *
-from AStarMultiAgent.SolverAStarMultiAgent import SolverAStarMultiAgent
-from ConflictBasedSearch.SolverConflictBasedSearch import ConflictBasedSearch
-from IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
-from MStar.SolverMStar import SolverMStar
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
 import time
 
 

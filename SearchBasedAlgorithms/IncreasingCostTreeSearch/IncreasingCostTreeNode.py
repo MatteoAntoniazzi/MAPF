@@ -3,7 +3,7 @@ This class represent a node of the Increasing Cost Tree.
 Every node s consists of a k-vector of individual path costs, s = [C 1 , C 2 , . . . C k ] one cost per agent. Node s
 represents all possible complete solutions in which the cost of the individual path of agent a i is exactly C i.
 """
-from IncreasingCostTreeSearch.MDD import MDD
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDD import MDD
 from Utilities.AStar import AStar
 from Utilities.macros import *
 import itertools

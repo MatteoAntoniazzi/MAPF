@@ -6,8 +6,8 @@ ICTS algorithm is a complete and optimal algorithm. It works in a two level way:
 - The low-level performs a goal test on each of these tree nodes.
 """
 from Utilities.MAPFSolver import MAPFSolver
-from IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
-from IncreasingCostTreeSearch.IncreasingCostTreeQueue import IncreasingCostTreeQueue
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.IncreasingCostTreeQueue import IncreasingCostTreeQueue
 
 
 class SolverIncreasingCostTreeSearch(MAPFSolver):

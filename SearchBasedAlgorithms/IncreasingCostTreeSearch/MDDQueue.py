@@ -1,7 +1,7 @@
 """
 Structure used as queue for the MDD nodes.
 """
-from IncreasingCostTreeSearch.MDDNode import MDDNode
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDDNode import MDDNode
 
 
 class MDDQueue:

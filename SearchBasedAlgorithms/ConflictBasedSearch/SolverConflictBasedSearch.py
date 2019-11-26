@@ -5,8 +5,8 @@ CBS works in two levels. At the high level conflicts are found and constraints a
 agents paths to be consistent with the new constraints.
 """
 from Utilities.MAPFSolver import MAPFSolver
-from ConflictBasedSearch.ConstraintTreeNode import ConstraintTreeNode
-from ConflictBasedSearch.ConstraintTreeNodesQueue import ConstraintTreeNodesQueue
+from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNode import ConstraintTreeNode
+from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNodesQueue import ConstraintTreeNodesQueue
 
 
 class ConflictBasedSearch(MAPFSolver):

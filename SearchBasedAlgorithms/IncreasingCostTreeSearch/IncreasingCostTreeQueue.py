@@ -1,22 +1,22 @@
 """
-Structure used as queue for the Constraint Tree Nodes.
+Structure used as queue for the Increasing Cost Tree Nodes.
 """
-from ConflictBasedSearch.ConstraintTreeNode import ConstraintTreeNode
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
 
 
-class ConstraintTreeNodesQueue:
+class IncreasingCostTreeQueue:
     def __init__(self):
         self._queue = []
 
     def contains_node(self, item):
-        assert isinstance(item, ConstraintTreeNode)
+        assert isinstance(item, IncreasingCostTreeNode)
         for node in self._queue:
-            if node.constraints() == item.constraints():
+            if item.path_costs_vector() == node.path_costs_vector():
                 return True
         return False
 
     def add(self, item):
-        assert isinstance(item, ConstraintTreeNode)
+        assert isinstance(item, IncreasingCostTreeNode)
         self._queue.append(item)
 
     def add_list_of_nodes(self, node_list):
@@ -30,6 +30,3 @@ class ConstraintTreeNodesQueue:
 
     def size(self):
         return len(self._queue)
-
-    def sort_by_total_cost(self):
-        self._queue.sort(key=lambda x: x.total_cost(), reverse=False)

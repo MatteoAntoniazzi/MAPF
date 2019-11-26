@@ -1,8 +1,8 @@
 """
 Multi-value decision diagram (MDD) for a single agent. It is represented by a list of paths from the start to the goal.
 """
-from IncreasingCostTreeSearch.MDDNode import MDDNode
-from IncreasingCostTreeSearch.MDDQueue import MDDQueue
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDDNode import MDDNode
+from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDDQueue import MDDQueue
 
 
 class MDD:

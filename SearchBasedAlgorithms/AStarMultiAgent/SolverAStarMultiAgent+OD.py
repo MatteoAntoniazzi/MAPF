@@ -1,14 +1,17 @@
 """
-Classical A* multi agent algorithm. It is complete and optimal.
+A* multi agent algorithm with Operator Decomposition.
+Agents are considered one at a time and a state requires n operators to advance to the next time step.
+An operator in this representation consists of assigning a move to the next unassigned agent in a fixed order,
+leaving the moves of the remaining agents to descendant nodes within the same search.
 """
 from Utilities.MAPFSolver import MAPFSolver
-from Utilities.StatesQueue import StatesQueue
+from SearchBasedAlgorithms.AStarMultiAgent.ODState import ODState
 from Utilities.SingleAgentState import SingleAgentState
-from AStarMultiAgent.MultiAgentState import MultiAgentState
-from Heuristics.initialize_heuristics import *
+from Heuristics.initialize_heuristics import initialize_heuristics
+from Utilities.StatesQueue import StatesQueue
 
 
-class SolverAStarMultiAgent(MAPFSolver):
+class SolverAStarOD(MAPFSolver):
     def __init__(self, heuristics_str):
         super().__init__(heuristics_str)
         self._frontier = None
@@ -18,7 +21,8 @@ class SolverAStarMultiAgent(MAPFSolver):
 
     def solve(self, problem_instance, verbose=False, print_output=True):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
+        Solve the MAPF problem using the A* algorithm with Operator Decomposition returning the paths as lists of list
+        of (x, y) positions.
         """
         self.initialize_problem(problem_instance)
 
@@ -33,7 +37,8 @@ class SolverAStarMultiAgent(MAPFSolver):
                 return cur_state.get_paths_to_parent()
 
             if not self._closed_list.contains_state(cur_state):
-                self._closed_list.add(cur_state)
+                if cur_state.is_a_standard_state():
+                    self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
                 self._n_of_expanded_nodes += len(expanded_nodes)
                 self._n_of_loops += 1
@@ -54,8 +59,8 @@ class SolverAStarMultiAgent(MAPFSolver):
         single_agents_states = []
         for i, agent in enumerate(problem_instance.get_agents()):
             s = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(), agent.get_start(), 0,
-                                 self._heuristics)
+                                 heuristics=self._heuristics)
             single_agents_states.append(s)
 
-        starter_state = MultiAgentState(problem_instance, single_agents_states, self._heuristics)
+        starter_state = ODState(problem_instance, single_agents_states, self._heuristics)
         self._frontier.add(starter_state)

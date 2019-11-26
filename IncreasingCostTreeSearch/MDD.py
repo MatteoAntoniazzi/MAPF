@@ -1,3 +1,6 @@
+"""
+Multi-value decision diagram (MDD) for a single agent. It is represented by a list of paths from the start to the goal.
+"""
 from IncreasingCostTreeSearch.MDDNode import MDDNode
 from IncreasingCostTreeSearch.MDDQueue import MDDQueue
 
@@ -12,6 +15,9 @@ class MDD:
         self.build_mdd()
 
     def build_mdd(self):
+        """
+        Multi-value decision diagram for the specific agent.
+        """
         root = MDDNode(self._map, self._agent.get_start())
         self._nodes.add(root)
 

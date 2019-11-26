@@ -1,3 +1,9 @@
+"""
+This class represents a single node of the constraint tree. It contains a set of constraints that the solution must
+respect. In addition, there's also a set of transactional constraints in order to avoid that the move where two agents
+switch places is not allowed. The attributes previous solution and agent_to_recompute are used to speed up the process
+and avoid to recompute each time the path for each agent.
+"""
 from Utilities.AStar import AStar
 from Utilities.macros import *
 
@@ -28,15 +34,21 @@ class ConstraintTreeNode:
         self._total_cost = self.calculate_cost()
 
     def low_level_search(self):
+        """
+        Low level search. For every agent it searches a possible valid path using A* which doesn't violate the set of
+        constraints.
+        """
         solution = []
-        # Low level search considering the Constraints
         for agent in self._problem_instance.get_agents():
             path = self.single_agent_low_level_search(agent)
             solution.append(path)
         return solution
 
     def single_agent_low_level_search(self, agent):
-
+        """
+        Low level search for a single agent. It searches a possible valid path using A* which doesn't violate the set
+        of constraints.
+        """
         agent_constraints = []
         for constraint in self._constraints:
             agent_id, pos, ts = constraint
@@ -67,7 +79,7 @@ class ConstraintTreeNode:
         for ag_i, path in enumerate(self._solution):
             for ts, pos in enumerate(path):
                 if reservation_table.get((pos, ts)) is not None:
-                    return 'INPLACE', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]  # [(ai, v, t), (aj, v, t)]
+                    return 'INPLACE', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]
                 reservation_table[(pos, ts)] = ag_i
 
         for ag_i, path in enumerate(self._solution):
@@ -79,9 +91,13 @@ class ConstraintTreeNode:
                             return 'TRANSACTIONAL', [(ag_j, self._solution[ag_j][ts-1], self._solution[ag_j][ts], ts),
                                                      (ag_i, path[ts-1], path[ts], ts)]
         return None
-    # This code returns at most 2 agents. We can do the version with more agents but it's similar
 
     def expand(self):
+        """
+        Expand the current state. It generates the two child nodes, once with the conflict constraint added to the first
+        agent and the other with the conflict constraint added to the second agent involved in the conflict.
+        :return: the two possible next states.
+        """
         conflict_type, constraints = self.check_conflicts()
 
         node_a, node_b = None, None

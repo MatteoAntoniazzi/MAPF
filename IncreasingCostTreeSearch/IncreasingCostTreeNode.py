@@ -18,7 +18,7 @@ class IncreasingCostTreeNode:
         if parent is None:
             self._path_costs_vector = self.compute_root_path_costs_vector()
         else:
-            self._path_costs_vector = path_costs_vector     # [C1, C2, C3, ...]
+            self._path_costs_vector = path_costs_vector
 
         self._solution = None
         self._mdd_vector = self.compute_mdds()

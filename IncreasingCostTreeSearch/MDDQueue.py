@@ -1,3 +1,6 @@
+"""
+Structure used as queue for the MDD nodes.
+"""
 from IncreasingCostTreeSearch.MDDNode import MDDNode
 
 

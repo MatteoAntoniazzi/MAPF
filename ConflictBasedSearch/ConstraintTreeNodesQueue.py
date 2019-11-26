@@ -1,3 +1,6 @@
+"""
+Structure used as queue for the Constraint Tree Nodes.
+"""
 from ConflictBasedSearch.ConstraintTreeNode import ConstraintTreeNode
 
 

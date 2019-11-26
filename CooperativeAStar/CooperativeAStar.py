@@ -27,6 +27,10 @@ class CooperativeAStar(MAPFSolver):
         self._reservation_table = None
 
     def solve(self, problem_instance, verbose=False, print_output=True):
+        """
+        Solve the MAPF problem using the Cooperative A* algorithm returning the paths as lists of list of (x, y)
+        positions.
+        """
         self._reservation_table = dict()
         paths = []
 
@@ -45,5 +49,6 @@ class CooperativeAStar(MAPFSolver):
                 self._reservation_table[pos].append(j)
 
         if print_output:
-            print("Total time: ", max([len(path)-1 for path in paths]), " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
+            print("Total time: ", max([len(path)-1 for path in paths]),
+                  " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
         return paths

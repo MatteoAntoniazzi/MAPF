@@ -1,3 +1,6 @@
+"""
+Structure used as queue for the Increasing Cost Tree Nodes.
+"""
 from IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
 
 

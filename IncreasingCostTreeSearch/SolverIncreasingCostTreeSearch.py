@@ -1,9 +1,16 @@
+"""
+ICTS algorithm is a complete and optimal algorithm. It works in a two level way:
+- The high-level performs a search on a new search tree called increasing cost tree (ICT). Each node in the ICT consists
+  of a k-vector [C 1 , C 2 , . . . C k ] which represents all possible solutions in which the cost of the individual
+  path of each agent a i is exactly C i.
+- The low-level performs a goal test on each of these tree nodes.
+"""
 from Utilities.MAPFSolver import MAPFSolver
 from IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
 from IncreasingCostTreeSearch.IncreasingCostTreeQueue import IncreasingCostTreeQueue
 
 
-class IncreasingCostTreeSearch(MAPFSolver):
+class SolverIncreasingCostTreeSearch(MAPFSolver):
     def __init__(self, heuristics_str):
         super().__init__(heuristics_str)
         self._frontier = None
@@ -12,6 +19,9 @@ class IncreasingCostTreeSearch(MAPFSolver):
         self._n_of_loops = 0
 
     def solve(self, problem_instance, verbose=False, print_output=True):
+        """
+        Solve the MAPF problem using the ICTS algorithm returning the paths as lists of list of (x, y) positions.
+        """
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
@@ -37,6 +47,9 @@ class IncreasingCostTreeSearch(MAPFSolver):
         return []
 
     def initialize_problem(self, problem_instance):
+        """
+        Initialize the frontier and the closed list for the given problem.
+        """
         self._frontier = IncreasingCostTreeQueue()
         self._closed_list = IncreasingCostTreeQueue()
         self._n_of_expanded_nodes = 0

@@ -21,8 +21,8 @@ class SolverAStarOD(MAPFSolver):
 
     def solve(self, problem_instance, verbose=False, print_output=True):
         """
-        Solve the MAPF problem using the A* algorithm with Operator Decomposition returning the path as list of (x, y)
-        positions.
+        Solve the MAPF problem using the A* algorithm with Operator Decomposition returning the paths as lists of list
+        of (x, y) positions.
         """
         self.initialize_problem(problem_instance)
 

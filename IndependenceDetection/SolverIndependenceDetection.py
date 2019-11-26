@@ -1,3 +1,18 @@
+"""
+ID is an algorithm that is used in conjunction with a complete search algorithm such as A*, OD (Standley 2010), or
+ICTS (Sharon et al. 2011). Since these search algorithms are all exponential in the number of agents, they are effective
+only for small numbers of agents.
+In order to solve larger problems, ID partitions the agents into several smaller travel groups in such a way that the
+optimal paths found for each independent travel group do not conflict with the paths of other travel groups. Therefore,
+the paths for all travel groups constitute a solution to the entire problem.
+
+In simple words it works like this:
+1. Solve optimally each agent separately
+2. While some agents conflict
+    2.1. Try to avoid conflict, with the same cost (NOT IMPLEMENTED HERE)
+    2.2. Merge conflicting agents to one group
+    2.3. Solve optimally new group
+"""
 from Utilities.MAPFSolver import MAPFSolver
 from Utilities.ProblemInstance import ProblemInstance
 from Utilities.macros import *
@@ -11,6 +26,13 @@ class IndependenceDetection(MAPFSolver):
         self._paths = []
 
     def solve(self, problem_instance, verbose=False, print_output=True):
+        """
+        Solve the MAPF problem using the desired algorithm with Independence detection, returning the path as lists of
+        list of (x, y) positions.
+        It starts considering each agent as a singleton group, and each time a conflict between 2 groups occur it merges
+        them into a new group and so the next time they will be solved together.
+        The time needed is exponential in the dimension of the largest group.
+        """
         if not self.initialize_paths(problem_instance):
             return False
 
@@ -26,6 +48,10 @@ class IndependenceDetection(MAPFSolver):
         return self._paths
 
     def initialize_paths(self, problem_instance):
+        """
+        Initialize the groups with singleton groups. The list problem will contains the single agent problem for each
+        agent. Solve the problems in this way and return the paths (with possible conflicts).
+        """
         for agent in problem_instance.get_agents():
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
@@ -39,11 +65,13 @@ class IndependenceDetection(MAPFSolver):
         return True
 
     def merge_group(self, conflicting_agents, problem_instance, verbose=False):
+        """
+        Merge the two agents into a new merged problem.
+        """
         new_problems = []
 
         j, k = conflicting_agents
 
-        # Get the problems with the 2 conflicted agents
         conflicting_problems = []
         for problem in self._problems:
             if j in problem.get_agents_id_list() or k in problem.get_agents_id_list():
@@ -66,6 +94,9 @@ class IndependenceDetection(MAPFSolver):
         self.update_paths()
 
     def update_paths(self):
+        """
+        Recompute the paths using the new problems configuration.
+        """
         for problem in self._problems:
             paths = self._solver.solve(problem, print_output=False)
             if not paths:
@@ -77,10 +108,8 @@ class IndependenceDetection(MAPFSolver):
 
     def check_conflicts(self):
         """
-        :return: the two paths (agents) that has a conflict
+        Return the two paths (agents) that has a conflict
         """
-        # largest_time_step = max([len(path) for path in self._paths])
-
         reservation_table = dict()
 
         for i, path in enumerate(self._paths):
@@ -91,7 +120,7 @@ class IndependenceDetection(MAPFSolver):
 
         for ag_i, path in enumerate(self._paths):
             for ts, pos in enumerate(path):
-                ag_j = reservation_table.get((pos, ts-1))  # Agent in the pos position at the previous time step
+                ag_j = reservation_table.get((pos, ts-1))
                 if ag_j is not None and ag_j != ag_i:
                     if len(self._paths[ag_j]) > ts:
                         if self._paths[ag_j][ts] == path[ts-1]:

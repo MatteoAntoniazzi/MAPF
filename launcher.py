@@ -4,7 +4,7 @@ from Utilities.Agent import *
 from Utilities.Map import *
 from AStarMultiAgent.SolverAStarMultiAgent import SolverAStarMultiAgent
 from ConflictBasedSearch.SolverConflictBasedSearch import ConflictBasedSearch
-from IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import IncreasingCostTreeSearch
+from IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
 from MStar.SolverMStar import SolverMStar
 import time
 
@@ -16,7 +16,7 @@ map_width, map_height, occupancy_list = load_map_file(args.map)
 print("Map loaded")
 
 print("Loading scenario file")
-agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 28)
+agents = load_scenario_file(args.scenario, occupancy_list, map_width, map_height, 10)
 print("Scenario loaded")
 
 map = Map(map_height, map_width, occupancy_list)
@@ -28,7 +28,7 @@ problem_instance = ProblemInstance(map, agents)
 start_time = time.time()
 
 # solver = IndependenceDetection(ConflictBasedSearch("RRA"))
-solver = SolverAStarMultiAgent("RRA")
+solver = SolverIncreasingCostTreeSearch("RRA")
 paths = solver.solve(problem_instance, verbose=True)
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

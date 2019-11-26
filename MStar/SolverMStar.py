@@ -28,7 +28,7 @@ class SolverMStar(MAPFSolver):
 
     def solve(self, problem_instance, verbose=False, print_output=True):
         """
-        Solve the MAPF problem using the M* algorithm returning the path as list of (x, y) positions.
+        Solve the MAPF problem using the M* algorithm returning the paths as lists of list of (x, y) positions.
         It start following the optimal policy and each time a conflict occur it updates the collision set and back
         propagate it to the ancestors. So, when the collision set is not empty it will considers for those agents all
         the possible moves.

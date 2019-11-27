@@ -15,7 +15,13 @@ class StatesQueue:
 
     def contains_state_same_positions(self, item):
         for state in self._queue:
-            if state.equal_positions(item):
+            if state.equal_position(item):
+                return True
+        return False
+
+    def contains_position(self, position):
+        for s in self._queue:
+            if s.get_position() == position:
                 return True
         return False
 
@@ -33,6 +39,12 @@ class StatesQueue:
 
     def size(self):
         return len(self._queue)
+
+    def get_state_by_position(self, position):
+        for s in self._queue:
+            if s.get_position() == position:
+                return s
+        return None
 
     def sort_by_f_value(self):
         self._queue.sort(key=lambda x: x.f_value(), reverse=False)

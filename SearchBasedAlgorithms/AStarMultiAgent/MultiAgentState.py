@@ -141,7 +141,7 @@ class MultiAgentState(State):
             print(" ID:", agent_state.get_agent_id(), " POS:", agent_state.get_position(), end=' ')
         print('')
 
-    def equal_positions(self, other):
+    def equal_position(self, other):
         assert isinstance(other, MultiAgentState)
         for i, single_state in enumerate(self._single_agents_states):
             if not single_state.equal_position(other.get_single_agent_states()[i]):

@@ -162,7 +162,7 @@ class MStarState(State):
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]
 
-    def equal_positions(self, other):
+    def equal_position(self, other):
         assert isinstance(other, MStarState)
         for i, single_state in enumerate(self._single_agents_states):
             if not single_state.equal_position(other.get_single_agent_states()[i]):

@@ -1,7 +1,7 @@
 from Heuristics.Heuristics import Heuristics
 from Heuristics.ManhattanHeuristics import ManhattanHeuristics
 from Utilities.SingleAgentState import SingleAgentState
-from Utilities.SingleAgentQueue import SingleAgentQueue
+from Utilities.StatesQueue import StatesQueue
 
 
 class RRAStarHeuristics(Heuristics):
@@ -42,8 +42,8 @@ class RRAStarHeuristics(Heuristics):
         for agent in self._problem_instance.get_agents():
             goal_pos = agent.get_goal()
 
-            self._open_lists[goal_pos] = SingleAgentQueue()
-            self._closed_lists[goal_pos] = SingleAgentQueue()
+            self._open_lists[goal_pos] = StatesQueue()
+            self._closed_lists[goal_pos] = StatesQueue()
 
             # Invert start with goal
             starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_start(),

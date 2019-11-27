@@ -1,9 +1,8 @@
 from Heuristics.initialize_heuristics import initialize_heuristics
-from Utilities.SingleAgentState import SingleAgentState
-from Utilities.SingleAgentQueue import SingleAgentQueue
-from Utilities.PositionClosedList import PositionClosedList
-from Utilities.Agent import Agent
 from Utilities.ProblemInstance import ProblemInstance
+from Utilities.SingleAgentState import SingleAgentState
+from Utilities.StatesQueue import StatesQueue
+from Utilities.Agent import Agent
 from Utilities.macros import *
 
 
@@ -34,7 +33,7 @@ class AStar:
                 return path
 
             if cur_state.get_position() not in self._closed_list_of_positions:
-                self._closed_list_of_positions.add(cur_state.get_position())
+                self._closed_list_of_positions.append(cur_state.get_position())
                 expanded_nodes = cur_state.expand()
                 self._frontier.add_list_of_states(expanded_nodes)
 
@@ -112,9 +111,9 @@ class AStar:
         problem_instance = ProblemInstance(map, [Agent(0, start_pos, goal_pos)])
         self._heuristics = initialize_heuristics(self._heuristics_str, problem_instance)
 
-        self._frontier = SingleAgentQueue()
-        self._closed_list = SingleAgentQueue()
-        self._closed_list_of_positions = PositionClosedList()
+        self._frontier = StatesQueue()
+        self._closed_list = StatesQueue()
+        self._closed_list_of_positions = []
 
         starter_state = SingleAgentState(map, 0, goal_pos, start_pos, 0, self._heuristics)
         self._frontier.add(starter_state)

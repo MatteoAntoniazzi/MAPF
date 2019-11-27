@@ -1,3 +1,7 @@
+"""
+Class representing a single agent state. It stores the agent position at a specific time step. As superclass of State it
+has a g-value, an h-value, and the sum f-value.
+"""
 from Utilities.State import State
 from Utilities.macros import *
 
@@ -16,6 +20,15 @@ class SingleAgentState(State):
         self.compute_heuristics()
 
     def expand(self, verbose=False):
+        """
+        Expand the current state. It computes the possible neighbour positions and creates a state for each new possible
+        position. In addition of the neighbours we add the possibility to remain in the same position, obviously the
+        time-step will be incremented and the cost of the wait move is equal to the cost to move, that is 1.
+        If the state is a goal state we start decrementing a variable which keep count of the time spent in the goal.
+        If the state is a goal state and the agent has been in the goal for the time needed (defined by
+        GOAL_OCCUPATION_TIME) the state is a completed state and the expansion return itself.
+        :return: the list of possible next states.
+        """
         if self.goal_test():
             if self.is_completed():
                 return [self.clone_state()]   # Time_step remain blocked so once arrived it doesn't block others
@@ -35,6 +48,13 @@ class SingleAgentState(State):
         return expanded_nodes_list
 
     def expand_optimal_policy(self):
+        """
+        Compute the next state if we follow the optimal policy, so without keep account of conflicts with other agents.
+        If the state is a goal state we start decrementing a variable which keep count of the time spent in the goal.
+        If the state is a goal state and the agent has been in the goal for the time needed (defined by
+        GOAL_OCCUPATION_TIME) the state is a completed state and the expansion return itself.
+        :return: the next state following the optimal policy
+        """
         if self.goal_test():
             if self.is_completed():
                 return self.clone_state()   # Time_step remain blocked so once arrived it doesn't block others
@@ -52,6 +72,10 @@ class SingleAgentState(State):
         return next_node
 
     def get_next_optimal_state(self):
+        """
+        Compute the next optimal state following the optimal policy.
+        :return: the next state following the optimal policy
+        """
         from Utilities.AStar import AStar
         solver = AStar()
         path = solver.find_path(self._map, self._position, self._goal)

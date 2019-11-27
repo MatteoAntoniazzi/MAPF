@@ -18,7 +18,7 @@ from Utilities.AStar import AStar
 from Utilities.macros import *
 
 
-class CooperativeAStar(MAPFSolver):
+class SolverCooperativeAStar(MAPFSolver):
     """
     With RRA as heuristics it became HierarchicalCooperativeA*
     """

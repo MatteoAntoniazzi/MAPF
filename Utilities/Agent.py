@@ -1,7 +1,7 @@
 class Agent(object):
-    def __init__(self, id, start, goal):
+    def __init__(self, id_agent, start, goal):
         """ start and goal are (x,y) in the map"""
-        self._id = id
+        self._id = id_agent
         self._start = start
         self._goal = goal
 

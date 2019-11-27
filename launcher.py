@@ -1,10 +1,11 @@
+from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarMultiAgent import SolverAStarMultiAgent
+from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
 from Utilities.read_map_and_scenario import *
 from Utilities.ProblemInstance import *
 from Utilities.Agent import *
 from Utilities.Map import *
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
 import time
-
 
 
 args = setup_args()
@@ -25,7 +26,7 @@ problem_instance = ProblemInstance(map, agents)
 start_time = time.time()
 
 # solver = IndependenceDetection(ConflictBasedSearch("RRA"))
-solver = SolverIncreasingCostTreeSearch("RRA")
+solver = SolverAStarMultiAgent("RRA")
 paths = solver.solve(problem_instance, verbose=True)
 
 print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))

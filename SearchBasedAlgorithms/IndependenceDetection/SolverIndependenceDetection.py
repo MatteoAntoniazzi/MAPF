@@ -18,7 +18,7 @@ from Utilities.ProblemInstance import ProblemInstance
 from Utilities.macros import *
 
 
-class IndependenceDetection(MAPFSolver):
+class SolverIndependenceDetection(MAPFSolver):
     def __init__(self, solver):
         super().__init__(None)
         self._solver = solver

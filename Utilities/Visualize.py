@@ -9,7 +9,8 @@ class Visualize:
         self._map = map
         self._agents = agents
         self.frame = Tk()
-        self.canvas = Canvas(self.frame, width=FRAME_WIDTH, height=FRAME_HEIGHT)
+        self._frame_width, self._frame_height = get_frame_dimension(map.get_height(), map.get_width())
+        self.canvas = Canvas(self.frame, width=self._frame_width, height=self._frame_height)
         self.canvas.grid()
         self.cell_h, self.cell_w = self.get_cell_size()
         self.vis_cells = np.zeros((self._map.get_height(), self._map.get_width()), dtype=int)
@@ -48,7 +49,7 @@ class Visualize:
                                                              FRAME_MARGIN + self.cell_h * (s_row + 1),
                                                              outline='black', fill=random_color))
             self.canvas.itemconfig(self.vis_cells[s_row][s_col], fill=random_color, width=1.5)
-            self.canvas.itemconfig(self.vis_cells[g_row][g_col], fill=random_color, width=1.5)
+            self.canvas.itemconfig(self.vis_cells[g_row][g_col], fill=random_color, stipple="gray50", width=1.5)
             self.canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w/2,
                                     FRAME_MARGIN + self.cell_h * s_row + self.cell_h/2, font=("Purisa", 12), text="S")
             self.canvas.create_text(FRAME_MARGIN + self.cell_w * g_col + self.cell_w/2,
@@ -58,7 +59,7 @@ class Visualize:
         for i, path in enumerate(paths):
             color = self.agents_colors[i]
             for p in path[1:-1]:
-                self.canvas.itemconfig(self.vis_cells[p[1]][p[0]], fill=color, width=1.5)
+                self.canvas.itemconfig(self.vis_cells[p[1]][p[0]], fill=color, stipple="", width=1.5)
 
     def draw_footsteps(self):
         self._footsteps = True
@@ -69,7 +70,7 @@ class Visualize:
 
     def animation_function(self):
         if self.animating:
-            self.frame.after(50, self.animation_function)
+            self.frame.after(SPEED, self.animation_function)
             for i, agent in enumerate(self.agents_ovals):
                 if self.steps_count[i] < N_OF_STEPS:
                     self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
@@ -79,11 +80,11 @@ class Visualize:
                     if self._footsteps:
                         color = self.agents_colors[i]
                         self.canvas.itemconfig(self.vis_cells[current_position[1]][current_position[0]],
-                                               fill=color, width=1.5)
+                                               fill=color, stipple="", width=1.5)
                     if self.path_to_visit[i]:
                         next_position = self.path_to_visit[i][0]
-                        self.x_moves[i] = int((next_position[0] - current_position[0]) * self.cell_w) / N_OF_STEPS
-                        self.y_moves[i] = int((next_position[1] - current_position[1]) * self.cell_h) / N_OF_STEPS
+                        self.x_moves[i] = float((next_position[0] - current_position[0]) * self.cell_w) / N_OF_STEPS
+                        self.y_moves[i] = float((next_position[1] - current_position[1]) * self.cell_h) / N_OF_STEPS
                         self.canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
                         self.steps_count[i] = 1
                 if not self.path_to_visit[i]:
@@ -92,8 +93,8 @@ class Visualize:
                 self.animating = False
 
     def get_cell_size(self):
-        avail_h = FRAME_HEIGHT - 2 * FRAME_MARGIN
-        avail_w = FRAME_WIDTH - 2 * FRAME_MARGIN
+        avail_h = self._frame_height - 2 * FRAME_MARGIN
+        avail_w = self._frame_width - 2 * FRAME_MARGIN
         n_rows, n_cols = self._map.get_height(), self._map.get_width()
         cell_h = avail_h / n_rows
         cell_w = avail_w / n_cols

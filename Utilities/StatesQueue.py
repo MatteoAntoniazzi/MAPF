@@ -46,6 +46,14 @@ class StatesQueue:
                 return s
         return None
 
+    def update(self, state):
+        for s in self._queue:
+            if s.get_position() == state.get_position():
+                self._queue.remove(s)
+                self.add(state)
+                return True
+        return False
+
     def sort_by_f_value(self):
         self._queue.sort(key=lambda x: x.f_value(), reverse=False)
 

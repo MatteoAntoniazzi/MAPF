@@ -9,7 +9,7 @@ from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNode import Constra
 from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNodesQueue import ConstraintTreeNodesQueue
 
 
-class ConflictBasedSearch(MAPFSolver):
+class SolverConflictBasedSearch(MAPFSolver):
     def __init__(self, heuristics_str):
         super().__init__(heuristics_str)
         self._frontier = None

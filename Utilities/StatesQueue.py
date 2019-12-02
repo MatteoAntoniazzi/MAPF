@@ -55,7 +55,7 @@ class StatesQueue:
         return False
 
     def sort_by_f_value(self):
-        self._queue.sort(key=lambda x: x.f_value(), reverse=False)
+        self._queue.sort(key=lambda x: (x.f_value(), x.h_value()), reverse=False)
 
     def __str__(self):
         string = ''

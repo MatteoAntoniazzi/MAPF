@@ -69,7 +69,7 @@ class StartMenu:
 
     def initialize_center_part(self, canvas):
 
-        load = Image.open("/Users/Matteo/PycharmProjects/MAPF/Maps/pngs/room-32-32-4.png")
+        load = Image.open("../Maps/pngs/room-32-32-4.png")
         load = load.resize((90, 90), Image.ANTIALIAS)
         self.img = ImageTk.PhotoImage(load)
 

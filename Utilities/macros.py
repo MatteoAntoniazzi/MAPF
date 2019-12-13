@@ -14,6 +14,22 @@ def get_frame_dimension(n_row, n_col):
     return frame_width, frame_height
 
 
+ALGORITHMS_MODES = [
+    ("Cooperative A*", 0),
+    ("A*", 1),
+    ("A* with Operator Decomposition", 2),
+    ("Increasing Cost Tree Search", 3),
+    ("Conflict Based Search", 4),
+    ("M*", 5),
+]
+
+PNG_PATH_LIST = ["../Maps/pngs/room-32-32-4.png", "../Maps/pngs/Berlin_1_256.png"]
+
+OBJECTIVE_FUNCTION_MODES = [
+    ("Summation over the costs", 0),
+    ("Makespan*", 1)
+]
+
 FRAME_MARGIN = 10
 
 UNOCCUPIED = 0

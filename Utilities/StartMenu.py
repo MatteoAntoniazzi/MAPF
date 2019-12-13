@@ -1,5 +1,6 @@
 from tkinter import *
 from PIL import Image, ImageTk
+from Utilities.macros import *
 from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarMultiAgent import SolverAStarMultiAgent
 from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
 from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
@@ -11,16 +12,18 @@ from SearchBasedAlgorithms.MStar.SolverMStar import SolverMStar
 class StartMenu:
     def __init__(self):
         self.frame = Tk()
+        self.images_list = []
 
         self.selected_algorithm_number = StringVar()
-        self.selected_algorithm_number.set("1")  # initialize
+        self.selected_algorithm_number.set(0)  # initialize
 
         self.selected_map_number = StringVar()
-        self.selected_map_number.set("1")  # initialize
+        self.selected_map_number.set(0)  # initialize
 
         self.selected_obj_fun_number = StringVar()
-        self.selected_obj_fun_number.set("1")  # initialize
+        self.selected_obj_fun_number.set(0)  # initialize
 
+        self.initialize_menu_bar()
         self.initialize_menu()
         self.do_loop()
 
@@ -43,71 +46,41 @@ class StartMenu:
         w.pack(fill=Y, padx=20, pady=5, side=LEFT)
 
     def initialize_left_part(self, canvas):
-        MODES = [
-            ("Cooperative A*", "1"),
-            ("A*", "2"),
-            ("A* with Operator Decomposition", "3"),
-            ("Increasing Cost Tree Search", "4"),
-            ("Conflict Based Search", "5"),
-            ("M*", "6"),
-        ]
 
         lbl_title = Label(canvas, text="ALGORITHM", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
-        for text, mode in MODES:
+        for text, mode in ALGORITHMS_MODES:
             b = Radiobutton(canvas, text=text, variable=self.selected_algorithm_number, value=mode,
                             command=self.algorithm_selection)
             b.pack(anchor=W)
 
-        self.label = Label(canvas)
-        self.label.pack(anchor=W)
-
     def algorithm_selection(self):
-        selection = "You selected the option " + str(self.selected_algorithm_number.get())
-        self.label.config(text=selection)
+        pass
 
     def initialize_center_part(self, canvas):
 
-        load = Image.open("../Maps/pngs/room-32-32-4.png")
-        load = load.resize((90, 90), Image.ANTIALIAS)
-        self.img = ImageTk.PhotoImage(load)
-
-        MODES = [
-            ("Cooperative A*", "1"),
-            ("A*", "2"),
-            ("A* with Operator Decomposition", "3"),
-        ]
+        for png_path in PNG_PATH_LIST:
+            load = Image.open(png_path)
+            load = load.resize((90, 90), Image.ANTIALIAS)
+            self.images_list.append(ImageTk.PhotoImage(load))
 
         lbl_title = Label(canvas, text="MAP", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
-        for text, mode in MODES:
-            b = Radiobutton(canvas, image=self.img, height=100, width=10, variable=self.selected_map_number,
-                            value=mode, command=self.map_selection)
+        for i, img in enumerate(self.images_list):
+            b = Radiobutton(canvas, image=img, height=100, width=100, variable=self.selected_map_number,
+                            value=i, command=self.map_selection)
             b.pack(anchor=W)
 
-        self.label = Label(canvas)
-        self.label.pack()
-
     def map_selection(self):
-        selection = "You selected the option " + str(self.selected_algorithm_number.get())
-        self.label.config(text=selection)
+        pass
 
     def initialize_right_part(self, canvas):
-        MODES = [
-            ("Cooperative A*", "1"),
-            ("A*", "2"),
-            ("A* with Operator Decomposition", "3"),
-            ("Increasing Cost Tree Search", "4"),
-            ("Conflict Based Search", "5"),
-            ("M*", "6"),
-        ]
-
         lbl_title = Label(canvas, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
-        for text, mode in MODES:
+        for text, mode in OBJECTIVE_FUNCTION_MODES:
             b = Radiobutton(canvas, text=text, variable=self.selected_obj_fun_number, value=mode,
                             command=self.objective_function_selection)
             b.pack(anchor=W)
@@ -116,7 +89,7 @@ class StartMenu:
         self.label.pack()
 
     def objective_function_selection(self):
-        selection = "You selected the option " + str(self.selected_algorithm_number.get())
+        selection = "You selected the option " + str(self.selected_obj_fun_number.get())
         self.label.config(text=selection)
 
     def initialize_menu_bar(self):

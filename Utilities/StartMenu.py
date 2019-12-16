@@ -1,12 +1,7 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from Utilities.macros import *
-from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarMultiAgent import SolverAStarMultiAgent
-from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
-from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
-from SearchBasedAlgorithms.IndependenceDetection.SolverIndependenceDetection import SolverIndependenceDetection
-from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
-from SearchBasedAlgorithms.MStar.SolverMStar import SolverMStar
+from Utilities.start_simulation import *
 
 
 class StartMenu:
@@ -14,14 +9,20 @@ class StartMenu:
         self.frame = Tk()
         self.images_list = []
 
-        self.selected_algorithm_number = StringVar()
-        self.selected_algorithm_number.set(0)  # initialize
+        self.selected_algorithm_var = StringVar()
+        self.selected_algorithm_var.set("Cooperative A*")  # initialize
 
-        self.selected_map_number = StringVar()
-        self.selected_map_number.set(0)  # initialize
+        self.independence_detection_var = BooleanVar()
+        self.independence_detection_var.set(False)  # initialize
 
-        self.selected_obj_fun_number = StringVar()
-        self.selected_obj_fun_number.set(0)  # initialize
+        self.selected_map_var = IntVar()
+        self.selected_map_var.set(0)  # initialize
+
+        self.selected_heuristic_var = StringVar()
+        self.selected_heuristic_var.set("Manhattan")  # initialize
+
+        self.selected_obj_fun_var = IntVar()
+        self.selected_obj_fun_var.set(0)  # initialize
 
         self.initialize_menu_bar()
         self.initialize_menu()
@@ -51,12 +52,22 @@ class StartMenu:
         lbl_title.pack(anchor=W, ipady=10)
 
         for text, mode in ALGORITHMS_MODES:
-            b = Radiobutton(canvas, text=text, variable=self.selected_algorithm_number, value=mode,
+            b = Radiobutton(canvas, text=text, variable=self.selected_algorithm_var, value=mode,
                             command=self.algorithm_selection)
             b.pack(anchor=W)
 
+        lbl_title = Label(canvas, text="INDEPENDENCE DETECTION", font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        id_button = Checkbutton(canvas, text="Independence Detection", variable=self.independence_detection_var,
+                                onvalue=True, offvalue=False, height=0, width=25, command=self.independence_selection)
+        id_button.pack(anchor=W)
+
     def algorithm_selection(self):
-        pass
+        print(self.selected_algorithm_var.get())
+
+    def independence_selection(self):
+        print(self.independence_detection_var.get())
 
     def initialize_center_part(self, canvas):
 
@@ -69,28 +80,36 @@ class StartMenu:
         lbl_title.pack(anchor=W, ipady=10)
 
         for i, img in enumerate(self.images_list):
-            b = Radiobutton(canvas, image=img, height=100, width=100, variable=self.selected_map_number,
-                            value=i, command=self.map_selection)
+            b = Radiobutton(canvas, image=img, height=100, width=10, variable=self.selected_map_var,
+                            value=i, command=self.map_selection)  # WIDTH: 10 su Linux, 100 su Ubuntu
             b.pack(anchor=W)
 
     def map_selection(self):
         pass
 
     def initialize_right_part(self, canvas):
+        lbl_title = Label(canvas, text="HEURISTIC", font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        for text, mode in HEURISTICS_MODES:
+            b = Radiobutton(canvas, text=text, variable=self.selected_heuristic_var, value=mode)
+            b.pack(anchor=W)
+
         lbl_title = Label(canvas, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
         for text, mode in OBJECTIVE_FUNCTION_MODES:
-            b = Radiobutton(canvas, text=text, variable=self.selected_obj_fun_number, value=mode,
-                            command=self.objective_function_selection)
+            b = Radiobutton(canvas, text=text, variable=self.selected_obj_fun_var, value=mode)
             b.pack(anchor=W)
 
-        self.label = Label(canvas)
-        self.label.pack()
+        start_button = Button(canvas, text="START", command=self.start_function)
 
-    def objective_function_selection(self):
-        selection = "You selected the option " + str(self.selected_obj_fun_number.get())
-        self.label.config(text=selection)
+        start_button.pack(anchor=E)
+
+    def start_function(self):
+        start_simulation(self.selected_algorithm_var.get(), self.independence_detection_var.get(),
+                         self.selected_map_var.get(), self.selected_heuristic_var.get(),
+                         self.selected_obj_fun_var.get())
 
     def initialize_menu_bar(self):
         menubar = Menu(self.frame)
@@ -126,6 +145,3 @@ class StartMenu:
 
     def do_loop(self):
         self.frame.mainloop()
-
-
-menu = StartMenu()

@@ -15,15 +15,20 @@ def get_frame_dimension(n_row, n_col):
 
 
 ALGORITHMS_MODES = [
-    ("Cooperative A*", 0),
-    ("A*", 1),
-    ("A* with Operator Decomposition", 2),
-    ("Increasing Cost Tree Search", 3),
-    ("Conflict Based Search", 4),
-    ("M*", 5),
+    ("Cooperative A*", "Cooperative A*"),
+    ("A*", "A*"),
+    ("A* with Operator Decomposition", "A* with Operator Decomposition"),
+    ("Increasing Cost Tree Search", "Increasing Cost Tree Search"),
+    ("Conflict Based Search", "Conflict Based Search"),
+    ("M*", "M*"),
 ]
 
-PNG_PATH_LIST = ["../Maps/pngs/room-32-32-4.png", "../Maps/pngs/Berlin_1_256.png"]
+PNG_PATH_LIST = ["./Maps/pngs/room-32-32-4.png", "./Maps/pngs/Berlin_1_256.png"]
+
+HEURISTICS_MODES = [
+    ("Manhattan Distance", "Manhattan"),
+    ("Reverse Resumable A*", "RRA")
+]
 
 OBJECTIVE_FUNCTION_MODES = [
     ("Summation over the costs", 0),

@@ -9,11 +9,12 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, parent=None, time_step=0):
+    def __init__(self, problem_instance, single_agents_states, heuristics, objective_function="SOC", parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
         self._heuristics = heuristics
+        self._objective_function = objective_function
         self.calculate_cost()
         self.compute_heuristics()
 
@@ -111,8 +112,11 @@ class MultiAgentState(State):
         self._g = 0
         if self.is_root():
             return
-        for single_state in self._single_agents_states:
-            self._g += single_state.g_value()
+        if self._objective_function == "SOC":
+            for single_state in self._single_agents_states:
+                self._g += single_state.g_value()
+        if self._objective_function == "Makespan":
+            self._g = max([single_state.g_value() for single_state in self._single_agents_states])
 
     def get_single_agent_states(self):
         return self._single_agents_states

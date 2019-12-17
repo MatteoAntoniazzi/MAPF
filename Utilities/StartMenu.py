@@ -21,8 +21,8 @@ class StartMenu:
         self.selected_heuristic_var = StringVar()
         self.selected_heuristic_var.set("Manhattan")  # initialize
 
-        self.selected_obj_fun_var = IntVar()
-        self.selected_obj_fun_var.set(0)  # initialize
+        self.selected_obj_fun_var = StringVar()
+        self.selected_obj_fun_var.set("SOC")  # initialize
 
         self.initialize_menu_bar()
         self.initialize_menu()
@@ -107,6 +107,9 @@ class StartMenu:
         start_button.pack(anchor=E)
 
     def start_function(self):
+        print(self.selected_algorithm_var.get(), self.independence_detection_var.get(),
+                         self.selected_map_var.get(), self.selected_heuristic_var.get(),
+                         self.selected_obj_fun_var.get())
         start_simulation(self.selected_algorithm_var.get(), self.independence_detection_var.get(),
                          self.selected_map_var.get(), self.selected_heuristic_var.get(),
                          self.selected_obj_fun_var.get())

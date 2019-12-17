@@ -24,3 +24,6 @@ class AStarSingleAgent(MAPFSolver):
             print("Total time: ", max([len(path)-1 for path in paths]),
                   " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
         return paths
+
+    def __str__(self):
+        return "A* Single Agent Solver using " + self._heuristics_str + " heuristics"

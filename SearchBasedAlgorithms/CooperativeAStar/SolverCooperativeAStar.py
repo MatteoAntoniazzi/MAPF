@@ -22,8 +22,8 @@ class SolverCooperativeAStar(MAPFSolver):
     """
     With RRA as heuristics it became HierarchicalCooperativeA*
     """
-    def __init__(self, heuristics_str):
-        super().__init__(heuristics_str)
+    def __init__(self, heuristics_str, objective_function):
+        super().__init__(heuristics_str, objective_function)
         self._reservation_table = None
 
     def solve(self, problem_instance, verbose=False, print_output=True):
@@ -52,3 +52,6 @@ class SolverCooperativeAStar(MAPFSolver):
             print("Total time: ", max([len(path)-1 for path in paths]),
                   " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
         return paths
+
+    def __str__(self):
+        return "Cooperative A* Solver using " + self._heuristics_str + " heuristics"

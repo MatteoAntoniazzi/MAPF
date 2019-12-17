@@ -19,8 +19,8 @@ from Utilities.macros import *
 
 
 class SolverIndependenceDetection(MAPFSolver):
-    def __init__(self, solver):
-        super().__init__(None)
+    def __init__(self, solver, objective_function):
+        super().__init__(None, objective_function)
         self._solver = solver
         self._problems = []
         self._paths = []
@@ -127,3 +127,6 @@ class SolverIndependenceDetection(MAPFSolver):
                             return ag_i, ag_j
 
         return None
+
+    def __str__(self):
+        return self._solver.__str__() + " with Independence Detection"

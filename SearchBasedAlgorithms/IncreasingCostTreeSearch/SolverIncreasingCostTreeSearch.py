@@ -11,8 +11,8 @@ from SearchBasedAlgorithms.IncreasingCostTreeSearch.IncreasingCostTreeQueue impo
 
 
 class SolverIncreasingCostTreeSearch(MAPFSolver):
-    def __init__(self, heuristics_str):
-        super().__init__(heuristics_str)
+    def __init__(self, heuristics_str, objective_function):
+        super().__init__(heuristics_str, objective_function)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0
@@ -57,3 +57,6 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
 
         starter_state = IncreasingCostTreeNode(problem_instance, heuristics_str=self._heuristics_str)
         self._frontier.add(starter_state)
+
+    def __str__(self):
+        return "Increasing Cost Tree Solver using " + self._heuristics_str + " heuristics"

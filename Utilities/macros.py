@@ -31,8 +31,8 @@ HEURISTICS_MODES = [
 ]
 
 OBJECTIVE_FUNCTION_MODES = [
-    ("Summation over the costs", 0),
-    ("Makespan*", 1)
+    ("Sum the costs", "SOC"),
+    ("Makespan", "Makespan")
 ]
 
 FRAME_MARGIN = 10

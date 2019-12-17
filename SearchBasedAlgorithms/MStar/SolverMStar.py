@@ -20,8 +20,8 @@ from SearchBasedAlgorithms.MStar.MStarState import MStarState
 
 
 class SolverMStar(MAPFSolver):
-    def __init__(self, heuristics_str):
-        super().__init__(heuristics_str)
+    def __init__(self, heuristics_str, objective_function):
+        super().__init__(heuristics_str, objective_function)
         self._frontier = None
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
@@ -90,3 +90,6 @@ class SolverMStar(MAPFSolver):
 
         starter_state = MStarState(problem_instance, single_agents_states, self._heuristics)
         self._frontier.add(starter_state)
+
+    def __str__(self):
+        return "M* Solver using " + self._heuristics_str + " heuristics"

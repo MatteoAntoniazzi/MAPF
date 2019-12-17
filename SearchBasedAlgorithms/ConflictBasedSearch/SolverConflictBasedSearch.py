@@ -10,8 +10,8 @@ from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNodesQueue import C
 
 
 class SolverConflictBasedSearch(MAPFSolver):
-    def __init__(self, heuristics_str):
-        super().__init__(heuristics_str)
+    def __init__(self, heuristics_str, objective_function):
+        super().__init__(heuristics_str, objective_function)
         self._frontier = None
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
@@ -70,3 +70,6 @@ class SolverConflictBasedSearch(MAPFSolver):
 
         starter_state = ConstraintTreeNode(problem_instance, heuristics_str=self._heuristics_str)
         self._frontier.add(starter_state)
+
+    def __str__(self):
+        return "Conflict Based Search Solver using " + self._heuristics_str + " heuristics"

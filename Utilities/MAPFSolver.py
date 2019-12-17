@@ -7,8 +7,9 @@ class MAPFSolver:
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, heuristics_str):
+    def __init__(self, heuristics_str, objective_function):
         self._heuristics_str = heuristics_str
+        self._objective_function = objective_function
         self._heuristics = None
 
     @abc.abstractmethod

@@ -12,8 +12,8 @@ from Utilities.StatesQueue import StatesQueue
 
 
 class SolverAStarOD(MAPFSolver):
-    def __init__(self, heuristics_str):
-        super().__init__(heuristics_str)
+    def __init__(self, heuristics_str, objective_function):
+        super().__init__(heuristics_str, objective_function)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0
@@ -64,3 +64,6 @@ class SolverAStarOD(MAPFSolver):
 
         starter_state = ODState(problem_instance, single_agents_states, self._heuristics)
         self._frontier.add(starter_state)
+
+    def __str__(self):
+        return "A* Multi Agent Solver with Operator Decomposition using " + self._heuristics_str + " heuristics"

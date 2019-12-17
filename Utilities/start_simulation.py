@@ -13,36 +13,33 @@ import time
 
 
 def start_simulation(algorithm, independence_detection, map_number, heuristic, objective_function):
+
     map = get_map(map_number)
-
     agents = get_agents(map_number, map)
-
     problem_instance = ProblemInstance(map, agents)
 
     start_time = time.time()
 
-    solver = get_solver(algorithm, heuristic, independence_detection)
+    solver = get_solver(algorithm, heuristic, objective_function, independence_detection)
+    print("Solver --> ", solver)
     paths = solver.solve(problem_instance, verbose=True)
 
     print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))
 
-    print(paths)
-
-    # problem_instance.plot_on_terminal(paths)
     problem_instance.plot_on_gui(paths)
 
 
-def get_solver(algorithm, heuristics, independence_detection):
+def get_solver(algorithm, heuristics, objective_function, independence_detection):
     switcher = {
-        "Cooperative A*": SolverCooperativeAStar(heuristics),
-        "A*": SolverAStarMultiAgent(heuristics),
-        "A* with Operator Decomposition": SolverAStarOD(heuristics),
-        "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(heuristics),
-        "Conflict Based Search": SolverConflictBasedSearch(heuristics),
-        "M*": SolverMStar(heuristics)
+        "Cooperative A*": SolverCooperativeAStar(heuristics, objective_function),
+        "A*": SolverAStarMultiAgent(heuristics, objective_function),
+        "A* with Operator Decomposition": SolverAStarOD(heuristics, objective_function),
+        "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(heuristics, objective_function),
+        "Conflict Based Search": SolverConflictBasedSearch(heuristics, objective_function),
+        "M*": SolverMStar(heuristics, objective_function)
     }
     if independence_detection:
-        return SolverIndependenceDetection(switcher.get(algorithm))
+        return SolverIndependenceDetection(switcher.get(algorithm), objective_function)
     else:
         return switcher.get(algorithm)
 

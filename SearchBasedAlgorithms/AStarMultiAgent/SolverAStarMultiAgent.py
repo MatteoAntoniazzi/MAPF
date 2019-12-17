@@ -9,8 +9,8 @@ from Heuristics.initialize_heuristics import *
 
 
 class SolverAStarMultiAgent(MAPFSolver):
-    def __init__(self, heuristics_str):
-        super().__init__(heuristics_str)
+    def __init__(self, heuristics_str, objective_function):
+        super().__init__(heuristics_str, objective_function)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0
@@ -57,5 +57,9 @@ class SolverAStarMultiAgent(MAPFSolver):
                                  self._heuristics)
             single_agents_states.append(s)
 
-        starter_state = MultiAgentState(problem_instance, single_agents_states, self._heuristics)
+        starter_state = MultiAgentState(problem_instance, single_agents_states, self._heuristics,
+                                        self._objective_function)
         self._frontier.add(starter_state)
+
+    def __str__(self):
+        return "A* Multi Agent Solver using " + self._heuristics_str + " heuristics"

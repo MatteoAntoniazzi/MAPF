@@ -5,13 +5,23 @@ import copy
 
 
 class Visualize:
-    def __init__(self, map, agents):
+    def __init__(self, start_menu, frame, map, agents):
         self._map = map
         self._agents = agents
-        self.frame = Tk()
+        self.frame = frame
+        self.start_menu = start_menu
         self._frame_width, self._frame_height = get_frame_dimension(map.get_height(), map.get_width())
-        self.canvas = Canvas(self.frame, width=self._frame_width, height=self._frame_height)
-        self.canvas.grid()
+        self.visualize_canvas = Canvas(self.frame)
+        self.canvas = Canvas(self.visualize_canvas, width=self._frame_width, height=self._frame_height)
+        self.canvas.pack()
+        self.buttons_canvas = Canvas(self.visualize_canvas)
+        start_button = Button(self.buttons_canvas, text="START", command=self.start_function)
+        start_button.pack(side=LEFT)
+        stop_button = Button(self.buttons_canvas, text="STOP", command=self.stop_function)
+        stop_button.pack(side=LEFT)
+        self.buttons_canvas.pack(anchor=E)
+
+        self.visualize_canvas.pack(ipady=10)
         self.cell_h, self.cell_w = self.get_cell_size()
         self.vis_cells = np.zeros((self._map.get_height(), self._map.get_width()), dtype=int)
         self.agents_ovals = []
@@ -24,6 +34,15 @@ class Visualize:
         self.steps_count = [N_OF_STEPS] * len(self._agents)
         self.x_moves = [0] * len(self._agents)
         self.y_moves = [0] * len(self._agents)
+
+    def start_function(self):
+        print("ANIMATION RUNN")
+
+    def stop_function(self):
+        self.start_menu.enable_settings_buttons()
+        for widget in self.frame.winfo_children():
+            widget.destroy()
+        print("ANIMATION RUNN")
 
     def draw_world(self):
         n_rows, n_cols = self._map.get_height(), self._map.get_width()

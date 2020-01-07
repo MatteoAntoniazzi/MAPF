@@ -86,6 +86,9 @@ class IncreasingCostTreeNode:
     def total_cost(self):
         return sum(self._path_costs_vector)
 
+    def highest_cost(self):
+        return max(self._path_costs_vector)
+
 
 def check_validity(solution):
     """

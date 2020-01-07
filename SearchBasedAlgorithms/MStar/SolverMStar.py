@@ -39,6 +39,11 @@ class SolverMStar(MAPFSolver):
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
+            print("CUR STATE: ", cur_state.g_value(), end=" ")
+            # [print(s.get_position(), " ", s.g_value(), " ", s.f_value(), end=" ") for s in cur_state.get_single_agent_states()]
+            [print(s.f_value(), end=" ") for s in self._frontier._queue[:15]]
+            print(" ")
+
             if cur_state.is_completed():
                 if print_output:
                     print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
@@ -88,8 +93,8 @@ class SolverMStar(MAPFSolver):
                                  self._heuristics)
             single_agents_states.append(s)
 
-        starter_state = MStarState(problem_instance, single_agents_states, self._heuristics)
+        starter_state = MStarState(problem_instance, single_agents_states, self._heuristics, self._objective_function)
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "M* Solver using " + self._heuristics_str + " heuristics"
+        return "M* Solver using " + self._heuristics_str + " heuristics minimazing " + self._objective_function

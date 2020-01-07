@@ -10,11 +10,12 @@ import itertools
 
 
 class MStarState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, parent=None, time_step=0):
+    def __init__(self, problem_instance, single_agents_states, heuristics, objective_function, parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
         self._heuristics = heuristics
+        self._objective_function = objective_function
         self._back_propagation_set = []
         self._collisions_set = set()
         self.calculate_cost()
@@ -58,7 +59,7 @@ class MStarState(State):
 
         expanded_states = []
         for i, multi_state in enumerate(valid_states):
-            m = MStarState(self._problem_instance, multi_state, self._heuristics, parent=self,
+            m = MStarState(self._problem_instance, multi_state, self._heuristics, self._objective_function, parent=self,
                            time_step=self.time_step()+1)
             m.set_back_propagation_set([self])
             m.set_collisions_set(self.colliding_robots(m))
@@ -138,8 +139,11 @@ class MStarState(State):
         self._g = 0
         if self.is_root():
             return
-        for single_state in self._single_agents_states:
-            self._g += single_state.g_value()
+        if self._objective_function == "SOC":
+            for single_state in self._single_agents_states:
+                self._g += single_state.g_value()
+        if self._objective_function == "Makespan":
+            self._g = max([single_state.g_value() for single_state in self._single_agents_states])
 
     def get_single_agent_states(self):
         return self._single_agents_states
@@ -156,8 +160,8 @@ class MStarState(State):
 
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
-        return MStarState(self._problem_instance, clone_states, self._heuristics, parent=self._parent,
-                          time_step=self._time_step)
+        return MStarState(self._problem_instance, clone_states, self._heuristics, self._objective_function,
+                          parent=self._parent, time_step=self._time_step)
 
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]

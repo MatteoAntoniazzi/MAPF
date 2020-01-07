@@ -9,7 +9,7 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, objective_function="SOC", parent=None, time_step=0):
+    def __init__(self, problem_instance, single_agents_states, heuristics, objective_function, parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
@@ -50,7 +50,7 @@ class MultiAgentState(State):
 
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
-            m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, parent=self,
+            m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, self._objective_function, parent=self,
                                 time_step=self.time_step()+1)
             if not self.is_conflict(m):
                 free_conflict_states.append(m)
@@ -105,8 +105,11 @@ class MultiAgentState(State):
 
     def compute_heuristics(self):
         self._h = 0
-        for single_state in self._single_agents_states:
-            self._h += single_state.h_value()
+        if self._objective_function == "SOC":
+            for single_state in self._single_agents_states:
+                self._h += single_state.h_value()
+        if self._objective_function == "Makespan":
+            self._h = max([single_state.h_value() for single_state in self._single_agents_states])
 
     def calculate_cost(self):
         self._g = 0
@@ -133,7 +136,7 @@ class MultiAgentState(State):
 
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
-        return MultiAgentState(self._problem_instance, clone_states, self._heuristics, parent=self._parent,
+        return MultiAgentState(self._problem_instance, clone_states, self._heuristics, self._objective_function, parent=self._parent,
                                time_step=self._time_step)
 
     def clone_states(self):

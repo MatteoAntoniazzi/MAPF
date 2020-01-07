@@ -1,17 +1,39 @@
 from colorama import Fore
 
 
+MAIN_WINDOW_WIDTH = 1300
+MAIN_WINDOW_HEIGHT = 700
+
+SETTINGS_FRAME_WIDTH = 600
+SETTINGS_FRAME_HEIGHT = 700
+
+SIMULATION_FRAME_WIDTH_AND_HEIGHT = 700
+
+MAP_FRAME_WIDTH_AND_HEIGHT = SIMULATION_FRAME_WIDTH_AND_HEIGHT-50
+
+
 def get_frame_dimension(n_row, n_col):
-    if n_row < 15 and n_col < 24:
-        frame_height = 50 * n_row
-        frame_width = 50 * n_col
-    elif n_row < 25 and n_col < 40:
-        frame_height = 30 * n_row
-        frame_width = 30 * n_col
+    if n_row > n_col:
+        frame_height = MAP_FRAME_WIDTH_AND_HEIGHT
+        frame_width = (MAP_FRAME_WIDTH_AND_HEIGHT/n_row) * n_col
+    elif n_row < n_col:
+        frame_height = (MAP_FRAME_WIDTH_AND_HEIGHT/n_col) * n_row
+        frame_width = MAP_FRAME_WIDTH_AND_HEIGHT
     else:
-        frame_height = 750
-        frame_width = 1200
+        frame_height = 650
+        frame_width = 650
     return frame_width, frame_height
+
+    #
+    # if n_row < 15 and n_col < 24:
+    #     frame_height = 50 * n_row
+    #     frame_width = 50 * n_col
+    # elif n_row < 25 and n_col < 40:
+    #     frame_height = 30 * n_row
+    #     frame_width = 30 * n_col
+    # else:
+    #     frame_height = 750
+    #     frame_width = 1200
 
 
 ALGORITHMS_MODES = [

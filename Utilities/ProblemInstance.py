@@ -39,8 +39,8 @@ class ProblemInstance:
                 return agent
         return None
 
-    def plot_on_gui(self, paths=None):
-        window = Visualize(self._map, self._agents)
+    def plot_on_gui(self, start_menu, frame, paths=None):
+        window = Visualize(start_menu, frame, self._map, self._agents)
         window.draw_world()
         window.draw_agents()
         if paths is not None:

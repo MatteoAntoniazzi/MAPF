@@ -54,4 +54,4 @@ class SolverCooperativeAStar(MAPFSolver):
         return paths
 
     def __str__(self):
-        return "Cooperative A* Solver using " + self._heuristics_str + " heuristics"
+        return "Cooperative A* Solver using " + self._heuristics_str + " heuristics minimazing" + self._objective_function

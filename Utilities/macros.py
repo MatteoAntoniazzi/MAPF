@@ -67,7 +67,8 @@ FORES = [Fore.BLACK, Fore.LIGHTBLACK_EX, Fore.RED, Fore.LIGHTRED_EX, Fore.GREEN,
          Fore.LIGHTCYAN_EX, Fore.WHITE, Fore.LIGHTWHITE_EX]
 
 N_OF_STEPS = 20  # N of step for a move. (From a cell to another)
-SPEED = 50      # Speed of moving (Higher is the value slower robots will move
+SPEED_1X = 50      # Speed of moving (Higher is the value slower robots will move
+MAX_SPEED = SPEED_1X * 2
 
 GOAL_OCCUPATION_TIME = 5    # Means that stay 5 time_step and at the end of the fifth is already completely removed.
                             # Graphically it goes away at the start of the fifth.

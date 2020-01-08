@@ -40,7 +40,7 @@ class ProblemInstance:
         return None
 
     def plot_on_gui(self, start_menu, frame, paths=None, output_infos=None):
-        window = Visualize(start_menu, frame, self._map, self._agents, paths, output_infos)
+        window = Visualize(self, start_menu, frame, self._map, self._agents, paths, output_infos)
         window.initialize_window()
 
 

@@ -1,17 +1,22 @@
 import numpy as np
+import PIL.Image, PIL.ImageTk
 from Utilities.macros import *
 from tkinter import *
 import copy
 
 
 class Visualize:
-    def __init__(self, start_menu, frame, map, agents, paths, output_infos):
+    def __init__(self, problem_instance, start_menu, frame, map, agents, paths, output_infos):
+        self._problem_instance = problem_instance
         self._map = map
         self._agents = agents
         self._paths = paths
         self._output_infos = output_infos
         self.frame = frame
         self.start_menu = start_menu
+
+        self.animation_speed = SPEED_1X
+
         self._frame_width, self._frame_height = get_frame_dimension(map.get_height(), map.get_width())
         self.visualize_canvas = Canvas(self.frame)
         self.map_canvas = Canvas(self.visualize_canvas, width=self._frame_width, height=self._frame_height, bg="green")
@@ -20,13 +25,41 @@ class Visualize:
         self.infos_and_buttons_canvas = Canvas(self.visualize_canvas, bg="yellow")
         self.infos_and_buttons_canvas.pack(fill=X)
         self.infos_txt_var = StringVar()
-        self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var)
+        self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT, padx=5, pady=2,
+                           font=("Lucida Console", 10))
+        self.infos_txt_var.set("\n\n")
         self.infos.pack(side=LEFT)
+
+        self.quit_button = Button(self.infos_and_buttons_canvas, text="QUIT", command=self.quit_function)
+        self.quit_button.pack(side=RIGHT)
+
         self.start_button = Button(self.infos_and_buttons_canvas, text="START", command=self.start_function)
         self.start_button.pack(side=RIGHT)
+
         self.reset_button = Button(self.infos_and_buttons_canvas, text="RESET", command=self.reset_function)
         self.reset_button.configure(state=DISABLED)
         self.reset_button.pack(side=RIGHT)
+
+        load = PIL.Image.open("Images/speed_up.png")
+        load = load.resize((30, 30), PIL.Image.ANTIALIAS)
+        self.speed_up_img = PIL.ImageTk.PhotoImage(load)
+        self.speed_up_button = Button(self.infos_and_buttons_canvas, image=self.speed_up_img,
+                                      command=self.speed_up_button)
+        self.speed_up_button.pack(side=RIGHT, padx=(0, 20))
+
+
+        self.speed_txt_var = StringVar()
+        self.speed_txt = Label(self.infos_and_buttons_canvas, textvariable=self.speed_txt_var, justify=LEFT,
+                           font=("Lucida Console", 10))
+        self.speed_txt_var.set("1X")
+        self.speed_txt.pack(side=RIGHT, padx=10)
+
+        load = PIL.Image.open("Images/speed_down.png")
+        load = load.resize((30, 30), PIL.Image.ANTIALIAS)
+        self.speed_down_img = PIL.ImageTk.PhotoImage(load)
+        self.speed_down_button = Button(self.infos_and_buttons_canvas, image=self.speed_down_img,
+                                        command=self.speed_down_button)
+        self.speed_down_button.pack(side=RIGHT, padx=(20, 0))
 
         self.visualize_canvas.pack(ipady=10)
         self.cell_h, self.cell_w = self.get_cell_size()
@@ -47,7 +80,21 @@ class Visualize:
         self.draw_agents()
         self.do_loop()
 
+    def speed_down_button(self):
+        if not self.animation_speed <= (SPEED_1X/10):
+            self.animation_speed = self.animation_speed - SPEED_1X/10
+            self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
+            print(self.animation_speed)
+
+    def speed_up_button(self):
+        if not self.animation_speed >= (SPEED_1X*2):
+            self.animation_speed = self.animation_speed + SPEED_1X/10
+            self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
+            print(self.animation_speed)
+
     def start_function(self):
+        self.start_button.configure(state=DISABLED)
+        self.quit_button.configure(state=DISABLED)
         self.set_infos_txt()
 
         if self._paths is not None:
@@ -56,12 +103,16 @@ class Visualize:
             self.start_animation(self._paths)
 
     def set_infos_txt(self):
-        self.infos_txt_var.set("SUM OF COSTS: " + str(self._output_infos["sum_of_costs"]) + "\tMAKESPAN: " +
-                               str(self._output_infos["makespan"]) + "\tN° OF EXPANDED NODES: " +
+        self.infos_txt_var.set("SUM OF COSTS: " + str(self._output_infos["sum_of_costs"]) + "\nMAKESPAN: " +
+                               str(self._output_infos["makespan"]) + "\nN° OF EXPANDED NODES: " +
                                str(self._output_infos["expanded_nodes"]))
 
-
     def reset_function(self):
+        for widget in self.frame.winfo_children():
+            widget.destroy()
+        self._problem_instance.plot_on_gui(self.start_menu, self.frame, self._paths, self._output_infos)
+
+    def quit_function(self):
         self.start_menu.enable_settings_buttons()
         for widget in self.frame.winfo_children():
             widget.destroy()
@@ -111,7 +162,7 @@ class Visualize:
 
     def animation_function(self):
         if self.animating:
-            self.frame.after(SPEED, self.animation_function)
+            self.frame.after(int(MAX_SPEED - self.animation_speed), self.animation_function)
             for i, agent in enumerate(self.agents_ovals):
                 if self.steps_count[i] < N_OF_STEPS:
                     self.map_canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
@@ -135,7 +186,9 @@ class Visualize:
 
         else:
             # Animation ended
+            self.start_button.configure(state=NORMAL)
             self.reset_button.configure(state=NORMAL)
+            self.quit_button.configure(state=NORMAL)
 
     def get_cell_size(self):
         avail_h = self._frame_height - 2 * FRAME_MARGIN

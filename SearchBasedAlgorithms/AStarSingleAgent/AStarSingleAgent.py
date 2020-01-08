@@ -10,7 +10,7 @@ class AStarSingleAgent(MAPFSolver):
     def __init__(self, heuristics_str):
         super().__init__(heuristics_str)
 
-    def solve(self, problem_instance, verbose=False, print_output=True):
+    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
         Solve the MAPF problem using the A* algorithm individually for each agent, without considering any conflict.
         It returns the paths as lists of list of (x, y) positions.
@@ -23,6 +23,15 @@ class AStarSingleAgent(MAPFSolver):
         if print_output:
             print("Total time: ", max([len(path)-1 for path in paths]),
                   " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
+
+        if return_infos:
+            output_infos = {
+                "sum_of_costs": sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]),
+                "makespan": max([len(path)-1 for path in paths]),
+                "expanded_nodes": 0
+            }
+            return paths, output_infos
+
         return paths
 
     def __str__(self):

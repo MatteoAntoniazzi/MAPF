@@ -16,12 +16,16 @@ class SolverConflictBasedSearch(MAPFSolver):
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
-    def solve(self, problem_instance, verbose=False, print_output=True):
+    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
         Solve the MAPF problem using the CBS algorithm returning the paths as lists of list of (x, y) positions.
         """
         self.initialize_problem(problem_instance)
-        solution = self.high_level_search(verbose=verbose, print_output=print_output)
+        solution, output_infos = self.high_level_search(verbose=verbose, print_output=print_output)
+
+        if return_infos:
+            return solution, output_infos
+
         return solution
 
     def high_level_search(self, verbose=False, print_output=True):
@@ -47,10 +51,15 @@ class SolverConflictBasedSearch(MAPFSolver):
 
             conflict = cur_state.check_conflicts()
             if conflict is None:
+                output_infos = {
+                    "sum_of_costs": cur_state.g_value(),
+                    "makespan": cur_state.time_step(),
+                    "expanded_nodes": self._n_of_expanded_nodes
+                }
                 if print_output:
                     print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
                           " Total time: ", cur_state.total_time(), " Total cost:", cur_state.total_cost())
-                return cur_state.solution()
+                return cur_state.solution(), output_infos
 
             # Expand the Constraint Tree
             expanded_nodes = cur_state.expand()

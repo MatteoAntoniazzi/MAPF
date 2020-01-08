@@ -12,7 +12,7 @@ from Utilities.Map import *
 import time
 
 
-def start_simulation(start_menu, frame, algorithm, independence_detection, map_number, heuristic, objective_function):
+def prepare_simulation(start_menu, frame, algorithm, independence_detection, map_number, heuristic, objective_function):
 
     map = get_map(map_number)
     agents = get_agents(map_number, map)
@@ -22,11 +22,11 @@ def start_simulation(start_menu, frame, algorithm, independence_detection, map_n
 
     solver = get_solver(algorithm, heuristic, objective_function, independence_detection)
     print("Solver --> ", solver)
-    paths = solver.solve(problem_instance, verbose=True)
+    paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
 
     print("Precessed Time {:.2f} seconds.".format(time.time() - start_time))
 
-    problem_instance.plot_on_gui(start_menu, frame, paths)
+    problem_instance.plot_on_gui(start_menu, frame, paths, output_infos)
 
 
 def get_solver(algorithm, heuristics, objective_function, independence_detection):

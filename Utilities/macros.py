@@ -9,7 +9,7 @@ SETTINGS_FRAME_HEIGHT = 700
 
 SIMULATION_FRAME_WIDTH_AND_HEIGHT = 700
 
-MAP_FRAME_WIDTH_AND_HEIGHT = SIMULATION_FRAME_WIDTH_AND_HEIGHT-50
+MAP_FRAME_WIDTH_AND_HEIGHT = SIMULATION_FRAME_WIDTH_AND_HEIGHT-75
 
 
 def get_frame_dimension(n_row, n_col):
@@ -20,8 +20,8 @@ def get_frame_dimension(n_row, n_col):
         frame_height = (MAP_FRAME_WIDTH_AND_HEIGHT/n_col) * n_row
         frame_width = MAP_FRAME_WIDTH_AND_HEIGHT
     else:
-        frame_height = 650
-        frame_width = 650
+        frame_height = MAP_FRAME_WIDTH_AND_HEIGHT
+        frame_width = MAP_FRAME_WIDTH_AND_HEIGHT
     return frame_width, frame_height
 
     #

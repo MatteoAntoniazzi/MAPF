@@ -26,7 +26,7 @@ class SolverCooperativeAStar(MAPFSolver):
         super().__init__(heuristics_str, objective_function)
         self._reservation_table = None
 
-    def solve(self, problem_instance, verbose=False, print_output=True):
+    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
         Solve the MAPF problem using the Cooperative A* algorithm returning the paths as lists of list of (x, y)
         positions.
@@ -51,6 +51,15 @@ class SolverCooperativeAStar(MAPFSolver):
         if print_output:
             print("Total time: ", max([len(path)-1 for path in paths]),
                   " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
+
+        if return_infos:
+            output_infos = {
+                "sum_of_costs": sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]),
+                "makespan": max([len(path)-1 for path in paths]),
+                "expanded_nodes": 0
+            }
+            return paths, output_infos
+
         return paths
 
     def __str__(self):

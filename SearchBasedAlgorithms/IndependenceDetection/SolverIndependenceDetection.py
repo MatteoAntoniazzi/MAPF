@@ -25,7 +25,7 @@ class SolverIndependenceDetection(MAPFSolver):
         self._problems = []
         self._paths = []
 
-    def solve(self, problem_instance, verbose=False, print_output=True):
+    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
         Solve the MAPF problem using the desired algorithm with Independence detection, returning the path as lists of
         list of (x, y) positions.
@@ -45,6 +45,15 @@ class SolverIndependenceDetection(MAPFSolver):
         if print_output:
             print("Total time: ", max([len(path)-1 for path in self._paths]),
                   " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in self._paths]))
+
+        if return_infos:
+            output_infos = {
+                "sum_of_costs": sum([len(path)-GOAL_OCCUPATION_TIME for path in self._paths]),
+                "makespan": max([len(path)-1 for path in self._paths]),
+                "expanded_nodes": 0
+            }
+            return self._paths, output_infos
+
         return self._paths
 
     def initialize_paths(self, problem_instance):

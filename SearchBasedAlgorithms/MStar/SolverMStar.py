@@ -26,7 +26,7 @@ class SolverMStar(MAPFSolver):
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
-    def solve(self, problem_instance, verbose=False, print_output=True):
+    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
         Solve the MAPF problem using the M* algorithm returning the paths as lists of list of (x, y) positions.
         It start following the optimal policy and each time a conflict occur it updates the collision set and back
@@ -48,6 +48,15 @@ class SolverMStar(MAPFSolver):
                 if print_output:
                     print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
                           " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
+
+                if return_infos:
+                    output_infos = {
+                        "sum_of_costs": cur_state.g_value(),
+                        "makespan": cur_state.time_step(),
+                        "expanded_nodes": self._n_of_expanded_nodes
+                    }
+                    return cur_state.get_paths_to_parent(), output_infos
+
                 return cur_state.get_paths_to_parent()
 
             expanded_nodes = cur_state.expand(verbose=verbose)

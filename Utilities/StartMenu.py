@@ -44,7 +44,6 @@ class StartMenu:
 
         self.buttons_list = []
 
-
         self.initialize_menu_bar()
         self.initialize_menu()
         self.do_loop()
@@ -130,19 +129,19 @@ class StartMenu:
             self.buttons_list.append(b)
             b.pack(anchor=W)
 
-        start_button = Button(canvas, text="START", command=self.start_function)
+        prepare_button = Button(canvas, text="PREPARE", command=self.prepare_simulation_function)
 
-        start_button.pack(anchor=E)
+        prepare_button.pack(anchor=E)
 
-    def start_function(self):
+    def prepare_simulation_function(self):
         print(self.selected_algorithm_var.get(), self.independence_detection_var.get(),
               self.selected_map_var.get(), self.selected_heuristic_var.get(),
               self.selected_obj_fun_var.get())
         for radio_button in self.buttons_list:
             radio_button.configure(state=DISABLED)
-        start_simulation(self, self.simulation_frame, self.selected_algorithm_var.get(), self.independence_detection_var.get(),
-                         self.selected_map_var.get(), self.selected_heuristic_var.get(),
-                         self.selected_obj_fun_var.get())
+        prepare_simulation(self, self.simulation_frame, self.selected_algorithm_var.get(), self.independence_detection_var.get(),
+                           self.selected_map_var.get(), self.selected_heuristic_var.get(),
+                           self.selected_obj_fun_var.get())
 
     def initialize_menu_bar(self):
         menubar = Menu(self.root)

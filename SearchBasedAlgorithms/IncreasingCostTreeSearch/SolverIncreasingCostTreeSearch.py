@@ -18,7 +18,7 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
-    def solve(self, problem_instance, verbose=False, print_output=True):
+    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
         Solve the MAPF problem using the ICTS algorithm returning the paths as lists of list of (x, y) positions.
         """
@@ -39,6 +39,13 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
                 if print_output:
                     print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
                           " Total time: ", max([len(path)-1 for path in solution]), " Total cost:", cur_state.total_cost())
+                if return_infos:
+                    output_infos = {
+                        "sum_of_costs": cur_state.g_value(),
+                        "makespan": cur_state.time_step(),
+                        "expanded_nodes": self._n_of_expanded_nodes
+                    }
+                    return cur_state.get_paths_to_parent(), output_infos
                 return solution
 
             if not self._closed_list.contains_node(cur_state):

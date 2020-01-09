@@ -25,6 +25,12 @@ class StartMenu:
         self.simulation_frame.pack_propagate(False)
         self.simulation_frame.pack(fill=None, expand=False, side=LEFT)
 
+        self.choose_map_frame = Frame(self.settings_frame, bg="yellow")
+        self.choose_map_frame.pack(fill=Y, padx=10, pady=2, side=LEFT)
+
+        self.choose_map_canvas = Canvas(self.choose_map_frame, width="100", bg="purple")
+        self.choose_map_canvas.pack(fill=Y, padx=10, pady=2, side=LEFT)
+
         self.images_list = []
 
         self.selected_algorithm_var = StringVar()
@@ -54,33 +60,31 @@ class StartMenu:
         button.pack()
 
     def initialize_menu(self):
-        w = Canvas(self.settings_frame)
+        self.map_list_frame()
+
+        w = Frame(self.settings_frame)
         self.initialize_left_part(w)
         w.pack(fill=Y, padx=20, pady=5, side=LEFT)
 
-        w = Canvas(self.settings_frame)
-        self.initialize_center_part(w)
-        w.pack(fill=Y, padx=20, pady=5, side=LEFT)
-
-        w = Canvas(self.settings_frame)
+        w = Frame(self.settings_frame)
         self.initialize_right_part(w)
         w.pack(fill=Y, padx=20, pady=5, side=LEFT)
 
-    def initialize_left_part(self, canvas):
+    def initialize_left_part(self, frame):
 
-        lbl_title = Label(canvas, text="ALGORITHM", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(frame, text="ALGORITHM", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
         for text, mode in ALGORITHMS_MODES:
-            b = Radiobutton(canvas, text=text, variable=self.selected_algorithm_var, value=mode,
+            b = Radiobutton(frame, text=text, variable=self.selected_algorithm_var, value=mode,
                             command=self.algorithm_selection)
             self.buttons_list.append(b)
             b.pack(anchor=W)
 
-        lbl_title = Label(canvas, text="INDEPENDENCE DETECTION", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(frame, text="INDEPENDENCE DETECTION", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
-        id_button = Checkbutton(canvas, text="Independence Detection", variable=self.independence_detection_var,
+        id_button = Checkbutton(frame, text="Independence Detection", variable=self.independence_detection_var,
                                 onvalue=True, offvalue=False, height=0, width=25, command=self.independence_selection)
         self.buttons_list.append(id_button)
         id_button.pack(anchor=W)
@@ -91,18 +95,37 @@ class StartMenu:
     def independence_selection(self):
         print(self.independence_detection_var.get())
 
-    def initialize_center_part(self, canvas):
+    def on_configure(self, event):
+        # update scrollregion after starting 'mainloop'
+        # when all widgets are in canvas
+        self.choose_map_canvas.configure(scrollregion=self.choose_map_canvas.bbox('all'))
+
+    def map_list_frame(self):
+
+        scrollbar = Scrollbar(self.choose_map_frame, command=self.choose_map_canvas.yview)
+        scrollbar.pack(side=RIGHT, fill='y')
+
+        self.choose_map_canvas.configure(yscrollcommand=scrollbar.set)
+
+        # update scrollregion after starting 'mainloop'
+        # when all widgets are in canvas
+        self.choose_map_canvas.bind('<Configure>', self.on_configure)
+
+        # --- put frame in canvas ---
+
+        frame = Frame(self.choose_map_canvas)
+        self.choose_map_canvas.create_window((0, 0), window=frame, anchor='nw')
 
         for png_path in PNG_PATH_LIST:
             load = Image.open(png_path)
-            load = load.resize((90, 90), Image.ANTIALIAS)
+            load = load.resize((70, 70), Image.ANTIALIAS)
             self.images_list.append(ImageTk.PhotoImage(load))
 
-        lbl_title = Label(canvas, text="MAP", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(frame, text="MAP", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
         for i, img in enumerate(self.images_list):
-            b = Radiobutton(canvas, image=img, height=100, width=10, variable=self.selected_map_var,
+            b = Radiobutton(frame, image=img, height=80, width=10, variable=self.selected_map_var,
                             value=i, command=self.map_selection)  # WIDTH: 10 su Linux, 100 su Ubuntu
             self.buttons_list.append(b)
 
@@ -111,25 +134,25 @@ class StartMenu:
     def map_selection(self):
         pass
 
-    def initialize_right_part(self, canvas):
-        lbl_title = Label(canvas, text="HEURISTIC", font=("Helvetica", 16), fg="purple")
+    def initialize_right_part(self, frame):
+        lbl_title = Label(frame, text="HEURISTIC", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
         for text, mode in HEURISTICS_MODES:
-            b = Radiobutton(canvas, text=text, variable=self.selected_heuristic_var, value=mode)
+            b = Radiobutton(frame, text=text, variable=self.selected_heuristic_var, value=mode)
             self.buttons_list.append(b)
 
             b.pack(anchor=W)
 
-        lbl_title = Label(canvas, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(frame, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
         for text, mode in OBJECTIVE_FUNCTION_MODES:
-            b = Radiobutton(canvas, text=text, variable=self.selected_obj_fun_var, value=mode)
+            b = Radiobutton(frame, text=text, variable=self.selected_obj_fun_var, value=mode)
             self.buttons_list.append(b)
             b.pack(anchor=W)
 
-        prepare_button = Button(canvas, text="PREPARE", command=self.prepare_simulation_function)
+        prepare_button = Button(frame, text="PREPARE", command=self.prepare_simulation_function)
 
         prepare_button.pack(anchor=E)
 

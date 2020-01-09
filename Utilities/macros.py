@@ -45,7 +45,16 @@ ALGORITHMS_MODES = [
     ("M*", "M*"),
 ]
 
-PNG_PATH_LIST = ["./Maps/pngs/room-32-32-4.png", "./Maps/pngs/Berlin_1_256.png"]
+PNG_PATH_LIST = ["./Maps/pngs/Berlin_1_256.png", "./Maps/pngs/Boston_0_256.png", "./Maps/pngs/brc202d.png",
+                 "./Maps/pngs/den312d.png", "./Maps/pngs/den520d.png", "./Maps/pngs/empty-8-8.png",
+                 "./Maps/pngs/empty-16-16.png", "./Maps/pngs/empty-32-32.png", "./Maps/pngs/empty-48-48.png",
+                 "./Maps/pngs/ht_chantry.png", "./Maps/pngs/ht_mansion_n.png", "./Maps/pngs/lak303d.png",
+                 "./Maps/pngs/lt_gallowstemplar_n.png", "./Maps/pngs/maze-32-32-2.png", "./Maps/pngs/maze-32-32-4.png",
+                 "./Maps/pngs/maze-128-128-2.png", "./Maps/pngs/maze-128-128-10.png", "./Maps/pngs/orz900d.png",
+                 "./Maps/pngs/ost003d.png", "./Maps/pngs/Paris_1_256.png", "./Maps/pngs/random-32-32-10.png",
+                 "./Maps/pngs/random-32-32-20.png", "./Maps/pngs/random-64-64-10.png",
+                 "./Maps/pngs/random-64-64-20.png", "./Maps/pngs/room-32-32-4.png", "./Maps/pngs/room-64-64-8.png",
+                 "./Maps/pngs/room-64-64-16.png", "./Maps/pngs/w_woundedcoast.png"]
 
 HEURISTICS_MODES = [
     ("Manhattan Distance", "Manhattan"),

@@ -19,13 +19,13 @@ class Visualize:
 
         self._frame_width, self._frame_height = get_frame_dimension(map.get_height(), map.get_width())
 
-        self.visualize_frame = Frame(self.frame, bg="blue")
+        self.visualize_frame = Frame(self.frame)
         self.visualize_frame.pack(ipady=5)
 
-        self.visualize_canvas = Canvas(self.visualize_frame, bg="black")
+        self.visualize_canvas = Canvas(self.visualize_frame)
         self.visualize_canvas.pack(ipady=5)
 
-        self.map_canvas = Canvas(self.visualize_canvas, width=self._frame_width, height=self._frame_height, bg="green")
+        self.map_canvas = Canvas(self.visualize_canvas, width=self._frame_width, height=self._frame_height)
 
         self.xsb = Scrollbar(self.visualize_canvas, orient="horizontal", command=self.map_canvas.xview)
         self.ysb = Scrollbar(self.visualize_canvas, orient="vertical", command=self.map_canvas.yview)
@@ -47,7 +47,7 @@ class Visualize:
         # windows scroll
         self.map_canvas.bind("<MouseWheel>", self.zoomer)
 
-        self.infos_and_buttons_canvas = Canvas(self.visualize_frame, bg="yellow")
+        self.infos_and_buttons_canvas = Canvas(self.visualize_frame)
         self.infos_and_buttons_canvas.pack(fill=X)
         self.infos_txt_var = StringVar()
         self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT, padx=5, pady=2,
@@ -91,6 +91,7 @@ class Visualize:
         self.vis_cells = np.zeros((self._map.get_height(), self._map.get_width()), dtype=int)
         self.agents_ovals = []
         self.agents_colors = []
+        self.text_list = []
 
         # For animation
         self.animating = True
@@ -128,10 +129,8 @@ class Visualize:
         for i, y in enumerate(self.y_moves):
             self.y_moves[i] *= 1.1
 
-        # x1, y1, x2, y2 = self.map_canvas.coords(self.vis_cells[0][0])
-        # self.dinamic_cell_w = x2 - x1
-        # self.dinamic_cell_h = y2 - y1
-
+        for i, txt in enumerate(self.text_list):
+            self.map_canvas.itemconfig(self.text_list[i], font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)))
 
     def zoomerM(self, event):
         self.map_canvas.scale("all", event.x, event.y, 0.9, 0.9)
@@ -145,9 +144,8 @@ class Visualize:
         for i, y in enumerate(self.y_moves):
             self.y_moves[i] *= 0.9
 
-        # x1, y1, x2, y2 = self.map_canvas.coords(self.vis_cells[0][0])
-        # self.dinamic_cell_w = x2 - x1
-        # self.dinamic_cell_h = y2 - y1
+        for i, txt in enumerate(self.text_list):
+            self.map_canvas.itemconfig(self.text_list[i], font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)))
 
     def initialize_window(self):
         self.draw_world()
@@ -158,13 +156,11 @@ class Visualize:
         if not self.animation_speed <= (SPEED_1X/10):
             self.animation_speed = self.animation_speed - SPEED_1X/10
             self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
-            print(self.animation_speed)
 
     def speed_up_button(self):
         if not self.animation_speed >= (SPEED_1X*2):
             self.animation_speed = self.animation_speed + SPEED_1X/10
             self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
-            print(self.animation_speed)
 
     def start_function(self):
         self.start_button.configure(state=DISABLED)
@@ -216,12 +212,14 @@ class Visualize:
                                                                  outline='black', fill=random_color))
             self.map_canvas.itemconfig(self.vis_cells[s_row][s_col], fill=random_color, width=1.5)
             self.map_canvas.itemconfig(self.vis_cells[g_row][g_col], fill=random_color, stipple="gray50", width=1.5)
-            self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w / 2,
+            self.text_list.append(self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w / 2,
                                         FRAME_MARGIN + self.cell_h * s_row + self.cell_h / 2,
-                                        font=("Purisa", 12), text="S")
-            self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * g_col + self.cell_w / 2,
+                                        font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)),
+                                        text="S"))
+            self.text_list.append(self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * g_col + self.cell_w / 2,
                                         FRAME_MARGIN + self.cell_h * g_row + self.cell_h / 2,
-                                        font=("Purisa", 12), text="G")
+                                        font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)),
+                                        text="G"))
 
     def draw_paths(self, paths):
         for i, path in enumerate(paths):

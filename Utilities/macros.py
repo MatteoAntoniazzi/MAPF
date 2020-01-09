@@ -24,16 +24,18 @@ def get_frame_dimension(n_row, n_col):
         frame_width = MAP_FRAME_WIDTH_AND_HEIGHT
     return frame_width, frame_height
 
-    #
-    # if n_row < 15 and n_col < 24:
-    #     frame_height = 50 * n_row
-    #     frame_width = 50 * n_col
-    # elif n_row < 25 and n_col < 40:
-    #     frame_height = 30 * n_row
-    #     frame_width = 30 * n_col
-    # else:
-    #     frame_height = 750
-    #     frame_width = 1200
+
+def get_font_dimension(cell_w, cell_h):
+    if cell_w < 3 or cell_h < 3:
+        return 2
+    elif cell_w < 6 or cell_h < 6:
+        return 4
+    elif cell_w < 11 or cell_h < 11:
+        return 6
+    elif cell_w < 30 or cell_h < 30:
+        return 10
+    else:
+        return 14
 
 
 ALGORITHMS_MODES = [

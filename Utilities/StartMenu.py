@@ -11,24 +11,24 @@ class StartMenu:
         self.root.maxsize(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
 
         # EXTERNAL FRAME
-        self.frame = Frame(self.root, width=MAIN_WINDOW_WIDTH, height=MAIN_WINDOW_HEIGHT, bg="yellow")
+        self.frame = Frame(self.root, width=MAIN_WINDOW_WIDTH, height=MAIN_WINDOW_HEIGHT)
         self.frame.pack()
 
         # SETTINGS FRAME
-        self.settings_frame = Frame(self.frame, width=SETTINGS_FRAME_WIDTH, height=SETTINGS_FRAME_HEIGHT, bg="blue")
+        self.settings_frame = Frame(self.frame, width=SETTINGS_FRAME_WIDTH, height=SETTINGS_FRAME_HEIGHT)
         self.settings_frame.pack_propagate(False)
         self.settings_frame.pack(fill=Y, expand=False, side=LEFT)
 
         # SIMULATION FRAME
         self.simulation_frame = Frame(self.frame, width=SIMULATION_FRAME_WIDTH_AND_HEIGHT,
-                                      height=SIMULATION_FRAME_WIDTH_AND_HEIGHT, bg="red")
+                                      height=SIMULATION_FRAME_WIDTH_AND_HEIGHT)
         self.simulation_frame.pack_propagate(False)
         self.simulation_frame.pack(fill=None, expand=False, side=LEFT)
 
-        self.choose_map_frame = Frame(self.settings_frame, bg="yellow")
+        self.choose_map_frame = Frame(self.settings_frame)
         self.choose_map_frame.pack(fill=Y, padx=10, pady=2, side=LEFT)
 
-        self.choose_map_canvas = Canvas(self.choose_map_frame, width="100", bg="purple")
+        self.choose_map_canvas = Canvas(self.choose_map_frame, width="115")
         self.choose_map_canvas.pack(fill=Y, padx=10, pady=2, side=LEFT)
 
         self.images_list = []

@@ -18,11 +18,36 @@ class Visualize:
         self.animation_speed = SPEED_1X
 
         self._frame_width, self._frame_height = get_frame_dimension(map.get_height(), map.get_width())
-        self.visualize_canvas = Canvas(self.frame)
-        self.map_canvas = Canvas(self.visualize_canvas, width=self._frame_width, height=self._frame_height, bg="green")
-        self.map_canvas.pack()
 
-        self.infos_and_buttons_canvas = Canvas(self.visualize_canvas, bg="yellow")
+        self.visualize_frame = Frame(self.frame, bg="blue")
+        self.visualize_frame.pack(ipady=5)
+
+        self.visualize_canvas = Canvas(self.visualize_frame, bg="black")
+        self.visualize_canvas.pack(ipady=5)
+
+        self.map_canvas = Canvas(self.visualize_canvas, width=self._frame_width, height=self._frame_height, bg="green")
+
+        self.xsb = Scrollbar(self.visualize_canvas, orient="horizontal", command=self.map_canvas.xview)
+        self.ysb = Scrollbar(self.visualize_canvas, orient="vertical", command=self.map_canvas.yview)
+        self.map_canvas.configure(yscrollcommand=self.ysb.set, xscrollcommand=self.xsb.set)
+        self.map_canvas.configure(scrollregion=(0, 0, 1000, 1000))
+
+        self.xsb.grid(row=1, column=0, sticky="ew")
+        self.ysb.grid(row=0, column=1, sticky="ns")
+        self.map_canvas.grid(row=0, column=0, sticky="nsew")
+        self.map_canvas.grid_rowconfigure(0, weight=1)
+        self.map_canvas.grid_columnconfigure(0, weight=1)
+
+        # This is what enables using the mouse:
+        self.map_canvas.bind("<ButtonPress-1>", self.move_start)
+        self.map_canvas.bind("<B1-Motion>", self.move_move)
+        # linux scroll
+        self.map_canvas.bind("<Button-4>", self.zoomerP)
+        self.map_canvas.bind("<Button-5>", self.zoomerM)
+        # windows scroll
+        self.map_canvas.bind("<MouseWheel>", self.zoomer)
+
+        self.infos_and_buttons_canvas = Canvas(self.visualize_frame, bg="yellow")
         self.infos_and_buttons_canvas.pack(fill=X)
         self.infos_txt_var = StringVar()
         self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT, padx=5, pady=2,
@@ -61,8 +86,8 @@ class Visualize:
                                         command=self.speed_down_button)
         self.speed_down_button.pack(side=RIGHT, padx=(20, 0))
 
-        self.visualize_canvas.pack(ipady=10)
         self.cell_h, self.cell_w = self.get_cell_size()
+        self.dinamic_cell_h, self.dinamic_cell_w = self.cell_h, self.cell_w
         self.vis_cells = np.zeros((self._map.get_height(), self._map.get_width()), dtype=int)
         self.agents_ovals = []
         self.agents_colors = []
@@ -74,6 +99,55 @@ class Visualize:
         self.steps_count = [N_OF_STEPS] * len(self._agents)
         self.x_moves = [0] * len(self._agents)
         self.y_moves = [0] * len(self._agents)
+
+    # move
+    def move_start(self, event):
+        self.map_canvas.scan_mark(event.x, event.y)
+
+    def move_move(self, event):
+        self.map_canvas.scan_dragto(event.x, event.y, gain=1)
+
+    # windows zoom
+    def zoomer(self, event):
+        if (event.delta > 0):
+            self.map_canvas.scale("all", event.x, event.y, 1.1, 1.1)
+        elif (event.delta < 0):
+            self.map_canvas.scale("all", event.x, event.y, 0.9, 0.9)
+        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
+
+    # linux zoom
+    def zoomerP(self, event):
+        self.map_canvas.scale("all", event.x, event.y, 1.1, 1.1)
+        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
+        self.dinamic_cell_w *= 1.1
+        self.dinamic_cell_h *= 1.1
+
+        for i, x in enumerate(self.x_moves):
+            self.x_moves[i] *= 1.1
+
+        for i, y in enumerate(self.y_moves):
+            self.y_moves[i] *= 1.1
+
+        # x1, y1, x2, y2 = self.map_canvas.coords(self.vis_cells[0][0])
+        # self.dinamic_cell_w = x2 - x1
+        # self.dinamic_cell_h = y2 - y1
+
+
+    def zoomerM(self, event):
+        self.map_canvas.scale("all", event.x, event.y, 0.9, 0.9)
+        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
+        self.dinamic_cell_w *= 0.9
+        self.dinamic_cell_h *= 0.9
+
+        for i, x in enumerate(self.x_moves):
+            self.x_moves[i] *= 0.9
+
+        for i, y in enumerate(self.y_moves):
+            self.y_moves[i] *= 0.9
+
+        # x1, y1, x2, y2 = self.map_canvas.coords(self.vis_cells[0][0])
+        # self.dinamic_cell_w = x2 - x1
+        # self.dinamic_cell_h = y2 - y1
 
     def initialize_window(self):
         self.draw_world()
@@ -143,9 +217,11 @@ class Visualize:
             self.map_canvas.itemconfig(self.vis_cells[s_row][s_col], fill=random_color, width=1.5)
             self.map_canvas.itemconfig(self.vis_cells[g_row][g_col], fill=random_color, stipple="gray50", width=1.5)
             self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w / 2,
-                                        FRAME_MARGIN + self.cell_h * s_row + self.cell_h / 2, font=("Purisa", 12), text="S")
+                                        FRAME_MARGIN + self.cell_h * s_row + self.cell_h / 2,
+                                        font=("Purisa", 12), text="S")
             self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * g_col + self.cell_w / 2,
-                                        FRAME_MARGIN + self.cell_h * g_row + self.cell_h / 2, font=("Purisa", 12), text="G")
+                                        FRAME_MARGIN + self.cell_h * g_row + self.cell_h / 2,
+                                        font=("Purisa", 12), text="G")
 
     def draw_paths(self, paths):
         for i, path in enumerate(paths):
@@ -175,8 +251,8 @@ class Visualize:
                                                    fill=color, stipple="", width=1.5)
                     if self.path_to_visit[i]:
                         next_position = self.path_to_visit[i][0]
-                        self.x_moves[i] = float((next_position[0] - current_position[0]) * self.cell_w) / N_OF_STEPS
-                        self.y_moves[i] = float((next_position[1] - current_position[1]) * self.cell_h) / N_OF_STEPS
+                        self.x_moves[i] = float((next_position[0] - current_position[0]) * self.dinamic_cell_w) / N_OF_STEPS
+                        self.y_moves[i] = float((next_position[1] - current_position[1]) * self.dinamic_cell_h) / N_OF_STEPS
                         self.map_canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
                         self.steps_count[i] = 1
                 if not self.path_to_visit[i]:

@@ -30,7 +30,7 @@ class Visualize:
         self.xsb = Scrollbar(self.visualize_canvas, orient="horizontal", command=self.map_canvas.xview)
         self.ysb = Scrollbar(self.visualize_canvas, orient="vertical", command=self.map_canvas.yview)
         self.map_canvas.configure(yscrollcommand=self.ysb.set, xscrollcommand=self.xsb.set)
-        self.map_canvas.configure(scrollregion=(0, 0, 1000, 1000))
+        self.map_canvas.configure(scrollregion=(0, 0, 100, 100))
 
         self.xsb.grid(row=1, column=0, sticky="ew")
         self.ysb.grid(row=0, column=1, sticky="ns")
@@ -72,7 +72,6 @@ class Visualize:
                                       command=self.speed_up_button)
         self.speed_up_button.pack(side=RIGHT, padx=(0, 20))
 
-
         self.speed_txt_var = StringVar()
         self.speed_txt = Label(self.infos_and_buttons_canvas, textvariable=self.speed_txt_var, justify=LEFT,
                            font=("Lucida Console", 10))
@@ -85,6 +84,13 @@ class Visualize:
         self.speed_down_button = Button(self.infos_and_buttons_canvas, image=self.speed_down_img,
                                         command=self.speed_down_button)
         self.speed_down_button.pack(side=RIGHT, padx=(20, 0))
+
+        self.time_step_counter = -1
+        self.time_step_txt_var = StringVar()
+        self.time_step_txt = Label(self.infos_and_buttons_canvas, textvariable=self.time_step_txt_var, justify=LEFT,
+                                   font=("Lucida Console", 10))
+        self.time_step_txt_var.set("TS: " + str(self.time_step_counter))
+        self.time_step_txt.pack(side=RIGHT, padx=2)
 
         self.cell_h, self.cell_w = self.get_cell_size()
         self.dinamic_cell_h, self.dinamic_cell_w = self.cell_h, self.cell_w
@@ -237,11 +243,17 @@ class Visualize:
     def animation_function(self):
         if self.animating:
             self.frame.after(int(MAX_SPEED - self.animation_speed), self.animation_function)
+            inc_time_step = True
             for i, agent in enumerate(self.agents_ovals):
                 if self.steps_count[i] < N_OF_STEPS:
                     self.map_canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
                     self.steps_count[i] += 1
                 elif self.path_to_visit[i]:
+                    if inc_time_step:
+                        self.time_step_counter += 1
+                        self.time_step_txt_var.set("TS: " + str(self.time_step_counter))
+
+                        inc_time_step = False
                     current_position = self.path_to_visit[i].pop(0)
                     if self._footsteps:
                         color = self.agents_colors[i]
@@ -255,6 +267,7 @@ class Visualize:
                         self.steps_count[i] = 1
                 if not self.path_to_visit[i]:
                     self.map_canvas.delete(self.agents_ovals[i])
+
             if not [i for i in self.path_to_visit if i]:  # For checking that all the arrays are empty
                 self.animating = False
 

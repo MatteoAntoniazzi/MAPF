@@ -47,7 +47,7 @@ class RRAStarHeuristics(Heuristics):
 
             # Invert start with goal
             starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_start(),
-                                             agent.get_goal(), 0, ManhattanHeuristics(self._problem_instance))
+                                             agent.get_goal(), 0, ManhattanHeuristics(self._problem_instance), 1)
 
             self._open_lists[goal_pos].add(starter_state)
             self.resume_rra_star(agent.get_start(), goal_pos)

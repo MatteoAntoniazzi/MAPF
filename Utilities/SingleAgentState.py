@@ -136,6 +136,6 @@ class SingleAgentState(State):
 
     def __str__(self):
         string = ''
-        string = string + ' [AGENT ID: ' + str(self._agent_id) + ' F: ' + str(self.f_value()) + ' ' + str(self._position) + ' TS:' + str(self.time_step()) \
-                        + '] '
+        string = string + ' [AGENT ID: ' + str(self._agent_id) + ' F: ' + str(self.f_value()) + ' '\
+                 + str(self._position) + ' TS:' + str(self.time_step()) + '] '
         return string

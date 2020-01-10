@@ -7,8 +7,8 @@ from Utilities.macros import *
 
 
 class AStarSingleAgent(MAPFSolver):
-    def __init__(self, heuristics_str):
-        super().__init__(heuristics_str)
+    def __init__(self, solver_settings, objective_function):
+        super().__init__(solver_settings, objective_function)
 
     def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
@@ -17,16 +17,16 @@ class AStarSingleAgent(MAPFSolver):
         """
         paths = []
         for agent in problem_instance.get_agents():
-            a_star = AStar(self._heuristics_str)
+            a_star = AStar(self._solver_settings)
             path = a_star.find_path(problem_instance.get_map(), agent.get_start(), agent.get_goal())
             paths.append(path)
         if print_output:
             print("Total time: ", max([len(path)-1 for path in paths]),
-                  " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
+                  " Total cost:", sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in paths]))
 
         if return_infos:
             output_infos = {
-                "sum_of_costs": sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]),
+                "sum_of_costs": sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in paths]),
                 "makespan": max([len(path)-1 for path in paths]),
                 "expanded_nodes": 0
             }
@@ -35,4 +35,4 @@ class AStarSingleAgent(MAPFSolver):
         return paths
 
     def __str__(self):
-        return "A* Single Agent Solver using " + self._heuristics_str + " heuristics"
+        return "A* Single Agent Solver using " + self._solver_settings.get_heuristics_str() + " heuristics"

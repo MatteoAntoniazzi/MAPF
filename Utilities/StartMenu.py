@@ -144,7 +144,7 @@ class StartMenu:
         permanence_in_goal_canvas = Canvas(frame)
         permanence_in_goal_canvas.pack()
 
-        load = PIL.Image.open("Images/speed_up.png")
+        load = PIL.Image.open("Images/permanence_up.png")
         load = load.resize((30, 30), PIL.Image.ANTIALIAS)
         self.goal_occupation_time_up_img = PIL.ImageTk.PhotoImage(load)
         self.goal_occupation_time_up_button = Button(permanence_in_goal_canvas, image=self.goal_occupation_time_up_img,
@@ -155,7 +155,7 @@ class StartMenu:
                                               font=("Lucida Console", 10))
         self.goal_occupation_time_txt.pack(side=RIGHT, padx=10)
 
-        load = PIL.Image.open("Images/speed_down.png")
+        load = PIL.Image.open("Images/permanence_down.png")
         load = load.resize((30, 30), PIL.Image.ANTIALIAS)
         self.goal_occupation_time_down_img = PIL.ImageTk.PhotoImage(load)
         self.goal_occupation_time_down_button = Button(permanence_in_goal_canvas, image=self.goal_occupation_time_down_img,

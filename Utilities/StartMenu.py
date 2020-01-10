@@ -1,4 +1,6 @@
 from tkinter import *
+
+import PIL
 from PIL import Image, ImageTk
 from Utilities.macros import *
 from Utilities.start_simulation import *
@@ -21,7 +23,8 @@ class StartMenu:
 
         # SIMULATION FRAME
         self.simulation_frame = Frame(self.frame, width=SIMULATION_FRAME_WIDTH_AND_HEIGHT,
-                                      height=SIMULATION_FRAME_WIDTH_AND_HEIGHT)
+                                      height=SIMULATION_FRAME_WIDTH_AND_HEIGHT, highlightbackground="#AAAAAA",
+                                      highlightthickness=1)
         self.simulation_frame.pack_propagate(False)
         self.simulation_frame.pack(fill=None, expand=False, side=LEFT)
 
@@ -48,6 +51,9 @@ class StartMenu:
         self.selected_obj_fun_var = StringVar()
         self.selected_obj_fun_var.set("SOC")  # initialize
 
+        self.selected_goal_occupation_time = IntVar()
+        self.selected_goal_occupation_time.set(3)
+
         self.buttons_list = []
 
         self.initialize_menu_bar()
@@ -60,47 +66,17 @@ class StartMenu:
         button.pack()
 
     def initialize_menu(self):
-        self.map_list_frame()
+        self.first_column_frame_initialization()
 
         w = Frame(self.settings_frame)
-        self.initialize_left_part(w)
+        self.second_column_frame_initialization(w)
         w.pack(fill=Y, padx=20, pady=5, side=LEFT)
 
-        w = Frame(self.settings_frame)
-        self.initialize_right_part(w)
-        w.pack(fill=Y, padx=20, pady=5, side=LEFT)
+        # w = Frame(self.settings_frame)
+        # self.initialize_right_part(w)
+        # w.pack(fill=Y, padx=20, pady=5, side=LEFT)
 
-    def initialize_left_part(self, frame):
-
-        lbl_title = Label(frame, text="ALGORITHM", font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
-
-        for text, mode in ALGORITHMS_MODES:
-            b = Radiobutton(frame, text=text, variable=self.selected_algorithm_var, value=mode,
-                            command=self.algorithm_selection)
-            self.buttons_list.append(b)
-            b.pack(anchor=W)
-
-        lbl_title = Label(frame, text="INDEPENDENCE DETECTION", font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
-
-        id_button = Checkbutton(frame, text="Independence Detection", variable=self.independence_detection_var,
-                                onvalue=True, offvalue=False, height=0, width=25, command=self.independence_selection)
-        self.buttons_list.append(id_button)
-        id_button.pack(anchor=W)
-
-    def algorithm_selection(self):
-        print(self.selected_algorithm_var.get())
-
-    def independence_selection(self):
-        print(self.independence_detection_var.get())
-
-    def on_configure(self, event):
-        # update scrollregion after starting 'mainloop'
-        # when all widgets are in canvas
-        self.choose_map_canvas.configure(scrollregion=self.choose_map_canvas.bbox('all'))
-
-    def map_list_frame(self):
+    def first_column_frame_initialization(self):
 
         scrollbar = Scrollbar(self.choose_map_frame, command=self.choose_map_canvas.yview)
         scrollbar.pack(side=RIGHT, fill='y')
@@ -125,16 +101,32 @@ class StartMenu:
         lbl_title.pack(anchor=W, ipady=10)
 
         for i, img in enumerate(self.images_list):
-            b = Radiobutton(frame, image=img, height=80, width=10, variable=self.selected_map_var,
-                            value=i, command=self.map_selection)  # WIDTH: 10 su Linux, 100 su Ubuntu
+            b = Radiobutton(frame, image=img, height=80, width=10, variable=self.selected_map_var, value=i)
+            # WIDTH: 10 su Linux, 100 su Ubuntu
             self.buttons_list.append(b)
 
             b.pack(anchor=W)
 
-    def map_selection(self):
-        pass
+    def on_configure(self, event):
+        self.choose_map_canvas.configure(scrollregion=self.choose_map_canvas.bbox('all'))
 
-    def initialize_right_part(self, frame):
+    def second_column_frame_initialization(self, frame):
+        lbl_title = Label(frame, text="ALGORITHM", font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        for text, mode in ALGORITHMS_MODES:
+            b = Radiobutton(frame, text=text, variable=self.selected_algorithm_var, value=mode)
+            self.buttons_list.append(b)
+            b.pack(anchor=W)
+
+        lbl_title = Label(frame, text="INDEPENDENCE DETECTION", font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        id_button = Checkbutton(frame, text="Independence Detection", variable=self.independence_detection_var,
+                                onvalue=True, offvalue=False, height=0, width=25)
+        self.buttons_list.append(id_button)
+        id_button.pack(anchor=W)
+
         lbl_title = Label(frame, text="HEURISTIC", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
@@ -144,17 +136,48 @@ class StartMenu:
 
             b.pack(anchor=W)
 
-        lbl_title = Label(frame, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(frame, text="PERMANENCE IN GOAL", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
-        for text, mode in OBJECTIVE_FUNCTION_MODES:
-            b = Radiobutton(frame, text=text, variable=self.selected_obj_fun_var, value=mode)
-            self.buttons_list.append(b)
-            b.pack(anchor=W)
+        permanence_in_goal_canvas = Canvas(frame)
+        permanence_in_goal_canvas.pack()
+
+        load = PIL.Image.open("Images/speed_up.png")
+        load = load.resize((30, 30), PIL.Image.ANTIALIAS)
+        self.goal_occupation_time_up_img = PIL.ImageTk.PhotoImage(load)
+        self.goal_occupation_time_up_button = Button(permanence_in_goal_canvas, image=self.goal_occupation_time_up_img,
+                                                     command=self.goal_occupation_time_up_button)
+        self.goal_occupation_time_up_button.pack(side=RIGHT, padx=(0, 20))
+
+        self.goal_occupation_time_txt = Label(permanence_in_goal_canvas, textvariable=self.selected_goal_occupation_time, justify=LEFT,
+                                              font=("Lucida Console", 10))
+        self.goal_occupation_time_txt.pack(side=RIGHT, padx=10)
+
+        load = PIL.Image.open("Images/speed_down.png")
+        load = load.resize((30, 30), PIL.Image.ANTIALIAS)
+        self.goal_occupation_time_down_img = PIL.ImageTk.PhotoImage(load)
+        self.goal_occupation_time_down_button = Button(permanence_in_goal_canvas, image=self.goal_occupation_time_down_img,
+                                                       command=self.goal_occupation_time_down_button)
+        self.goal_occupation_time_down_button.pack(side=RIGHT, padx=(20, 0))
 
         prepare_button = Button(frame, text="PREPARE", command=self.prepare_simulation_function)
+        prepare_button.pack(anchor=E, pady=20)
 
-        prepare_button.pack(anchor=E)
+    # def initialize_right_part(self, frame):
+    #     lbl_title = Label(frame, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
+    #     lbl_title.pack(anchor=W, ipady=10)
+    #
+    #     for text, mode in OBJECTIVE_FUNCTION_MODES:
+    #         b = Radiobutton(frame, text=text, variable=self.selected_obj_fun_var, value=mode)
+    #         self.buttons_list.append(b)
+    #         b.pack(anchor=W)
+
+    def goal_occupation_time_down_button(self):
+        if self.selected_goal_occupation_time.get() > 1:
+            self.selected_goal_occupation_time.set(self.selected_goal_occupation_time.get()-1)
+
+    def goal_occupation_time_up_button(self):
+        self.selected_goal_occupation_time.set(self.selected_goal_occupation_time.get()+1)
 
     def prepare_simulation_function(self):
         print(self.selected_algorithm_var.get(), self.independence_detection_var.get(),
@@ -164,7 +187,7 @@ class StartMenu:
             radio_button.configure(state=DISABLED)
         prepare_simulation(self, self.simulation_frame, self.selected_algorithm_var.get(), self.independence_detection_var.get(),
                            self.selected_map_var.get(), self.selected_heuristic_var.get(),
-                           self.selected_obj_fun_var.get())
+                           self.selected_obj_fun_var.get(), self.selected_goal_occupation_time.get())
 
     def initialize_menu_bar(self):
         menubar = Menu(self.root)

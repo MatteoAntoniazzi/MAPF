@@ -9,8 +9,8 @@ from Heuristics.initialize_heuristics import *
 
 
 class SolverAStarMultiAgent(MAPFSolver):
-    def __init__(self, heuristics_str, objective_function):
-        super().__init__(heuristics_str, objective_function)
+    def __init__(self, heuristics_str, objective_function, goal_occupation_time):
+        super().__init__(heuristics_str, objective_function, goal_occupation_time)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0

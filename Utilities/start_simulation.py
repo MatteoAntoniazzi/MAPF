@@ -12,7 +12,8 @@ from Utilities.Map import *
 import time
 
 
-def prepare_simulation(start_menu, frame, algorithm, independence_detection, map_number, heuristic, objective_function):
+def prepare_simulation(start_menu, frame, algorithm, independence_detection, map_number, heuristic, objective_function,
+                       goal_occupation_time):
 
     map = get_map(map_number)
     agents = get_agents(map_number, map)
@@ -20,7 +21,7 @@ def prepare_simulation(start_menu, frame, algorithm, independence_detection, map
 
     start_time = time.time()
 
-    solver = get_solver(algorithm, heuristic, objective_function, independence_detection)
+    solver = get_solver(algorithm, heuristic, objective_function, independence_detection, goal_occupation_time)
     print("Solver --> ", solver)
     paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
 
@@ -29,17 +30,17 @@ def prepare_simulation(start_menu, frame, algorithm, independence_detection, map
     problem_instance.plot_on_gui(start_menu, frame, paths, output_infos)
 
 
-def get_solver(algorithm, heuristics, objective_function, independence_detection):
+def get_solver(algorithm, heuristics, objective_function, independence_detection, goal_occupation_time):
     switcher = {
-        "Cooperative A*": SolverCooperativeAStar(heuristics, objective_function),
-        "A*": SolverAStarMultiAgent(heuristics, objective_function),
-        "A* with Operator Decomposition": SolverAStarOD(heuristics, objective_function),
-        "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(heuristics, objective_function),
-        "Conflict Based Search": SolverConflictBasedSearch(heuristics, objective_function),
-        "M*": SolverMStar(heuristics, objective_function)
+        "Cooperative A*": SolverCooperativeAStar(heuristics, objective_function, goal_occupation_time),
+        "A*": SolverAStarMultiAgent(heuristics, objective_function, goal_occupation_time),
+        "A* with Operator Decomposition": SolverAStarOD(heuristics, objective_function, goal_occupation_time),
+        "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(heuristics, objective_function, goal_occupation_time),
+        "Conflict Based Search": SolverConflictBasedSearch(heuristics, objective_function, goal_occupation_time),
+        "M*": SolverMStar(heuristics, objective_function, goal_occupation_time)
     }
     if independence_detection:
-        return SolverIndependenceDetection(switcher.get(algorithm), objective_function)
+        return SolverIndependenceDetection(switcher.get(algorithm), objective_function, goal_occupation_time)
     else:
         return switcher.get(algorithm)
 

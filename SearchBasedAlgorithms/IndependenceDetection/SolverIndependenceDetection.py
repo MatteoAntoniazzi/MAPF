@@ -19,8 +19,8 @@ from Utilities.macros import *
 
 
 class SolverIndependenceDetection(MAPFSolver):
-    def __init__(self, solver, objective_function):
-        super().__init__(None, objective_function)
+    def __init__(self, solver, objective_function, goal_occupation_time):
+        super().__init__(None, objective_function, goal_occupation_time)
         self._solver = solver
         self._problems = []
         self._paths = []
@@ -44,11 +44,11 @@ class SolverIndependenceDetection(MAPFSolver):
 
         if print_output:
             print("Total time: ", max([len(path)-1 for path in self._paths]),
-                  " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in self._paths]))
+                  " Total cost:", sum([len(path)-self._goal_occupation_time for path in self._paths]))
 
         if return_infos:
             output_infos = {
-                "sum_of_costs": sum([len(path)-GOAL_OCCUPATION_TIME for path in self._paths]),
+                "sum_of_costs": sum([len(path)-self._goal_occupation_time for path in self._paths]),
                 "makespan": max([len(path)-1 for path in self._paths]),
                 "expanded_nodes": 0
             }

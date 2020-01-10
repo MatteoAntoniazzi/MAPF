@@ -6,10 +6,11 @@ from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDDQueue import MDDQueue
 
 
 class MDD:
-    def __init__(self, map, agent, cost):
+    def __init__(self, map, agent, cost, goal_occupation_time):
         self._map = map
         self._agent = agent
         self._cost = cost
+        self._goal_occupation_time = goal_occupation_time
         self._paths = []
         self._nodes = MDDQueue()
         self.build_mdd()
@@ -33,7 +34,7 @@ class MDD:
 
             if cur_node.time_step() == self._cost:
                 if cur_node.position() == self._agent.get_goal():
-                    self._paths = cur_node.get_paths_to_parent()
+                    self._paths = cur_node.get_paths_to_parent(self._goal_occupation_time)
 
             expanded_nodes = cur_node.expand()
 

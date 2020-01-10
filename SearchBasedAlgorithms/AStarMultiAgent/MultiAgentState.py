@@ -50,8 +50,8 @@ class MultiAgentState(State):
 
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
-            m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, self._objective_function, parent=self,
-                                time_step=self.time_step()+1)
+            m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, self._objective_function,
+                                parent=self, time_step=self.time_step()+1)
             if not self.is_conflict(m):
                 free_conflict_states.append(m)
 

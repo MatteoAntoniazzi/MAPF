@@ -2,6 +2,8 @@ from tkinter import *
 
 import PIL
 from PIL import Image, ImageTk
+
+from Utilities.SolverSettings import SolverSettings
 from Utilities.macros import *
 from Utilities.start_simulation import *
 
@@ -52,7 +54,7 @@ class StartMenu:
         self.selected_obj_fun_var.set("SOC")  # initialize
 
         self.selected_goal_occupation_time = IntVar()
-        self.selected_goal_occupation_time.set(3)
+        self.selected_goal_occupation_time.set(1)
 
         self.buttons_list = []
 
@@ -185,9 +187,11 @@ class StartMenu:
               self.selected_obj_fun_var.get())
         for radio_button in self.buttons_list:
             radio_button.configure(state=DISABLED)
-        prepare_simulation(self, self.simulation_frame, self.selected_algorithm_var.get(), self.independence_detection_var.get(),
-                           self.selected_map_var.get(), self.selected_heuristic_var.get(),
-                           self.selected_obj_fun_var.get(), self.selected_goal_occupation_time.get())
+        solver_settings = SolverSettings(heuristics=self.selected_heuristic_var.get(),
+                                         goal_occupation_time=self.selected_goal_occupation_time.get())
+        prepare_simulation(self, self.simulation_frame, self.selected_algorithm_var.get(),
+                           self.independence_detection_var.get(), self.selected_map_var.get(), solver_settings,
+                           self.selected_obj_fun_var.get())
 
     def initialize_menu_bar(self):
         menubar = Menu(self.root)

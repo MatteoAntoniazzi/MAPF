@@ -5,14 +5,14 @@ represents all possible complete solutions in which the cost of the individual p
 """
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDD import MDD
 from Utilities.AStar import AStar
-from Utilities.macros import *
+from Utilities.SolverSettings import SolverSettings
 import itertools
 
 
 class IncreasingCostTreeNode:
-    def __init__(self, problem_instance, path_costs_vector=None, parent=None, heuristics_str="Manhattan"):
+    def __init__(self, problem_instance, solver_settings, path_costs_vector=None, parent=None):
         self._problem_instance = problem_instance
-        self._heuristics_str = heuristics_str
+        self._solver_settings = solver_settings
         self._parent = parent
 
         if parent is None:
@@ -36,8 +36,8 @@ class IncreasingCostTreeNode:
         for i, agent in enumerate(self._problem_instance.get_agents()):
             path_costs = self._path_costs_vector.copy()
             path_costs[i] += 1
-            candidate_list.append(IncreasingCostTreeNode(self._problem_instance, path_costs_vector=path_costs,
-                                                         parent=self))
+            candidate_list.append(IncreasingCostTreeNode(self._problem_instance, self._solver_settings,
+                                                         path_costs_vector=path_costs, parent=self))
         return candidate_list
 
     def compute_mdds(self):
@@ -46,7 +46,8 @@ class IncreasingCostTreeNode:
         """
         mdd_vector = []
         for i, agent in enumerate(self._problem_instance.get_agents()):
-            mdd_vector.append(MDD(self._problem_instance.get_map(), agent, self._path_costs_vector[i]))
+            mdd_vector.append(MDD(self._problem_instance.get_map(), agent, self._path_costs_vector[i],
+                                  self._solver_settings.get_goal_occupation_time()))
         return mdd_vector
 
     def compute_total_mdd(self):
@@ -67,10 +68,10 @@ class IncreasingCostTreeNode:
 
     def compute_root_path_costs_vector(self):
         path_costs_vector = []
-        solver = AStar(self._heuristics_str)
+        solver = AStar(SolverSettings(heuristics=self._solver_settings.get_heuristics_str()))
         for agent in self._problem_instance.get_agents():
             path = solver.find_path(self._problem_instance.get_map(), agent.get_start(), agent.get_goal())
-            cost = len(path) - GOAL_OCCUPATION_TIME
+            cost = len(path) - self._solver_settings.get_goal_occupation_time()
             path_costs_vector.append(cost)
         return path_costs_vector
 

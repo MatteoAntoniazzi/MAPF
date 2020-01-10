@@ -11,8 +11,8 @@ from SearchBasedAlgorithms.IncreasingCostTreeSearch.IncreasingCostTreeQueue impo
 
 
 class SolverIncreasingCostTreeSearch(MAPFSolver):
-    def __init__(self, heuristics_str, objective_function, goal_occupation_time):
-        super().__init__(heuristics_str, objective_function, goal_occupation_time)
+    def __init__(self, solver_settings, objective_function):
+        super().__init__(solver_settings, objective_function)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0
@@ -41,11 +41,11 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
                           " Total time: ", max([len(path)-1 for path in solution]), " Total cost:", cur_state.total_cost())
                 if return_infos:
                     output_infos = {
-                        "sum_of_costs": cur_state.g_value(),
-                        "makespan": cur_state.time_step(),
+                        "sum_of_costs": cur_state.total_cost(),
+                        "makespan": max([len(path)-1 for path in solution]),
                         "expanded_nodes": self._n_of_expanded_nodes
                     }
-                    return cur_state.get_paths_to_parent(), output_infos
+                    return solution, output_infos
                 return solution
 
             if not self._closed_list.contains_node(cur_state):
@@ -66,8 +66,8 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
-        starter_state = IncreasingCostTreeNode(problem_instance, heuristics_str=self._heuristics_str)
+        starter_state = IncreasingCostTreeNode(problem_instance, self._solver_settings)
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "Increasing Cost Tree Solver using " + self._heuristics_str + " heuristics minimazing" + self._objective_function
+        return "Increasing Cost Tree Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing" + self._objective_function

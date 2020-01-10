@@ -3,12 +3,11 @@ from Utilities.ProblemInstance import ProblemInstance
 from Utilities.SingleAgentState import SingleAgentState
 from Utilities.StatesQueue import StatesQueue
 from Utilities.Agent import Agent
-from Utilities.macros import *
 
 
 class AStar:
-    def __init__(self, heuristics_str="Manhattan"):
-        self._heuristics_str = heuristics_str
+    def __init__(self, solver_settings):
+        self._solver_settings = solver_settings
         self._heuristics = None
         self._frontier = None
         self._closed_list = None  # Keep all the states already expanded
@@ -28,7 +27,8 @@ class AStar:
             if cur_state.goal_test():
                 path = cur_state.get_path_to_parent()
                 goal = cur_state.get_position()
-                for i in range(GOAL_OCCUPATION_TIME-1):
+                print(self._solver_settings)
+                for i in range(self._solver_settings.get_goal_occupation_time()-1):
                     path.append(goal)
                 return path
 
@@ -109,12 +109,13 @@ class AStar:
 
     def initialize_problem(self, map, start_pos, goal_pos):
         problem_instance = ProblemInstance(map, [Agent(0, start_pos, goal_pos)])
-        self._heuristics = initialize_heuristics(self._heuristics_str, problem_instance)
+        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristics_str(), problem_instance)
 
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()
         self._closed_list_of_positions = []
 
-        starter_state = SingleAgentState(map, 0, goal_pos, start_pos, 0, self._heuristics)
+        starter_state = SingleAgentState(map, 0, goal_pos, start_pos, 0, self._heuristics,
+                                         self._solver_settings.get_goal_occupation_time())
         self._frontier.add(starter_state)
 

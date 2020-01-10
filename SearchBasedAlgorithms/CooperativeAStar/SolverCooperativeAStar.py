@@ -15,15 +15,14 @@ hashing on a randomly distributed function of the (x, y, t) key.
 """
 from Utilities.MAPFSolver import MAPFSolver
 from Utilities.AStar import AStar
-from Utilities.macros import *
 
 
 class SolverCooperativeAStar(MAPFSolver):
     """
     With RRA as heuristics it became HierarchicalCooperativeA*
     """
-    def __init__(self, heuristics_str, objective_function, goal_occupation_time):
-        super().__init__(heuristics_str, objective_function, goal_occupation_time)
+    def __init__(self, solver_settings, objective_function):
+        super().__init__(solver_settings, objective_function)
         self._reservation_table = None
 
     def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
@@ -38,7 +37,7 @@ class SolverCooperativeAStar(MAPFSolver):
             if verbose:
                 print("Agent n:", i+1, "of", len(problem_instance.get_agents()))
 
-            solver = AStar(self._heuristics_str)
+            solver = AStar(self._solver_settings)
             path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(),
                                                            agent.get_goal(), self._reservation_table)
             paths.append(path)
@@ -50,11 +49,11 @@ class SolverCooperativeAStar(MAPFSolver):
 
         if print_output:
             print("Total time: ", max([len(path)-1 for path in paths]),
-                  " Total cost:", sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]))
+                  " Total cost:", sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in paths]))
 
         if return_infos:
             output_infos = {
-                "sum_of_costs": sum([len(path)-GOAL_OCCUPATION_TIME for path in paths]),
+                "sum_of_costs": sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in paths]),
                 "makespan": max([len(path)-1 for path in paths]),
                 "expanded_nodes": 0
             }
@@ -63,4 +62,5 @@ class SolverCooperativeAStar(MAPFSolver):
         return paths
 
     def __str__(self):
-        return "Cooperative A* Solver using " + self._heuristics_str + " heuristics minimazing" + self._objective_function
+        return "Cooperative A* Solver using " + self._solver_settings.get_heuristics_str()\
+               + " heuristics minimazing" + self._objective_function

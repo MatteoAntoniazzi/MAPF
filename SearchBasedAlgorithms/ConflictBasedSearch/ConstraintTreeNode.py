@@ -5,15 +5,16 @@ switch places is not allowed. The attributes previous solution and agent_to_reco
 and avoid to recompute each time the path for each agent.
 """
 from Utilities.AStar import AStar
+from Utilities.SolverSettings import SolverSettings
 from Utilities.macros import *
 
 
 class ConstraintTreeNode:
-    def __init__(self, problem_instance, constraints_set=None, transactional_constraints=None, previous_solution=None,
-                 agent_to_recompute=None, parent=None, heuristics_str="Manhattan"):
+    def __init__(self, problem_instance, solver_settings, constraints_set=None, transactional_constraints=None, previous_solution=None,
+                 agent_to_recompute=None, parent=None):
 
         self._problem_instance = problem_instance
-        self._heuristics_str = heuristics_str
+        self._solver_settings = solver_settings
         self._parent = parent
         if constraints_set is None:
             self._constraints = set()
@@ -61,7 +62,7 @@ class ConstraintTreeNode:
             if agent_id == agent.get_id():
                 agent_transactional_constraints.append((pos_i, pos_f, ts))
 
-        solver = AStar(self._heuristics_str)
+        solver = AStar(self._solver_settings)
         path = solver.find_path_with_constraints(self._problem_instance.get_map(), agent.get_start(),
                                                  agent.get_goal(), agent_constraints,
                                                  agent_transactional_constraints)
@@ -106,39 +107,35 @@ class ConstraintTreeNode:
             agent, pos, ts = constraints[0]
             constraints_a = self._constraints.copy()
             constraints_a.add(constraints[0])
-            node_a = ConstraintTreeNode(self._problem_instance, constraints_set=constraints_a,
+            node_a = ConstraintTreeNode(self._problem_instance, self._solver_settings, constraints_set=constraints_a,
                                         transactional_constraints=self._transactional_constraints.copy(),
-                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self,
-                                        heuristics_str=self._heuristics_str)
+                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self)
 
             agent, pos, ts = constraints[1]
             constraints_b = self._constraints.copy()
             constraints_b.add(constraints[1])
-            node_b = ConstraintTreeNode(self._problem_instance, constraints_set=constraints_b,
+            node_b = ConstraintTreeNode(self._problem_instance, self._solver_settings, constraints_set=constraints_b,
                                         transactional_constraints=self._transactional_constraints.copy(),
-                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self,
-                                        heuristics_str=self._heuristics_str)
+                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self)
 
         if conflict_type == 'TRANSACTIONAL':
             agent, pos_i, pos_f, ts = constraints[0]
             constraints_a = self._transactional_constraints.copy()
             constraints_a.add(constraints[0])
-            node_a = ConstraintTreeNode(self._problem_instance, constraints_set=self._constraints.copy(),
+            node_a = ConstraintTreeNode(self._problem_instance, self._solver_settings, constraints_set=self._constraints.copy(),
                                         transactional_constraints=constraints_a,
-                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self,
-                                        heuristics_str=self._heuristics_str)
+                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self)
 
             agent, pos_i, pos_f, ts = constraints[1]
             constraints_b = self._transactional_constraints.copy()
             constraints_b.add(constraints[1])
-            node_b = ConstraintTreeNode(self._problem_instance, constraints_set=self._constraints.copy(),
+            node_b = ConstraintTreeNode(self._problem_instance, self._solver_settings, constraints_set=self._constraints.copy(),
                                         transactional_constraints=constraints_b,
-                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self,
-                                        heuristics_str=self._heuristics_str)
+                                        previous_solution=self._solution.copy(), agent_to_recompute=agent, parent=self)
         return [node_a, node_b]
 
     def calculate_cost(self):
-        return sum([len(path)-GOAL_OCCUPATION_TIME for path in self._solution])
+        return sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in self._solution])
 
     def total_cost(self):
         return self._total_cost

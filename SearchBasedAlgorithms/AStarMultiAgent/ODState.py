@@ -11,9 +11,10 @@ from SearchBasedAlgorithms.AStarMultiAgent.MultiAgentState import MultiAgentStat
 
 
 class ODState(MultiAgentState):
-    def __init__(self, problem_instance, single_agent_states, heuristics, to_move=0, pre_state=None, parent=None,
-                 time_step=0):
-        super().__init__(problem_instance, single_agent_states, heuristics, parent=parent, time_step=time_step)
+    def __init__(self, problem_instance, single_agent_states, heuristics, objective_function, to_move=0, pre_state=None,
+                 parent=None, time_step=0):
+        super().__init__(problem_instance, single_agent_states, heuristics, objective_function, parent=parent,
+                         time_step=time_step)
         self._problem_instance = problem_instance
         self._heuristics = heuristics
         if pre_state is None:
@@ -51,7 +52,7 @@ class ODState(MultiAgentState):
             single_agent_states = self.clone_states()
             single_agent_states[self._to_move] = state
 
-            s = ODState(self._problem_instance, single_agent_states, self._heuristics,
+            s = ODState(self._problem_instance, single_agent_states, self._heuristics, self._objective_function,
                         to_move=self.next_to_move(), pre_state=next_pre_state, parent=self,
                         time_step=next_time_step)
 
@@ -81,7 +82,7 @@ class ODState(MultiAgentState):
             while self._to_expand.is_completed():
                 if self.next_to_move() == 0:
                     return [ODState(self._problem_instance, self.get_single_agent_states(), self._heuristics,
-                                    to_move=0, pre_state=self._pre_state, parent=self,
+                                    self._objective_function, to_move=0, pre_state=self._pre_state, parent=self,
                                     time_step=self.time_step() + 1)]
                 else:
                     self._to_move += 1

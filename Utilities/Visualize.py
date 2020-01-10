@@ -53,6 +53,7 @@ class Visualize:
         self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT, padx=5, pady=2,
                            font=("Lucida Console", 10))
         self.infos_txt_var.set("\n\n")
+        self.set_infos_txt()
         self.infos.pack(side=LEFT)
 
         self.quit_button = Button(self.infos_and_buttons_canvas, text="QUIT", command=self.quit_function)
@@ -171,7 +172,6 @@ class Visualize:
     def start_function(self):
         self.start_button.configure(state=DISABLED)
         self.quit_button.configure(state=DISABLED)
-        self.set_infos_txt()
 
         if self._paths is not None:
             # window.draw_paths(paths)

@@ -20,8 +20,8 @@ from SearchBasedAlgorithms.MStar.MStarState import MStarState
 
 
 class SolverMStar(MAPFSolver):
-    def __init__(self, heuristics_str, objective_function, goal_occupation_time):
-        super().__init__(heuristics_str, objective_function, goal_occupation_time)
+    def __init__(self, solver_settings, objective_function):
+        super().__init__(solver_settings, objective_function)
         self._frontier = None
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
@@ -91,7 +91,7 @@ class SolverMStar(MAPFSolver):
         """
         Initialize the frontier and the heuristic for the given problem.
         """
-        self._heuristics = initialize_heuristics(self._heuristics_str, problem_instance)
+        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristics_str(), problem_instance)
         self._frontier = StatesQueue()
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
@@ -99,11 +99,11 @@ class SolverMStar(MAPFSolver):
         single_agents_states = []
         for i, agent in enumerate(problem_instance.get_agents()):
             s = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(), agent.get_start(), 0,
-                                 self._heuristics)
+                                 self._heuristics, self._solver_settings.get_goal_occupation_time())
             single_agents_states.append(s)
 
         starter_state = MStarState(problem_instance, single_agents_states, self._heuristics, self._objective_function)
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "M* Solver using " + self._heuristics_str + " heuristics minimazing " + self._objective_function
+        return "M* Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing " + self._objective_function

@@ -26,7 +26,7 @@ class MDDNode:
 
         return expanded_nodes_list
 
-    def get_paths_to_parent(self):
+    def get_paths_to_parent(self, goal_occupation_time):
         """
         Return a list of all the possible paths from the start to the goal. It builds the paths starting from the goal
         and going up following all the possible parents alternatives.
@@ -37,7 +37,7 @@ class MDDNode:
             path.reverse()
             goal = path[len(path)-1]
 
-            for i in range(GOAL_OCCUPATION_TIME-1):
+            for i in range(goal_occupation_time-1):
                 path.append(goal)
 
         return paths

@@ -10,8 +10,8 @@ from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNodesQueue import C
 
 
 class SolverConflictBasedSearch(MAPFSolver):
-    def __init__(self, heuristics_str, objective_function, goal_occupation_time):
-        super().__init__(heuristics_str, objective_function, goal_occupation_time)
+    def __init__(self, solver_settings, objective_function):
+        super().__init__(solver_settings, objective_function)
         self._frontier = None
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
@@ -21,14 +21,14 @@ class SolverConflictBasedSearch(MAPFSolver):
         Solve the MAPF problem using the CBS algorithm returning the paths as lists of list of (x, y) positions.
         """
         self.initialize_problem(problem_instance)
-        solution, output_infos = self.high_level_search(verbose=verbose, print_output=print_output)
+        solution, output_infos = self.high_level_search(verbose=verbose, print_output=print_output, return_infos=return_infos)
 
         if return_infos:
             return solution, output_infos
 
         return solution
 
-    def high_level_search(self, verbose=False, print_output=True):
+    def high_level_search(self, verbose=False, print_output=True, return_infos=False):
         """
         At the high-level, CBS searches a constraint tree (CT). A CT is a binary tree. Each node N in the CT contains
         the following fields of data:
@@ -51,15 +51,18 @@ class SolverConflictBasedSearch(MAPFSolver):
 
             conflict = cur_state.check_conflicts()
             if conflict is None:
-                output_infos = {
-                    "sum_of_costs": cur_state.g_value(),
-                    "makespan": cur_state.time_step(),
-                    "expanded_nodes": self._n_of_expanded_nodes
-                }
                 if print_output:
                     print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
                           " Total time: ", cur_state.total_time(), " Total cost:", cur_state.total_cost())
-                return cur_state.solution(), output_infos
+                if return_infos:
+                    output_infos = {
+                        "sum_of_costs": cur_state.total_cost(),
+                        "makespan": cur_state.total_time(),
+                        "expanded_nodes": self._n_of_expanded_nodes
+                    }
+                    return cur_state.solution(), output_infos
+
+                return cur_state.solution()
 
             # Expand the Constraint Tree
             expanded_nodes = cur_state.expand()
@@ -77,8 +80,8 @@ class SolverConflictBasedSearch(MAPFSolver):
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
-        starter_state = ConstraintTreeNode(problem_instance, heuristics_str=self._heuristics_str)
+        starter_state = ConstraintTreeNode(problem_instance, self._solver_settings)
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "Conflict Based Search Solver using " + self._heuristics_str + " heuristics minimazing" + self._objective_function
+        return "Conflict Based Search Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing" + self._objective_function

@@ -30,14 +30,16 @@ class SolverAStarOD(MAPFSolver):
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
+            print(cur_state)
+
             if cur_state.is_completed():
                 if print_output:
                     print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
-                          " Total time: ", cur_state.time_step(), " Total cost:", cur_state.g_value())
+                          " Total time: ", cur_state.time_step()-1, " Total cost:", cur_state.g_value())
                 if return_infos:
                     output_infos = {
                         "sum_of_costs": cur_state.g_value(),
-                        "makespan": cur_state.time_step(),
+                        "makespan": cur_state.time_step()-1,
                         "expanded_nodes": self._n_of_expanded_nodes
                     }
                     return cur_state.get_paths_to_parent(), output_infos

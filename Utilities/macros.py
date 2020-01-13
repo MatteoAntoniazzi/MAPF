@@ -56,7 +56,7 @@ PNG_PATH_LIST = ["./Maps/pngs/Berlin_1_256.png", "./Maps/pngs/Boston_0_256.png",
                  "./Maps/pngs/ost003d.png", "./Maps/pngs/Paris_1_256.png", "./Maps/pngs/random-32-32-10.png",
                  "./Maps/pngs/random-32-32-20.png", "./Maps/pngs/random-64-64-10.png",
                  "./Maps/pngs/random-64-64-20.png", "./Maps/pngs/room-32-32-4.png", "./Maps/pngs/room-64-64-8.png",
-                 "./Maps/pngs/room-64-64-16.png", "./Maps/pngs/w_woundedcoast.png"]
+                 "./Maps/pngs/room-64-64-16.png", "./Maps/pngs/w_woundedcoast.png", "./Maps/pngs/narrow_corridor.png"]
 
 HEURISTICS_MODES = [
     ("Manhattan Distance", "Manhattan"),

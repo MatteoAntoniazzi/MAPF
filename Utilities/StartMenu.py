@@ -56,6 +56,9 @@ class StartMenu:
         self.selected_goal_occupation_time = IntVar()
         self.selected_goal_occupation_time.set(1)
 
+        self.selected_n_of_agents = IntVar()
+        self.selected_n_of_agents.set(5)
+
         self.buttons_list = []
 
         self.initialize_menu_bar()
@@ -146,9 +149,11 @@ class StartMenu:
 
         load = PIL.Image.open("Images/permanence_up.png")
         load = load.resize((30, 30), PIL.Image.ANTIALIAS)
-        self.goal_occupation_time_up_img = PIL.ImageTk.PhotoImage(load)
-        self.goal_occupation_time_up_button = Button(permanence_in_goal_canvas, image=self.goal_occupation_time_up_img,
+        self.arrow_up_img = PIL.ImageTk.PhotoImage(load)
+        self.goal_occupation_time_up_button = Button(permanence_in_goal_canvas, image=self.arrow_up_img,
                                                      command=self.goal_occupation_time_up_button)
+        self.buttons_list.append(self.goal_occupation_time_up_button)
+
         self.goal_occupation_time_up_button.pack(side=RIGHT, padx=(0, 20))
 
         self.goal_occupation_time_txt = Label(permanence_in_goal_canvas, textvariable=self.selected_goal_occupation_time, justify=LEFT,
@@ -157,12 +162,37 @@ class StartMenu:
 
         load = PIL.Image.open("Images/permanence_down.png")
         load = load.resize((30, 30), PIL.Image.ANTIALIAS)
-        self.goal_occupation_time_down_img = PIL.ImageTk.PhotoImage(load)
-        self.goal_occupation_time_down_button = Button(permanence_in_goal_canvas, image=self.goal_occupation_time_down_img,
+        self.arrow_down_img = PIL.ImageTk.PhotoImage(load)
+        self.goal_occupation_time_down_button = Button(permanence_in_goal_canvas, image=self.arrow_down_img,
                                                        command=self.goal_occupation_time_down_button)
+        self.buttons_list.append(self.goal_occupation_time_down_button)
+
         self.goal_occupation_time_down_button.pack(side=RIGHT, padx=(20, 0))
 
+        lbl_title = Label(frame, text="N OF AGENTS", font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        number_of_agents_canvas = Canvas(frame)
+        number_of_agents_canvas.pack()
+
+        self.n_of_agents_up_button = Button(number_of_agents_canvas, image=self.arrow_up_img,
+                                            command=self.n_of_agents_up_button)
+        self.buttons_list.append(self.n_of_agents_up_button)
+
+        self.n_of_agents_up_button.pack(side=RIGHT, padx=(0, 20))
+
+        self.n_of_agents_txt = Label(number_of_agents_canvas, textvariable=self.selected_n_of_agents,
+                                     justify=LEFT, font=("Lucida Console", 10))
+        self.n_of_agents_txt.pack(side=RIGHT, padx=10)
+
+        self.n_of_agents_down_button = Button(number_of_agents_canvas, image=self.arrow_down_img,
+                                              command=self.n_of_agents_down_button)
+        self.buttons_list.append(self.n_of_agents_down_button)
+
+        self.n_of_agents_down_button.pack(side=RIGHT, padx=(20, 0))
+
         prepare_button = Button(frame, text="PREPARE", command=self.prepare_simulation_function)
+        self.buttons_list.append(prepare_button)
         prepare_button.pack(anchor=E, pady=20)
 
     # def initialize_right_part(self, frame):
@@ -181,6 +211,13 @@ class StartMenu:
     def goal_occupation_time_up_button(self):
         self.selected_goal_occupation_time.set(self.selected_goal_occupation_time.get()+1)
 
+    def n_of_agents_down_button(self):
+        if self.selected_n_of_agents.get() > 1:
+            self.selected_n_of_agents.set(self.selected_n_of_agents.get()-1)
+
+    def n_of_agents_up_button(self):
+        self.selected_n_of_agents.set(self.selected_n_of_agents.get()+1)
+
     def prepare_simulation_function(self):
         print(self.selected_algorithm_var.get(), self.independence_detection_var.get(),
               self.selected_map_var.get(), self.selected_heuristic_var.get(),
@@ -191,7 +228,7 @@ class StartMenu:
                                          goal_occupation_time=self.selected_goal_occupation_time.get())
         prepare_simulation(self, self.simulation_frame, self.selected_algorithm_var.get(),
                            self.independence_detection_var.get(), self.selected_map_var.get(), solver_settings,
-                           self.selected_obj_fun_var.get())
+                           self.selected_obj_fun_var.get(), self.selected_n_of_agents.get())
 
     def initialize_menu_bar(self):
         menubar = Menu(self.root)

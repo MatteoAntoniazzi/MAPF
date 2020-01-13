@@ -163,7 +163,7 @@ class MultiAgentState(State):
         return True
 
     def __str__(self):
-        string = '[F:' + str(self.f_value()) + ' TS:' + str(self.time_step())
+        string = '[F:' + str(self.f_value()) + ' G: ' + str(self.g_value()) + ' TS:' + str(self.time_step())
         for s in self._single_agents_states:
             string += s.__str__()
         string += ']'

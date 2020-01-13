@@ -33,6 +33,8 @@ class ODState(MultiAgentState):
         if verbose:
             print("Expansion in progress...", end=' ')
 
+        self.skip_completed_states()
+
         if self.next_to_move() == 0:
             next_pre_state = self._pre_state
             next_time_step = self.time_step()+1
@@ -42,8 +44,6 @@ class ODState(MultiAgentState):
         else:
             next_pre_state = self._pre_state
             next_time_step = self.time_step()
-
-        self.skip_completed_states()
 
         expanded_states_list = self._to_expand.expand()
 
@@ -81,9 +81,10 @@ class ODState(MultiAgentState):
         if self._to_move > 0:
             while self._to_expand.is_completed():
                 if self.next_to_move() == 0:
-                    return [ODState(self._problem_instance, self.get_single_agent_states(), self._heuristics,
+                    return '''[ODState(self._problem_instance, self.get_single_agent_states(), self._heuristics,
                                     self._objective_function, to_move=0, pre_state=self._pre_state, parent=self,
-                                    time_step=self.time_step() + 1)]
+                                    time_step=self.time_step()+1)]'''
+                    # Non serve a nulla potrei anche non ritornare nulla
                 else:
                     self._to_move += 1
                     self._to_expand = self.get_single_agent_states()[self._to_move]

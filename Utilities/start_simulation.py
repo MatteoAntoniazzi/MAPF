@@ -12,12 +12,12 @@ from Utilities.Map import *
 import time
 
 
-def prepare_simulation(start_menu, frame, algorithm, independence_detection, map_number, solver_settings, objective_function):
+def prepare_simulation(start_menu, frame, algorithm, independence_detection, map_number, solver_settings, objective_function, n_of_agents):
 
     print(solver_settings)
 
     map = get_map(map_number)
-    agents = get_agents(map_number, map)
+    agents = get_agents(map_number, map, n_of_agents)
     problem_instance = ProblemInstance(map, agents)
 
     start_time = time.time()
@@ -76,6 +76,7 @@ def get_map(map_number):
         25: "Maps/maps/room-64-64-8.map",
         26: "Maps/maps/room-64-64-16.map",
         27: "Maps/maps/w_woundedcoast.map",
+        28: "Maps/maps/narrow_corridor.map"
     }
     print(map_number)
     print(switcher.get(map_number))
@@ -87,7 +88,7 @@ def get_map(map_number):
     return Map(map_height, map_width, occupancy_list)
 
 
-def get_agents(scene_number, map):
+def get_agents(scene_number, map, n_of_agents):
     switcher = {
         0: "Maps/scenes/Berlin_1_256-even-1.scen",
         1: "Maps/scenes/Boston_0_256-even-1.scen",
@@ -116,11 +117,13 @@ def get_agents(scene_number, map):
         24: "Maps/scenes/room-32-32-4-even-1.scen",
         25: "Maps/scenes/room-64-64-8-even-1.scen",
         26: "Maps/scenes/room-64-64-16-even-1.scen",
-        27: "Maps/scenes/w_woundedcoast-even-1.scen"
+        27: "Maps/scenes/w_woundedcoast-even-1.scen",
+        28: "Maps/scenes/narrow_corridor.scen"
     }
 
     print("Loading scenario file")
-    agents = load_scenario_file(switcher.get(scene_number), map.get_obstacles_xy(), map.get_width(), map.get_height(), 10)
+    agents = load_scenario_file(switcher.get(scene_number), map.get_obstacles_xy(), map.get_width(), map.get_height(),
+                                number_of_agents=n_of_agents)
     print("Scenario loaded")
 
     return [Agent(i, a[0], a[1]) for i, a in enumerate(agents)]

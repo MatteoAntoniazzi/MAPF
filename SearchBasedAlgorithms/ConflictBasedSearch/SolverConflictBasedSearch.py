@@ -7,6 +7,7 @@ agents paths to be consistent with the new constraints.
 from Utilities.MAPFSolver import MAPFSolver
 from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNode import ConstraintTreeNode
 from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNodesQueue import ConstraintTreeNodesQueue
+import time
 
 
 class SolverConflictBasedSearch(MAPFSolver):
@@ -41,6 +42,8 @@ class SolverConflictBasedSearch(MAPFSolver):
         Node N in the CT is a goal node when N.solution is valid, i.e., the set of paths for all agents have no
         conflicts.
         """
+        start = time.time()
+
         while not self._frontier.is_empty():
             self._frontier.sort_by_total_cost()
             cur_state = self._frontier.pop()
@@ -58,7 +61,8 @@ class SolverConflictBasedSearch(MAPFSolver):
                     output_infos = {
                         "sum_of_costs": cur_state.total_cost(),
                         "makespan": cur_state.total_time(),
-                        "expanded_nodes": self._n_of_expanded_nodes
+                        "expanded_nodes": self._n_of_expanded_nodes,
+                        "computation_time": time.time() - start
                     }
                     return cur_state.solution(), output_infos
 

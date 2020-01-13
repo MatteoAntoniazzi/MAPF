@@ -181,7 +181,8 @@ class Visualize:
     def set_infos_txt(self):
         self.infos_txt_var.set("SUM OF COSTS: " + str(self._output_infos["sum_of_costs"]) + "\nMAKESPAN: " +
                                str(self._output_infos["makespan"]) + "\nN° OF EXPANDED NODES: " +
-                               str(self._output_infos["expanded_nodes"]))
+                               str(self._output_infos["expanded_nodes"]) + "\nCOMPUTATIONAL TIME: " +
+                               str(round(self._output_infos["computation_time"], 2)))
 
     def reset_function(self):
         for widget in self.frame.winfo_children():

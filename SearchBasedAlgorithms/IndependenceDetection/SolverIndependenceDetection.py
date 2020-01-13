@@ -15,7 +15,7 @@ In simple words it works like this:
 """
 from Utilities.MAPFSolver import MAPFSolver
 from Utilities.ProblemInstance import ProblemInstance
-from Utilities.macros import *
+import time
 
 
 class SolverIndependenceDetection(MAPFSolver):
@@ -33,6 +33,8 @@ class SolverIndependenceDetection(MAPFSolver):
         them into a new group and so the next time they will be solved together.
         The time needed is exponential in the dimension of the largest group.
         """
+        start = time.time()
+
         if not self.initialize_paths(problem_instance):
             return False
 
@@ -50,7 +52,8 @@ class SolverIndependenceDetection(MAPFSolver):
             output_infos = {
                 "sum_of_costs": sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in self._paths]),
                 "makespan": max([len(path)-1 for path in self._paths]),
-                "expanded_nodes": 0
+                "expanded_nodes": 0,
+                "computation_time": time.time() - start
             }
             return self._paths, output_infos
 
@@ -65,7 +68,7 @@ class SolverIndependenceDetection(MAPFSolver):
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            paths = self._solver.solve(problem, print_output=False)
+            paths = self._solver.solve(problem, print_output=False, return_infos=False)
 
             if not paths:
                 return False

@@ -8,6 +8,7 @@ ICTS algorithm is a complete and optimal algorithm. It works in a two level way:
 from Utilities.MAPFSolver import MAPFSolver
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.IncreasingCostTreeNode import IncreasingCostTreeNode
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.IncreasingCostTreeQueue import IncreasingCostTreeQueue
+import time
 
 
 class SolverIncreasingCostTreeSearch(MAPFSolver):
@@ -22,6 +23,8 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
         """
         Solve the MAPF problem using the ICTS algorithm returning the paths as lists of list of (x, y) positions.
         """
+        start = time.time()
+
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
@@ -43,7 +46,8 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
                     output_infos = {
                         "sum_of_costs": cur_state.total_cost(),
                         "makespan": max([len(path)-1 for path in solution]),
-                        "expanded_nodes": self._n_of_expanded_nodes
+                        "expanded_nodes": self._n_of_expanded_nodes,
+                        "computation_time": time.time() - start
                     }
                     return solution, output_infos
                 return solution

@@ -17,6 +17,7 @@ from Utilities.SingleAgentState import SingleAgentState
 from Heuristics.initialize_heuristics import initialize_heuristics
 from Utilities.StatesQueue import StatesQueue
 from SearchBasedAlgorithms.MStar.MStarState import MStarState
+import time
 
 
 class SolverMStar(MAPFSolver):
@@ -33,6 +34,8 @@ class SolverMStar(MAPFSolver):
         propagate it to the ancestors. So, when the collision set is not empty it will considers for those agents all
         the possible moves.
         """
+        start = time.time()
+
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
@@ -53,7 +56,8 @@ class SolverMStar(MAPFSolver):
                     output_infos = {
                         "sum_of_costs": cur_state.g_value(),
                         "makespan": cur_state.time_step()-1,
-                        "expanded_nodes": self._n_of_expanded_nodes
+                        "expanded_nodes": self._n_of_expanded_nodes,
+                        "computation_time": time.time() - start
                     }
                     return cur_state.get_paths_to_parent(), output_infos
 

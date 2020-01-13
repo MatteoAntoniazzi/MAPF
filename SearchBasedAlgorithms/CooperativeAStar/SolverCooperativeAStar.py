@@ -15,6 +15,7 @@ hashing on a randomly distributed function of the (x, y, t) key.
 """
 from Utilities.MAPFSolver import MAPFSolver
 from Utilities.AStar import AStar
+import time
 
 
 class SolverCooperativeAStar(MAPFSolver):
@@ -30,6 +31,8 @@ class SolverCooperativeAStar(MAPFSolver):
         Solve the MAPF problem using the Cooperative A* algorithm returning the paths as lists of list of (x, y)
         positions.
         """
+        start = time.time()
+
         self._reservation_table = dict()
         paths = []
 
@@ -55,7 +58,8 @@ class SolverCooperativeAStar(MAPFSolver):
             output_infos = {
                 "sum_of_costs": sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in paths]),
                 "makespan": max([len(path)-1 for path in paths]),
-                "expanded_nodes": 0
+                "expanded_nodes": 0,
+                "computation_time": time.time() - start
             }
             return paths, output_infos
 

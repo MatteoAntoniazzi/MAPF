@@ -6,6 +6,7 @@ from Utilities.StatesQueue import StatesQueue
 from Utilities.SingleAgentState import SingleAgentState
 from SearchBasedAlgorithms.AStarMultiAgent.MultiAgentState import MultiAgentState
 from Heuristics.initialize_heuristics import *
+import time
 
 
 class SolverAStarMultiAgent(MAPFSolver):
@@ -20,6 +21,8 @@ class SolverAStarMultiAgent(MAPFSolver):
         """
         Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
         """
+        start = time.time()
+
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
@@ -35,7 +38,9 @@ class SolverAStarMultiAgent(MAPFSolver):
                     output_infos = {
                         "sum_of_costs": cur_state.g_value(),
                         "makespan": cur_state.time_step()-1,
-                        "expanded_nodes": self._n_of_expanded_nodes
+                        "expanded_nodes": self._n_of_expanded_nodes,
+                        "computation_time": time.time() - start
+
                     }
                     return cur_state.get_paths_to_parent(), output_infos
 

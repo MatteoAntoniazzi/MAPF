@@ -3,7 +3,7 @@ A* single agent solver. It computes the path for each agent without considering 
 """
 from Utilities.MAPFSolver import MAPFSolver
 from Utilities.AStar import AStar
-from Utilities.macros import *
+import time
 
 
 class AStarSingleAgent(MAPFSolver):
@@ -15,6 +15,8 @@ class AStarSingleAgent(MAPFSolver):
         Solve the MAPF problem using the A* algorithm individually for each agent, without considering any conflict.
         It returns the paths as lists of list of (x, y) positions.
         """
+        start = time.time()
+
         paths = []
         for agent in problem_instance.get_agents():
             a_star = AStar(self._solver_settings)
@@ -28,7 +30,8 @@ class AStarSingleAgent(MAPFSolver):
             output_infos = {
                 "sum_of_costs": sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in paths]),
                 "makespan": max([len(path)-1 for path in paths]),
-                "expanded_nodes": 0
+                "expanded_nodes": 0,
+                "computation_time": time.time() - start
             }
             return paths, output_infos
 

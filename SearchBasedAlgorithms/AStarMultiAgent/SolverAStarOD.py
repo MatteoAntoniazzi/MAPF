@@ -9,6 +9,7 @@ from SearchBasedAlgorithms.AStarMultiAgent.ODState import ODState
 from Utilities.SingleAgentState import SingleAgentState
 from Heuristics.initialize_heuristics import initialize_heuristics
 from Utilities.StatesQueue import StatesQueue
+import time
 
 
 class SolverAStarOD(MAPFSolver):
@@ -24,6 +25,8 @@ class SolverAStarOD(MAPFSolver):
         Solve the MAPF problem using the A* algorithm with Operator Decomposition returning the paths as lists of list
         of (x, y) positions.
         """
+        start = time.time()
+
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
@@ -40,7 +43,8 @@ class SolverAStarOD(MAPFSolver):
                     output_infos = {
                         "sum_of_costs": cur_state.g_value(),
                         "makespan": cur_state.time_step()-1,
-                        "expanded_nodes": self._n_of_expanded_nodes
+                        "expanded_nodes": self._n_of_expanded_nodes,
+                        "computation_time": time.time() - start
                     }
                     return cur_state.get_paths_to_parent(), output_infos
 

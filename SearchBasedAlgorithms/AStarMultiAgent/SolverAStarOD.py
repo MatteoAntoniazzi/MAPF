@@ -81,4 +81,4 @@ class SolverAStarOD(MAPFSolver):
 
     def __str__(self):
         return "A* Multi Agent Solver with Operator Decomposition using " + self._solver_settings.get_heuristics_str()\
-               + " heuristics minimazing" + self._objective_function
+               + " heuristics minimazing " + self._objective_function

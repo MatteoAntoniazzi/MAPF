@@ -39,10 +39,9 @@ class ProblemInstance:
                 return agent
         return None
 
-    def plot_on_gui(self, start_menu, frame, paths=None, output_infos=None):
-        window = Visualize(self, start_menu, frame, self._map, self._agents, paths, output_infos)
+    def plot_on_gui(self, frame, paths=None, output_infos=None):
+        window = Visualize(self, frame, paths, output_infos)
         window.initialize_window()
-
 
     def plot_on_terminal(self, paths=None):
         grid = [[Fore.BLACK + Back.RESET + '·' for i in range(self._map.get_width())] for j in range(self._map.get_height())]

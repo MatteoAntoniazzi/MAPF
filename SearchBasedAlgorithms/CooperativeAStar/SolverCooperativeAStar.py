@@ -67,4 +67,4 @@ class SolverCooperativeAStar(MAPFSolver):
 
     def __str__(self):
         return "Cooperative A* Solver using " + self._solver_settings.get_heuristics_str()\
-               + " heuristics minimazing" + self._objective_function
+               + " heuristics minimazing " + self._objective_function

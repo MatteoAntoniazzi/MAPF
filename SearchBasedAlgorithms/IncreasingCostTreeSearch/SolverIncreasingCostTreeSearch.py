@@ -74,4 +74,4 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "Increasing Cost Tree Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing" + self._objective_function
+        return "Increasing Cost Tree Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing " + self._objective_function

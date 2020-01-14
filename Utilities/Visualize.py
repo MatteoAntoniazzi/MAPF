@@ -1,91 +1,74 @@
-import numpy as np
-import PIL.Image, PIL.ImageTk
 from Utilities.macros import *
 from tkinter import *
+import numpy as np
+import PIL.Image
+import PIL.ImageTk
 import copy
 
 
 class Visualize:
-    def __init__(self, problem_instance, start_menu, frame, map, agents, paths, output_infos):
+    """
+    This class takes care of the visualization of the simulation of the MAPF solution.
+    """
+    def __init__(self, problem_instance, frame, paths, output_infos):
+        """
+        Initialize the frame.
+        :param problem_instance:
+        :param frame:
+        :param paths:
+        :param output_infos:
+        """
         self._problem_instance = problem_instance
-        self._map = map
-        self._agents = agents
+        self._frame = frame
         self._paths = paths
         self._output_infos = output_infos
-        self.frame = frame
-        self.start_menu = start_menu
+        self.random_images_list = []
 
         self.animation_speed = SPEED_1X
+        self._frame_width, self._frame_height = get_frame_dimension(self._problem_instance.get_map().get_height(),
+                                                                    self._problem_instance.get_map().get_width())
 
-        self._frame_width, self._frame_height = get_frame_dimension(map.get_height(), map.get_width())
-
-        self.visualize_frame = Frame(self.frame)
+        # Visualize Frame: external frame
+        self.visualize_frame = Frame(self._frame)
         self.visualize_frame.pack(ipady=5)
 
+        # Visualize Canvas: inside the Visualize Frame
         self.visualize_canvas = Canvas(self.visualize_frame)
         self.visualize_canvas.pack(ipady=5)
 
+        # Map Canvas: inside the Visualize Canvas
         self.map_canvas = Canvas(self.visualize_canvas, width=self._frame_width, height=self._frame_height)
 
-        self.xsb = Scrollbar(self.visualize_canvas, orient="horizontal", command=self.map_canvas.xview)
-        self.ysb = Scrollbar(self.visualize_canvas, orient="vertical", command=self.map_canvas.yview)
-        self.map_canvas.configure(yscrollcommand=self.ysb.set, xscrollcommand=self.xsb.set)
-        self.map_canvas.configure(scrollregion=(0, 0, 100, 100))
+        # Scrollbar Set Up
+        self.set_up_scrollbar()
 
-        self.xsb.grid(row=1, column=0, sticky="ew")
-        self.ysb.grid(row=0, column=1, sticky="ns")
-        self.map_canvas.grid(row=0, column=0, sticky="nsew")
-        self.map_canvas.grid_rowconfigure(0, weight=1)
-        self.map_canvas.grid_columnconfigure(0, weight=1)
-
-        # This is what enables using the mouse:
-        self.map_canvas.bind("<ButtonPress-1>", self.move_start)
-        self.map_canvas.bind("<B1-Motion>", self.move_move)
-        # linux scroll
-        self.map_canvas.bind("<Button-4>", self.zoomerP)
-        self.map_canvas.bind("<Button-5>", self.zoomerM)
-        # windows scroll
-        self.map_canvas.bind("<MouseWheel>", self.zoomer)
-
+        # Infos and Buttons Canvas
         self.infos_and_buttons_canvas = Canvas(self.visualize_frame)
         self.infos_and_buttons_canvas.pack(fill=X)
         self.infos_txt_var = StringVar()
-        self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT, padx=5, pady=2,
-                           font=("Lucida Console", 10))
-        self.infos_txt_var.set("\n\n")
+        self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT,
+                           padx=5, pady=2, font=("Lucida Console", 10))
         self.set_infos_txt()
         self.infos.pack(side=LEFT)
 
+        # Quit Button
         self.quit_button = Button(self.infos_and_buttons_canvas, text="QUIT", command=self.quit_function)
         self.quit_button.pack(side=RIGHT)
 
+        # Start Button
         self.start_button = Button(self.infos_and_buttons_canvas, text="START", command=self.start_function)
         self.start_button.pack(side=RIGHT)
 
+        # Reset Button
         self.reset_button = Button(self.infos_and_buttons_canvas, text="RESET", command=self.reset_function)
         self.reset_button.configure(state=DISABLED)
         self.reset_button.pack(side=RIGHT)
 
-        load = PIL.Image.open("Images/speed_up.png")
-        load = load.resize((30, 30), PIL.Image.ANTIALIAS)
-        self.speed_up_img = PIL.ImageTk.PhotoImage(load)
-        self.speed_up_button = Button(self.infos_and_buttons_canvas, image=self.speed_up_img,
-                                      command=self.speed_up_button)
-        self.speed_up_button.pack(side=RIGHT, padx=(0, 20))
-
+        # Speed Regulation Widgets
         self.speed_txt_var = StringVar()
-        self.speed_txt = Label(self.infos_and_buttons_canvas, textvariable=self.speed_txt_var, justify=LEFT,
-                           font=("Lucida Console", 10))
-        self.speed_txt_var.set("1X")
-        self.speed_txt.pack(side=RIGHT, padx=10)
+        self.initialize_speed_regulation_widgets()
 
-        load = PIL.Image.open("Images/speed_down.png")
-        load = load.resize((30, 30), PIL.Image.ANTIALIAS)
-        self.speed_down_img = PIL.ImageTk.PhotoImage(load)
-        self.speed_down_button = Button(self.infos_and_buttons_canvas, image=self.speed_down_img,
-                                        command=self.speed_down_button)
-        self.speed_down_button.pack(side=RIGHT, padx=(20, 0))
-
+        # Time Step Counter
         self.time_step_counter = -1
         self.time_step_txt_var = StringVar()
         self.time_step_txt = Label(self.infos_and_buttons_canvas, textvariable=self.time_step_txt_var, justify=LEFT,
@@ -93,9 +76,11 @@ class Visualize:
         self.time_step_txt_var.set("TS: " + str(self.time_step_counter))
         self.time_step_txt.pack(side=RIGHT, padx=2)
 
+        # Initialize Variables for Map draiwing
         self.cell_h, self.cell_w = self.get_cell_size()
-        self.dinamic_cell_h, self.dinamic_cell_w = self.cell_h, self.cell_w
-        self.vis_cells = np.zeros((self._map.get_height(), self._map.get_width()), dtype=int)
+        self.dynamic_cell_h, self.dynamic_cell_w = self.cell_h, self.cell_w
+        self.vis_cells = np.zeros((self._problem_instance.get_map().get_height(),
+                                   self._problem_instance.get_map().get_width()), dtype=int)
         self.agents_ovals = []
         self.agents_colors = []
         self.text_list = []
@@ -104,109 +89,173 @@ class Visualize:
         self.animating = True
         self._footsteps = False
         self.path_to_visit = []
-        self.steps_count = [N_OF_STEPS] * len(self._agents)
-        self.x_moves = [0] * len(self._agents)
-        self.y_moves = [0] * len(self._agents)
+        self.steps_count = [N_OF_STEPS] * len(self._problem_instance.get_agents())
+        self.x_moves = [0] * len(self._problem_instance.get_agents())
+        self.y_moves = [0] * len(self._problem_instance.get_agents())
 
-    # move
+    def initialize_window(self):
+        """
+        Initialize the Window with the World and the agents.
+        """
+        self.draw_world()
+        self.draw_agents()
+        self.do_loop()
+
+    def set_up_scrollbar(self):
+        """
+        Set up the Scrollbar for the visualization of the map
+        """
+        xsb = Scrollbar(self.visualize_canvas, orient="horizontal", command=self.map_canvas.xview)
+        ysb = Scrollbar(self.visualize_canvas, orient="vertical", command=self.map_canvas.yview)
+        self.map_canvas.configure(yscrollcommand=ysb.set, xscrollcommand=xsb.set)
+        self.map_canvas.configure(scrollregion=(0, 0, 100, 100))
+
+        xsb.grid(row=1, column=0, sticky="ew")
+        ysb.grid(row=0, column=1, sticky="ns")
+        self.map_canvas.grid(row=0, column=0, sticky="nsew")
+        self.map_canvas.grid_rowconfigure(0, weight=1)
+        self.map_canvas.grid_columnconfigure(0, weight=1)
+
+        # This is what enables using the mouse:
+        self.map_canvas.bind("<ButtonPress-1>", self.move_start)
+        self.map_canvas.bind("<B1-Motion>", self.move_move)
+        # Linux scroll
+        self.map_canvas.bind("<Button-4>", self.linux_zoom_p)
+        self.map_canvas.bind("<Button-5>", self.linux_zoom_m)
+        # Windows scroll
+        self.map_canvas.bind("<MouseWheel>", self.windows_zoom)
+
     def move_start(self, event):
         self.map_canvas.scan_mark(event.x, event.y)
 
     def move_move(self, event):
         self.map_canvas.scan_dragto(event.x, event.y, gain=1)
 
-    # windows zoom
-    def zoomer(self, event):
-        if (event.delta > 0):
+    def linux_zoom_p(self, event):
+        self.map_canvas.scale("all", event.x, event.y, 1.1, 1.1)
+        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
+        self.dynamic_cell_w *= 1.1
+        self.dynamic_cell_h *= 1.1
+        for i, x in enumerate(self.x_moves):
+            self.x_moves[i] *= 1.1
+        for i, y in enumerate(self.y_moves):
+            self.y_moves[i] *= 1.1
+        for i, txt in enumerate(self.text_list):
+            self.map_canvas.itemconfig(self.text_list[i], font=("Purisa", get_font_dimension(self.dynamic_cell_w, self.dynamic_cell_h)))
+
+    def linux_zoom_m(self, event):
+        self.map_canvas.scale("all", event.x, event.y, 0.9, 0.9)
+        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
+        self.dynamic_cell_w *= 0.9
+        self.dynamic_cell_h *= 0.9
+        for i, x in enumerate(self.x_moves):
+            self.x_moves[i] *= 0.9
+        for i, y in enumerate(self.y_moves):
+            self.y_moves[i] *= 0.9
+        for i, txt in enumerate(self.text_list):
+            self.map_canvas.itemconfig(self.text_list[i], font=("Purisa", get_font_dimension(self.dynamic_cell_w, self.dynamic_cell_h)))
+
+    def windows_zoom(self, event):
+        if event.delta > 0:
             self.map_canvas.scale("all", event.x, event.y, 1.1, 1.1)
-        elif (event.delta < 0):
+        elif event.delta < 0:
             self.map_canvas.scale("all", event.x, event.y, 0.9, 0.9)
         self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
 
-    # linux zoom
-    def zoomerP(self, event):
-        self.map_canvas.scale("all", event.x, event.y, 1.1, 1.1)
-        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
-        self.dinamic_cell_w *= 1.1
-        self.dinamic_cell_h *= 1.1
-
-        for i, x in enumerate(self.x_moves):
-            self.x_moves[i] *= 1.1
-
-        for i, y in enumerate(self.y_moves):
-            self.y_moves[i] *= 1.1
-
-        for i, txt in enumerate(self.text_list):
-            self.map_canvas.itemconfig(self.text_list[i], font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)))
-
-    def zoomerM(self, event):
-        self.map_canvas.scale("all", event.x, event.y, 0.9, 0.9)
-        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
-        self.dinamic_cell_w *= 0.9
-        self.dinamic_cell_h *= 0.9
-
-        for i, x in enumerate(self.x_moves):
-            self.x_moves[i] *= 0.9
-
-        for i, y in enumerate(self.y_moves):
-            self.y_moves[i] *= 0.9
-
-        for i, txt in enumerate(self.text_list):
-            self.map_canvas.itemconfig(self.text_list[i], font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)))
-
-    def initialize_window(self):
-        self.draw_world()
-        self.draw_agents()
-        self.do_loop()
-
-    def speed_down_button(self):
-        if not self.animation_speed <= (SPEED_1X/10):
-            self.animation_speed = self.animation_speed - SPEED_1X/10
-            self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
-
-    def speed_up_button(self):
-        if not self.animation_speed >= (SPEED_1X*2):
-            self.animation_speed = self.animation_speed + SPEED_1X/10
-            self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
-
     def start_function(self):
+        """
+        Start Button behaviour: start the Path Animation.
+        """
         self.start_button.configure(state=DISABLED)
         self.quit_button.configure(state=DISABLED)
-
         if self._paths is not None:
             # window.draw_paths(paths)
             self.draw_footsteps()
             self.start_animation(self._paths)
 
+    def reset_function(self):
+        """
+        Reset Button behaviour: reset the Path Animation.
+        """
+        for widget in self._frame.winfo_children():
+            widget.destroy()
+        self._problem_instance.plot_on_gui(self._frame, self._paths, self._output_infos)
+
+    def quit_function(self):
+        """
+        Quit Button behaviour: close the Frame.
+        """
+        for widget in self._frame.winfo_children():
+            widget.destroy()
+        self._frame.quit()
+
+    def initialize_speed_regulation_widgets(self):
+        """
+        Insert the speed widgets in the frame.
+        """
+        # Load Images
+        speed_up_img = self.load_image("Images/speed_up.png", (30, 30))
+        speed_down_img = self.load_image("Images/speed_down.png", (30, 30))
+
+        # Speed Up Button
+        speed_up_button = Button(self.infos_and_buttons_canvas, image=speed_up_img, command=self.speed_up_function)
+        speed_up_button.pack(side=RIGHT, padx=(0, 20))
+
+        # Speed Text
+        speed_txt = Label(self.infos_and_buttons_canvas, textvariable=self.speed_txt_var, justify=LEFT,
+                          font=("Lucida Console", 10))
+        self.speed_txt_var.set("1X")
+        speed_txt.pack(side=RIGHT, padx=10)
+
+        # Speed Down Button
+        speed_down_button = Button(self.infos_and_buttons_canvas, image=speed_down_img,
+                                   command=self.speed_down_function)
+        speed_down_button.pack(side=RIGHT, padx=(20, 0))
+
+    def speed_down_function(self):
+        """
+        Decrease the speed of the animation.
+        """
+        if not self.animation_speed <= (SPEED_1X/10):
+            self.animation_speed = self.animation_speed - SPEED_1X/10
+            self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
+
+    def speed_up_function(self):
+        """
+        Increase the speed of the animation.
+        """
+        if not self.animation_speed >= (SPEED_1X*2):
+            self.animation_speed = self.animation_speed + SPEED_1X/10
+            self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
+
     def set_infos_txt(self):
+        """
+        Set the text inside the infos with the ouput infos.
+        """
         self.infos_txt_var.set("SUM OF COSTS: " + str(self._output_infos["sum_of_costs"]) + "\nMAKESPAN: " +
                                str(self._output_infos["makespan"]) + "\nN° OF EXPANDED NODES: " +
                                str(self._output_infos["expanded_nodes"]) + "\nCOMPUTATIONAL TIME: " +
                                str(round(self._output_infos["computation_time"], 2)))
 
-    def reset_function(self):
-        for widget in self.frame.winfo_children():
-            widget.destroy()
-        self._problem_instance.plot_on_gui(self.start_menu, self.frame, self._paths, self._output_infos)
-
-    def quit_function(self):
-        self.start_menu.enable_settings_buttons()
-        for widget in self.frame.winfo_children():
-            widget.destroy()
-
     def draw_world(self):
-        n_rows, n_cols = self._map.get_height(), self._map.get_width()
+        """
+        Draw the Map World.
+        """
+        n_rows, n_cols = self._problem_instance.get_map().get_height(), self._problem_instance.get_map().get_width()
         for row in range(n_rows):
             for col in range(n_cols):
                 self.vis_cells[row][col] = self.map_canvas.create_rectangle(FRAME_MARGIN + self.cell_w * col,
                                                                             FRAME_MARGIN + self.cell_h * row,
                                                                             FRAME_MARGIN + self.cell_w * (col + 1),
                                                                             FRAME_MARGIN + self.cell_h * (row + 1))
-                if self._map.is_obstacle(col, row):
+                if self._problem_instance.get_map().is_obstacle(col, row):
                     self.map_canvas.itemconfig(self.vis_cells[row][col], fill='gray', width=2)
 
     def draw_agents(self):
-        for a in self._agents:
+        """
+        Draw the agents inside the map.
+        """
+        for a in self._problem_instance.get_agents():
             s_col, s_row = a.get_start()
             g_col, g_row = a.get_goal()
 
@@ -220,30 +269,37 @@ class Visualize:
             self.map_canvas.itemconfig(self.vis_cells[s_row][s_col], fill=random_color, width=1.5)
             self.map_canvas.itemconfig(self.vis_cells[g_row][g_col], fill=random_color, stipple="gray50", width=1.5)
             self.text_list.append(self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w / 2,
-                                        FRAME_MARGIN + self.cell_h * s_row + self.cell_h / 2,
-                                        font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)),
-                                        text="S"))
+                                                              FRAME_MARGIN + self.cell_h * s_row + self.cell_h / 2,
+                                                              font=("Purisa", get_font_dimension(self.dynamic_cell_w, self.dynamic_cell_h)),
+                                                              text="S"))
             self.text_list.append(self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * g_col + self.cell_w / 2,
-                                        FRAME_MARGIN + self.cell_h * g_row + self.cell_h / 2,
-                                        font=("Purisa", get_font_dimension(self.dinamic_cell_w, self.dinamic_cell_h)),
-                                        text="G"))
+                                                              FRAME_MARGIN + self.cell_h * g_row + self.cell_h / 2,
+                                                              font=("Purisa", get_font_dimension(self.dynamic_cell_w, self.dynamic_cell_h)),
+                                                              text="G"))
 
     def draw_paths(self, paths):
+        """
+        Color the paths.
+        """
         for i, path in enumerate(paths):
             color = self.agents_colors[i]
             for p in path[1:-1]:
                 self.map_canvas.itemconfig(self.vis_cells[p[1]][p[0]], fill=color, stipple="", width=1.5)
 
-    def draw_footsteps(self):
-        self._footsteps = True
-
     def start_animation(self, paths):
+        """
+        Start the Path Animation.
+        :param paths: Paths to be displayed.
+        """
         self.path_to_visit = copy.deepcopy(paths)  # In order to copy by value also the nested lists
-        self.frame.after(2000, self.animation_function)
+        self._frame.after(2000, self.animation_function)
 
     def animation_function(self):
+        """
+        Function for the Path Animation.
+        """
         if self.animating:
-            self.frame.after(int(MAX_SPEED - self.animation_speed), self.animation_function)
+            self._frame.after(int(MAX_SPEED - self.animation_speed), self.animation_function)
             inc_time_step = True
             for i, agent in enumerate(self.agents_ovals):
                 if self.steps_count[i] < N_OF_STEPS:
@@ -262,8 +318,8 @@ class Visualize:
                                                    fill=color, stipple="", width=1.5)
                     if self.path_to_visit[i]:
                         next_position = self.path_to_visit[i][0]
-                        self.x_moves[i] = float((next_position[0] - current_position[0]) * self.dinamic_cell_w) / N_OF_STEPS
-                        self.y_moves[i] = float((next_position[1] - current_position[1]) * self.dinamic_cell_h) / N_OF_STEPS
+                        self.x_moves[i] = float((next_position[0] - current_position[0]) * self.dynamic_cell_w) / N_OF_STEPS
+                        self.y_moves[i] = float((next_position[1] - current_position[1]) * self.dynamic_cell_h) / N_OF_STEPS
                         self.map_canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
                         self.steps_count[i] = 1
                 if not self.path_to_visit[i]:
@@ -278,13 +334,35 @@ class Visualize:
             self.reset_button.configure(state=NORMAL)
             self.quit_button.configure(state=NORMAL)
 
+    def draw_footsteps(self):
+        """
+        Set the footstep variable to True.
+        """
+        self._footsteps = True
+
     def get_cell_size(self):
+        """
+        Return the cell height and width
+        """
         avail_h = self._frame_height - 2 * FRAME_MARGIN
         avail_w = self._frame_width - 2 * FRAME_MARGIN
-        n_rows, n_cols = self._map.get_height(), self._map.get_width()
+        n_rows, n_cols = self._problem_instance.get_map().get_height(), self._problem_instance.get_map().get_width()
         cell_h = avail_h / n_rows
         cell_w = avail_w / n_cols
         return cell_h, cell_w
 
+    def load_image(self, url, size):
+        """
+        Load an image. It is also stored in the random_images_list otherwise is not visualized on the GUI
+        :param url: local path to the image
+        :param size: desired image size
+        :return: the image resized
+        """
+        load = PIL.Image.open(url)
+        load = load.resize(size, PIL.Image.ANTIALIAS)
+        img = PIL.ImageTk.PhotoImage(load)
+        self.random_images_list.append(img)
+        return img
+
     def do_loop(self):
-        self.frame.mainloop()
+        self._frame.mainloop()

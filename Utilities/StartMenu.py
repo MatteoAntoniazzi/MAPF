@@ -10,9 +10,13 @@ class StartMenu:
     MAPF simulation.
     """
     def __init__(self):
+        """
+        Initialize the start menu of the GUI
+        """
         # Root: root frame for the gui
         self.root = Tk()
         self.root.maxsize(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
+        self.root.resizable(False, False)
 
         # Variables
         self.map_images_list = []
@@ -65,15 +69,22 @@ class StartMenu:
         self.do_loop()
 
     def initialize_variables(self):
-        self.selected_algorithm_var.set("Cooperative A*")  # initialize
-        self.independence_detection_var.set(False)  # initialize
-        self.selected_map_var.set(0)  # initialize
-        self.selected_heuristic_var.set("Manhattan")  # initialize
-        self.selected_obj_fun_var.set("SOC")  # initialize
+        """
+        Initialize the widgets values.
+        """
+        self.selected_algorithm_var.set("Cooperative A*")
+        self.independence_detection_var.set(False)
+        self.selected_map_var.set(0)
+        self.selected_heuristic_var.set("Manhattan")
+        self.selected_obj_fun_var.set("SOC")
         self.selected_goal_occupation_time.set(1)
         self.selected_n_of_agents.set(5)
 
     def choose_map_frame_initialization(self):
+        """
+        Initialize the Choose Map Frame, which containing the list of all the possible selectable maps as Radiobuttons
+        and with a scrollbar for a better visualization.
+        """
         # Set up Scrollbar
         scrollbar = Scrollbar(self.choose_map_frame, command=self.choose_map_canvas.yview)
         scrollbar.pack(side=RIGHT, fill='y')
@@ -105,6 +116,10 @@ class StartMenu:
         self.choose_map_canvas.configure(scrollregion=self.choose_map_canvas.bbox('all'))
 
     def algorithm_settings_frame_initialization(self):
+        """
+        Initialize the Algorithm Settings Frame, which containing the selection of the algorithm, the independence
+        detection options, the heuristics, the permanence time and the number of agents
+        """
         # Algorithm Label
         lbl_title = Label(self.algorithm_settings_frame, text="ALGORITHM", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
@@ -144,7 +159,6 @@ class StartMenu:
         # Permanence in Goal Canvas
         permanence_in_goal_canvas = Canvas(self.algorithm_settings_frame)
         permanence_in_goal_canvas.pack()
-
         self.initialize_permanence_in_goal_canvas(permanence_in_goal_canvas)
 
         # Number of Agents Label
@@ -154,105 +168,126 @@ class StartMenu:
         # Number of Agents Canvas
         number_of_agents_canvas = Canvas(self.algorithm_settings_frame)
         number_of_agents_canvas.pack()
+        self.initialize_n_of_agents_canvas(number_of_agents_canvas)
 
-        arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
-        arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
-
-        self.n_of_agents_up_button = Button(number_of_agents_canvas, image=arrow_up_img,
-                                            command=self.n_of_agents_up_button)
-        self.buttons_list.append(self.n_of_agents_up_button)
-
-        self.n_of_agents_up_button.pack(side=RIGHT, padx=(0, 20))
-
-        self.n_of_agents_txt = Label(number_of_agents_canvas, textvariable=self.selected_n_of_agents,
-                                     justify=LEFT, font=("Lucida Console", 10))
-        self.n_of_agents_txt.pack(side=RIGHT, padx=10)
-
-        self.n_of_agents_down_button = Button(number_of_agents_canvas, image=arrow_down_img,
-                                              command=self.n_of_agents_down_button)
-        self.buttons_list.append(self.n_of_agents_down_button)
-
-        self.n_of_agents_down_button.pack(side=RIGHT, padx=(20, 0))
-
+        # Prepare Button
         prepare_button = Button(self.algorithm_settings_frame, text="PREPARE", command=self.prepare_simulation_function)
         self.buttons_list.append(prepare_button)
         prepare_button.pack(anchor=E, pady=20)
-    
-    # def initialize_permanence_in_goal_canvas(self, canvas):
-    #     # Load button images
-    #     arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
-    #     arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
-    #
-    #     # Goal Occupation Time Up Button
-    #     goal_occupation_time_up_button = Button(canvas, image=arrow_up_img,
-    #                                             command=self.goal_occupation_time_up_button)
-    #     goal_occupation_time_up_button.pack(side=RIGHT, padx=(0, 20))
-    #     self.buttons_list.append(goal_occupation_time_up_button)
-    #
-    #     # Goal Occupation Time Text
-    #     goal_occupation_time_txt = Label(canvas, textvariable=self.selected_goal_occupation_time,
-    #                                      justify=LEFT, font=("Lucida Console", 10))
-    #     goal_occupation_time_txt.pack(side=RIGHT, padx=10)
-    #
-    #     # Goal Occupation Time Down Button
-    #     goal_occupation_time_down_button = Button(canvas, image=arrow_down_img,
-    #                                               command=self.goal_occupation_time_down_button)
-    #     goal_occupation_time_down_button.pack(side=RIGHT, padx=(20, 0))
-    #     self.buttons_list.append(goal_occupation_time_down_button)
 
-    def initialize_permanence_in_goal_canvas(self, permanence_in_goal_canvas):
+    def initialize_permanence_in_goal_canvas(self, canvas):
+        """
+        Initialize the Permancence in Goal Canvas
+        """
         # Load button images
         arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
         arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
 
         # Goal Occupation Time Up Button
-        goal_occupation_time_up_button = Button(permanence_in_goal_canvas, image=arrow_up_img,
+        goal_occupation_time_up_button = Button(canvas, image=arrow_up_img,
                                                 command=self.goal_occupation_time_up_button)
         goal_occupation_time_up_button.pack(side=RIGHT, padx=(0, 20))
         self.buttons_list.append(goal_occupation_time_up_button)
 
         # Goal Occupation Time Text
-        goal_occupation_time_txt = Label(permanence_in_goal_canvas, textvariable=self.selected_goal_occupation_time,
+        goal_occupation_time_txt = Label(canvas, textvariable=self.selected_goal_occupation_time,
                                          justify=LEFT, font=("Lucida Console", 10))
         goal_occupation_time_txt.pack(side=RIGHT, padx=10)
 
         # Goal Occupation Time Down Button
-        goal_occupation_time_down_button = Button(permanence_in_goal_canvas, image=arrow_down_img,
+        goal_occupation_time_down_button = Button(canvas, image=arrow_down_img,
                                                   command=self.goal_occupation_time_down_button)
         goal_occupation_time_down_button.pack(side=RIGHT, padx=(20, 0))
         self.buttons_list.append(goal_occupation_time_down_button)
 
+    def initialize_n_of_agents_canvas(self, canvas):
+        """
+        Initialize the Number of Agents Canvas
+        """
+        # Load button images
+        arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
+        arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
+
+        # Number of Agents Up Button
+        n_of_agents_up_button = Button(canvas, image=arrow_up_img, command=self.n_of_agents_up_button)
+        self.buttons_list.append(n_of_agents_up_button)
+        n_of_agents_up_button.pack(side=RIGHT, padx=(0, 20))
+
+        # Number of Agents Text
+        n_of_agents_txt = Label(canvas, textvariable=self.selected_n_of_agents, justify=LEFT,
+                                font=("Lucida Console", 10))
+        n_of_agents_txt.pack(side=RIGHT, padx=10)
+
+        # Number of Agents Down Button
+        n_of_agents_down_button = Button(canvas, image=arrow_down_img, command=self.n_of_agents_down_button)
+        n_of_agents_down_button.pack(side=RIGHT, padx=(20, 0))
+        self.buttons_list.append(n_of_agents_down_button)
+
+    def prepare_simulation_function(self):
+        """
+        Launch the simulation and display it on the Simulation Frame.
+        """
+        # Disable all the Buttons
+        self.disable_settings_buttons()
+
+        # Create an instance of the class SolverSettings
+        solver_settings = SolverSettings(self.selected_heuristic_var.get(), self.selected_goal_occupation_time.get())
+
+        # Prepare to show the simulation on the given frame
+        prepare_simulation(self.simulation_frame, self.selected_algorithm_var.get(),
+                           self.independence_detection_var.get(), self.selected_map_var.get(), solver_settings,
+                           self.selected_obj_fun_var.get(), self.selected_n_of_agents.get())
+
+        # Enable all the Buttons
+        self.enable_settings_buttons()
+
     def goal_occupation_time_down_button(self):
+        """
+        Button function to decrement the goal occupation time
+        """
         if self.selected_goal_occupation_time.get() > 1:
             self.selected_goal_occupation_time.set(self.selected_goal_occupation_time.get()-1)
 
     def goal_occupation_time_up_button(self):
+        """
+        Button function to increment the goal occupation time
+        """
         self.selected_goal_occupation_time.set(self.selected_goal_occupation_time.get()+1)
 
     def n_of_agents_down_button(self):
+        """
+        Button function to decrement the number of agents
+        """
         if self.selected_n_of_agents.get() > 1:
             self.selected_n_of_agents.set(self.selected_n_of_agents.get()-1)
 
     def n_of_agents_up_button(self):
+        """
+         Button function to increment the number of agents
+         """
         self.selected_n_of_agents.set(self.selected_n_of_agents.get()+1)
 
-    def prepare_simulation_function(self):
-        print(self.selected_algorithm_var.get(), self.independence_detection_var.get(),
-              self.selected_map_var.get(), self.selected_heuristic_var.get(),
-              self.selected_obj_fun_var.get())
-        for radio_button in self.buttons_list:
-            radio_button.configure(state=DISABLED)
-        solver_settings = SolverSettings(heuristics=self.selected_heuristic_var.get(),
-                                         goal_occupation_time=self.selected_goal_occupation_time.get())
-        prepare_simulation(self, self.simulation_frame, self.selected_algorithm_var.get(),
-                           self.independence_detection_var.get(), self.selected_map_var.get(), solver_settings,
-                           self.selected_obj_fun_var.get(), self.selected_n_of_agents.get())
-
     def enable_settings_buttons(self):
+        """
+        # Enable all the Buttons
+        """
         for radio_button in self.buttons_list:
             radio_button.configure(state=NORMAL)
 
+    def disable_settings_buttons(self):
+        """
+        Disable all the Buttons
+        """
+        for radio_button in self.buttons_list:
+            radio_button.configure(state=DISABLED)
+
     def load_image(self, url, size):
+        """
+        Load an image. It is also stored in the random_images_list otherwise is not visualized on the GUI
+        :param url: local path to the image
+        :param size: desired image size
+        :return: the image resized
+        """
         load = Image.open(url)
         load = load.resize(size, Image.ANTIALIAS)
         img = ImageTk.PhotoImage(load)

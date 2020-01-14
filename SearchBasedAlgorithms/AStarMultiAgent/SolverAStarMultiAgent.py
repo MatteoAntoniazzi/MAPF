@@ -40,7 +40,6 @@ class SolverAStarMultiAgent(MAPFSolver):
                         "makespan": cur_state.time_step()-1,
                         "expanded_nodes": self._n_of_expanded_nodes,
                         "computation_time": time.time() - start
-
                     }
                     return cur_state.get_paths_to_parent(), output_infos
 

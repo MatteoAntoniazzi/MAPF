@@ -45,6 +45,8 @@ class SolverCooperativeAStar(MAPFSolver):
                                                            agent.get_goal(), self._reservation_table)
             paths.append(path)
 
+            print(path)
+
             for j, pos in enumerate(path):
                 if not self._reservation_table.get(pos):
                     self._reservation_table[pos] = []

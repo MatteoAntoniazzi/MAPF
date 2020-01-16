@@ -12,8 +12,8 @@ import time
 
 
 class SolverIncreasingCostTreeSearch(MAPFSolver):
-    def __init__(self, solver_settings, objective_function):
-        super().__init__(solver_settings, objective_function)
+    def __init__(self, solver_settings):
+        super().__init__(solver_settings)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0
@@ -28,10 +28,7 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
-            if self._objective_function == "SOC":
-                self._frontier.sort_by_total_cost()
-            else:
-                self._frontier.sort_by_makespan()
+            self._frontier.sort_by_cost()
             cur_state = self._frontier.pop()
 
             if verbose:
@@ -74,4 +71,5 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "Increasing Cost Tree Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing " + self._objective_function
+        return "Increasing Cost Tree Solver using " + self._solver_settings.get_heuristics_str() + \
+               " heuristics minimazing " + self._solver_settings.get_objective_function()

@@ -10,12 +10,12 @@ import itertools
 
 
 class MStarState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, objective_function, parent=None, time_step=0):
+    def __init__(self, problem_instance, single_agents_states, heuristics, obj_function, parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
         self._heuristics = heuristics
-        self._objective_function = objective_function
+        self._objective_function = obj_function
         self._back_propagation_set = []
         self._collisions_set = set()
         self.calculate_cost()
@@ -132,8 +132,11 @@ class MStarState(State):
 
     def compute_heuristics(self):
         self._h = 0
-        for single_state in self._single_agents_states:
-            self._h += single_state.h_value()
+        if self._objective_function == "SOC":
+            for single_state in self._single_agents_states:
+                self._h += single_state.h_value()
+        if self._objective_function == "Makespan":
+            self._h = max([single_state.h_value() for single_state in self._single_agents_states])
 
     def calculate_cost(self):
         self._g = 0

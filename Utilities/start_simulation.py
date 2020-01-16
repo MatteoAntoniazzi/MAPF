@@ -11,7 +11,7 @@ from Utilities.Agent import *
 from Utilities.Map import *
 
 
-def prepare_simulation(frame, algorithm, independence_detection, map_number, solver_settings, obj_function, n_of_agents):
+def prepare_simulation(frame, algorithm, independence_detection, map_number, solver_settings, n_of_agents):
     """
     Solve the MAPF problem and visualize the simulation on the frame.
     :param frame: Frame where the simulation will be displayed
@@ -26,7 +26,7 @@ def prepare_simulation(frame, algorithm, independence_detection, map_number, sol
     agents = get_agents(map_number, map, n_of_agents)
     problem_instance = ProblemInstance(map, agents)
 
-    solver = get_solver(algorithm, solver_settings, obj_function, independence_detection)
+    solver = get_solver(algorithm, solver_settings, independence_detection)
     print("Solver --> ", solver, "\nSolving...")
     paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
     print("Solved.")
@@ -34,20 +34,20 @@ def prepare_simulation(frame, algorithm, independence_detection, map_number, sol
     problem_instance.plot_on_gui(frame, paths, output_infos)
 
 
-def get_solver(algorithm, solver_settings, objective_function, independence_detection):
+def get_solver(algorithm, solver_settings, independence_detection):
     """
     Return the Solver object for the specified algorithm and relative settings.
     """
     switcher = {
-        "Cooperative A*": SolverCooperativeAStar(solver_settings, objective_function),
-        "A*": SolverAStarMultiAgent(solver_settings, objective_function),
-        "A* with Operator Decomposition": SolverAStarOD(solver_settings, objective_function),
-        "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(solver_settings, objective_function),
-        "Conflict Based Search": SolverConflictBasedSearch(solver_settings, objective_function),
-        "M*": SolverMStar(solver_settings, objective_function)
+        "Cooperative A*": SolverCooperativeAStar(solver_settings),
+        "A*": SolverAStarMultiAgent(solver_settings),
+        "A* with Operator Decomposition": SolverAStarOD(solver_settings),
+        "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(solver_settings),
+        "Conflict Based Search": SolverConflictBasedSearch(solver_settings),
+        "M*": SolverMStar(solver_settings)
     }
     if independence_detection:
-        return SolverIndependenceDetection(switcher.get(algorithm), solver_settings, objective_function)
+        return SolverIndependenceDetection(switcher.get(algorithm), solver_settings)
     else:
         return switcher.get(algorithm)
 

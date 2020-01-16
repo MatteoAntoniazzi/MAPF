@@ -19,8 +19,8 @@ import time
 
 
 class SolverIndependenceDetection(MAPFSolver):
-    def __init__(self, solver, solver_settings, objective_function):
-        super().__init__(solver_settings, objective_function)
+    def __init__(self, solver, solver_settings):
+        super().__init__(solver_settings)
         self._solver = solver
         self._problems = []
         self._paths = []

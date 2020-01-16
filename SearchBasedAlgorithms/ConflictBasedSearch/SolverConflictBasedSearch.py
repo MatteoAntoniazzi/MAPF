@@ -11,8 +11,8 @@ import time
 
 
 class SolverConflictBasedSearch(MAPFSolver):
-    def __init__(self, solver_settings, objective_function):
-        super().__init__(solver_settings, objective_function)
+    def __init__(self, solver_settings):
+        super().__init__(solver_settings)
         self._frontier = None
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
@@ -45,7 +45,7 @@ class SolverConflictBasedSearch(MAPFSolver):
         start = time.time()
 
         while not self._frontier.is_empty():
-            self._frontier.sort_by_total_cost()
+            self._frontier.sort_by_cost()
             cur_state = self._frontier.pop()
 
             if verbose:
@@ -88,4 +88,5 @@ class SolverConflictBasedSearch(MAPFSolver):
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "Conflict Based Search Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing " + self._objective_function
+        return "Conflict Based Search Solver using " + self._solver_settings.get_heuristics_str() + \
+               " heuristics minimazing " + self._solver_settings.get_objective_function()

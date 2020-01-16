@@ -135,13 +135,16 @@ class ConstraintTreeNode:
         return [node_a, node_b]
 
     def calculate_cost(self):
-        return sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in self._solution])
+        if self._solver_settings.get_objective_function() == "SOC":
+            return sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in self._solution])
+        if self._solver_settings.get_objective_function() == "Makespan":
+            return max([len(path)-self._solver_settings.get_goal_occupation_time() for path in self._solution])
 
     def total_cost(self):
         return self._total_cost
 
     def total_time(self):
-        return max([len(path)-1 for path in self._solution])
+        return max([len(path)-self._solver_settings.get_goal_occupation_time() for path in self._solution])
 
     def constraints(self):
         return self._constraints

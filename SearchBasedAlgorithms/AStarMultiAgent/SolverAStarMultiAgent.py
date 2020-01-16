@@ -10,8 +10,8 @@ import time
 
 
 class SolverAStarMultiAgent(MAPFSolver):
-    def __init__(self, solver_settings, objective_function):
-        super().__init__(solver_settings, objective_function)
+    def __init__(self, solver_settings):
+        super().__init__(solver_settings)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0
@@ -71,9 +71,9 @@ class SolverAStarMultiAgent(MAPFSolver):
             single_agents_states.append(s)
 
         starter_state = MultiAgentState(problem_instance, single_agents_states, self._heuristics,
-                                        self._objective_function)
+                                        self._solver_settings.get_objective_function())
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "A* Multi Agent Solver using " + self._solver_settings.get_heuristics_str() +\
-               " heuristics minimazing " + self._objective_function
+        return "A* Multi Agent Solver using " + self._solver_settings.get_heuristics_str() + \
+               " heuristics minimazing " + self._solver_settings.get_objective_function()

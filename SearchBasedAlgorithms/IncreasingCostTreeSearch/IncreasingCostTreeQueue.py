@@ -31,8 +31,5 @@ class IncreasingCostTreeQueue:
     def size(self):
         return len(self._queue)
 
-    def sort_by_total_cost(self):
+    def sort_by_cost(self):
         self._queue.sort(key=lambda x: x.total_cost(), reverse=False)
-
-    def sort_by_makespan(self):
-        self._queue.sort(key=lambda x: x.highest_cost(), reverse=False)

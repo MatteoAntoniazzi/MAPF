@@ -17,6 +17,10 @@ class IncreasingCostTreeNode:
 
         if parent is None:
             self._path_costs_vector = self.compute_root_path_costs_vector()
+            if self._solver_settings.get_objective_function() == "Makespan":
+                max_value = max(self._path_costs_vector)
+                for i, agent in enumerate(self._problem_instance.get_agents()):
+                    self._path_costs_vector[i] = max_value
         else:
             self._path_costs_vector = path_costs_vector
 
@@ -26,18 +30,39 @@ class IncreasingCostTreeNode:
 
     def expand(self):
         """
-        Expand the current state. The children nodes will be all the possible path costs vector obtained incrementing by
-        one the total cost, so only one of the path costs.
+        Expand the current state.
+        Based on the objective function we're using we've two cases.
+        When we're minimazing the sum of costs the children nodes will be all the possible path costs vector obtained
+        incrementing by one the total cost, so only one of the path costs.
         Example: node._path_cost_vector = [C1, C2, C3, ..] -> child1: [C1+1, C2, C3, ..], child2: [C1, C2+1, C3, ..], ..
+        When we're minimazing the makespan  the task is to minimize the number of time steps elapsed until all agents
+        reach their final positions. For this case, there is no meaning to the individual cost of a single agent.
+        All agents virtually use the same amount of time steps. Thus, the size of the ICT will be linear in ∆ instead of
+        exponential.
+        Example: node._path_cost = 10 -> node._path_cost = 11 -> node._path_cost = 12
         :return: the list of possible next states.
         """
         candidate_list = []
 
-        for i, agent in enumerate(self._problem_instance.get_agents()):
+        if self._solver_settings.get_objective_function() == "SOC":
+            for i, agent in enumerate(self._problem_instance.get_agents()):
+                path_costs = self._path_costs_vector.copy()
+                path_costs[i] += 1
+                candidate_list.append(IncreasingCostTreeNode(self._problem_instance, self._solver_settings,
+                                                             path_costs_vector=path_costs, parent=self))
+
+        # Adesso faccio così (10, 10, 10) espando --> (11, 11, 11) però non so se è il metodo migliore.
+        # Se parte con (8, 9, 10) lo trasformo subito in (10, 10, 10)
+        if self._solver_settings.get_objective_function() == "Makespan":
             path_costs = self._path_costs_vector.copy()
-            path_costs[i] += 1
+            print(self._path_costs_vector)
+            for i, agent in enumerate(self._problem_instance.get_agents()):
+                path_costs[i] += 1
+            print("INCREEEEEEEEEEMMMMMMMMMMMEEEEEEEEENTTTTTOOOOOOOOOOOOOOOOOO")
+            print(self._path_costs_vector)
             candidate_list.append(IncreasingCostTreeNode(self._problem_instance, self._solver_settings,
                                                          path_costs_vector=path_costs, parent=self))
+
         return candidate_list
 
     def compute_mdds(self):
@@ -85,10 +110,10 @@ class IncreasingCostTreeNode:
         return self._path_costs_vector
 
     def total_cost(self):
-        return sum(self._path_costs_vector)
-
-    def highest_cost(self):
-        return max(self._path_costs_vector)
+        if self._solver_settings.get_objective_function() == "SOC":
+            return sum(self._path_costs_vector)
+        if self._solver_settings.get_objective_function() == "Makespan":
+            return max(self._path_costs_vector)
 
 
 def check_validity(solution):

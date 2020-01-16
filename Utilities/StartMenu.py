@@ -28,7 +28,7 @@ class StartMenu:
         self.independence_detection_var = BooleanVar()
         self.selected_map_var = IntVar()
         self.selected_heuristic_var = StringVar()
-        self.selected_obj_fun_var = StringVar()
+        self.selected_objective_function_var = StringVar()
         self.selected_goal_occupation_time = IntVar()
         self.selected_n_of_agents = IntVar()
 
@@ -76,7 +76,7 @@ class StartMenu:
         self.independence_detection_var.set(False)
         self.selected_map_var.set(0)
         self.selected_heuristic_var.set("Manhattan")
-        self.selected_obj_fun_var.set("SOC")
+        self.selected_objective_function_var.set("SOC")
         self.selected_goal_occupation_time.set(1)
         self.selected_n_of_agents.set(5)
 
@@ -148,6 +148,18 @@ class StartMenu:
         # Heuristics Radiobuttons
         for text, mode in HEURISTICS_MODES:
             b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_heuristic_var, value=mode)
+            self.buttons_list.append(b)
+
+            b.pack(anchor=W)
+
+        # Objective Function Label
+        lbl_title = Label(self.algorithm_settings_frame, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        # Heuristics Radiobuttons
+        for text, mode in OBJECTIVE_FUNCTION_MODES:
+            b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_objective_function_var,
+                            value=mode)
             self.buttons_list.append(b)
 
             b.pack(anchor=W)
@@ -231,12 +243,13 @@ class StartMenu:
         self.disable_settings_buttons()
 
         # Create an instance of the class SolverSettings
-        solver_settings = SolverSettings(self.selected_heuristic_var.get(), self.selected_goal_occupation_time.get())
+        solver_settings = SolverSettings(self.selected_heuristic_var.get(), self.selected_objective_function_var.get(),
+                                         self.selected_goal_occupation_time.get())
 
         # Prepare to show the simulation on the given frame
         prepare_simulation(self.simulation_frame, self.selected_algorithm_var.get(),
                            self.independence_detection_var.get(), self.selected_map_var.get(), solver_settings,
-                           self.selected_obj_fun_var.get(), self.selected_n_of_agents.get())
+                           self.selected_n_of_agents.get())
 
         # Enable all the Buttons
         self.enable_settings_buttons()

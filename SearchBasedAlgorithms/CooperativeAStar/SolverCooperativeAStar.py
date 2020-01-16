@@ -22,8 +22,8 @@ class SolverCooperativeAStar(MAPFSolver):
     """
     With RRA as heuristics it became HierarchicalCooperativeA*
     """
-    def __init__(self, solver_settings, objective_function):
-        super().__init__(solver_settings, objective_function)
+    def __init__(self, solver_settings):
+        super().__init__(solver_settings)
         self._reservation_table = None
 
     def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
@@ -69,4 +69,4 @@ class SolverCooperativeAStar(MAPFSolver):
 
     def __str__(self):
         return "Cooperative A* Solver using " + self._solver_settings.get_heuristics_str()\
-               + " heuristics minimazing " + self._objective_function
+               + " heuristics"

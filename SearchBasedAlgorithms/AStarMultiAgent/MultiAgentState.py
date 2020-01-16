@@ -9,12 +9,12 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, objective_function, parent=None, time_step=0):
+    def __init__(self, problem_instance, single_agents_states, heuristics, obj_function, parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
         self._heuristics = heuristics
-        self._objective_function = objective_function
+        self._objective_function = obj_function
         self.calculate_cost()
         self.compute_heuristics()
 

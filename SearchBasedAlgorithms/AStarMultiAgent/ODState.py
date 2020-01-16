@@ -11,9 +11,9 @@ from SearchBasedAlgorithms.AStarMultiAgent.MultiAgentState import MultiAgentStat
 
 
 class ODState(MultiAgentState):
-    def __init__(self, problem_instance, single_agent_states, heuristics, objective_function, to_move=0, pre_state=None,
+    def __init__(self, problem_instance, single_agent_states, heuristics, obj_function, to_move=0, pre_state=None,
                  parent=None, time_step=0):
-        super().__init__(problem_instance, single_agent_states, heuristics, objective_function, parent=parent,
+        super().__init__(problem_instance, single_agent_states, heuristics, obj_function, parent=parent,
                          time_step=time_step)
         self._problem_instance = problem_instance
         self._heuristics = heuristics

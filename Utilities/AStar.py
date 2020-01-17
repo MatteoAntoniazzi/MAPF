@@ -27,7 +27,6 @@ class AStar:
             if cur_state.goal_test():
                 path = cur_state.get_path_to_parent()
                 goal = cur_state.get_position()
-                print(self._solver_settings)
                 for i in range(self._solver_settings.get_goal_occupation_time()-1):
                     path.append(goal)
                 return path

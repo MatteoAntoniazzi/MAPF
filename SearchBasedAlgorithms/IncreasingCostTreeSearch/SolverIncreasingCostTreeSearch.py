@@ -68,6 +68,7 @@ class SolverIncreasingCostTreeSearch(MAPFSolver):
         self._n_of_loops = 0
 
         starter_state = IncreasingCostTreeNode(problem_instance, self._solver_settings)
+
         self._frontier.add(starter_state)
 
     def __str__(self):

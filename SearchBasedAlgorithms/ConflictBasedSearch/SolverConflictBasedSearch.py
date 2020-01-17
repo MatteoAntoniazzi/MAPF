@@ -74,6 +74,15 @@ class SolverConflictBasedSearch(MAPFSolver):
             self._n_of_loops += 1
             self._frontier.add_list_of_nodes(expanded_nodes)
 
+        if return_infos:
+            output_infos = {
+                "sum_of_costs": 0,
+                "makespan": 0,
+                "expanded_nodes": 0,
+                "computation_time": 0
+            }
+            return [], output_infos
+
         return []
 
     def initialize_problem(self, problem_instance):

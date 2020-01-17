@@ -24,6 +24,7 @@ class IncreasingCostTreeNode:
         else:
             self._path_costs_vector = path_costs_vector
 
+
         self._solution = None
         self._mdd_vector = self.compute_mdds()
         self._total_mdd = self.compute_total_mdd()

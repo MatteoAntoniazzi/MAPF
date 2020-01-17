@@ -22,6 +22,7 @@ class StartMenu:
         self.map_images_list = []
         self.random_images_list = []
         self.buttons_list = []
+        self.reader = Reader()
 
         # GUI selectable variables
         self.selected_algorithm_var = StringVar()
@@ -174,13 +175,18 @@ class StartMenu:
         self.initialize_permanence_in_goal_canvas(permanence_in_goal_canvas)
 
         # Number of Agents Label
-        lbl_title = Label(self.algorithm_settings_frame, text="N OF AGENTS", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(self.algorithm_settings_frame, text="NUMBER OF AGENTS", font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
         # Number of Agents Canvas
         number_of_agents_canvas = Canvas(self.algorithm_settings_frame)
         number_of_agents_canvas.pack()
         self.initialize_n_of_agents_canvas(number_of_agents_canvas)
+
+        # Shuffle Button
+        shuffle_button = Button(self.algorithm_settings_frame, text="SHUFFLE INSTANCES", command=self.shuffle_instances)
+        self.buttons_list.append(shuffle_button)
+        shuffle_button.pack(anchor=W, pady=20)
 
         # Prepare Button
         prepare_button = Button(self.algorithm_settings_frame, text="PREPARE", command=self.prepare_simulation_function)
@@ -247,12 +253,18 @@ class StartMenu:
                                          self.selected_goal_occupation_time.get())
 
         # Prepare to show the simulation on the given frame
-        prepare_simulation(self.simulation_frame, self.selected_algorithm_var.get(),
+        prepare_simulation(self.reader, self.simulation_frame, self.selected_algorithm_var.get(),
                            self.independence_detection_var.get(), self.selected_map_var.get(), solver_settings,
                            self.selected_n_of_agents.get())
 
         # Enable all the Buttons
         self.enable_settings_buttons()
+
+    def shuffle_instances(self):
+        """
+        Shuffle the scen instances (shuffle the agent choice)
+        """
+        self.reader.shuffle_instances()
 
     def goal_occupation_time_down_button(self):
         """

@@ -32,6 +32,9 @@ class StartMenu:
         self.selected_objective_function_var = StringVar()
         self.selected_goal_occupation_time = IntVar()
         self.selected_n_of_agents = IntVar()
+        self.selected_scene_type = StringVar()
+        self.selected_scene_number = IntVar()
+        self.selected_change_scene_instances_button_text = StringVar()
 
         self.initialize_variables()
 
@@ -80,6 +83,9 @@ class StartMenu:
         self.selected_objective_function_var.set("SOC")
         self.selected_goal_occupation_time.set(1)
         self.selected_n_of_agents.set(5)
+        self.selected_scene_type.set("Even")
+        self.selected_scene_number.set(1)
+        self.selected_change_scene_instances_button_text.set("NEXT SCENE")
 
     def choose_map_frame_initialization(self):
         """
@@ -108,10 +114,14 @@ class StartMenu:
 
         # Maps Radiobuttons
         for i, img in enumerate(self.map_images_list):
-            b = Radiobutton(frame, image=img, height=80, width=10, variable=self.selected_map_var, value=i)
-            # WIDTH: 10 su Linux, 100 su Ubuntu
+            b = Radiobutton(frame, image=img, height=80, width=10, variable=self.selected_map_var, value=i,
+                            command=self.set_reader_map)
+            # WIDTH: 10 su Linux, 100 su Windows/Mac
             self.buttons_list.append(b)
             b.pack(anchor=W)
+
+    def set_reader_map(self):
+        self.reader.set_map(self.selected_map_var.get())
 
     def on_configure(self, event):
         self.choose_map_canvas.configure(scrollregion=self.choose_map_canvas.bbox('all'))
@@ -171,22 +181,28 @@ class StartMenu:
 
         # Permanence in Goal Canvas
         permanence_in_goal_canvas = Canvas(self.algorithm_settings_frame)
-        permanence_in_goal_canvas.pack()
+        permanence_in_goal_canvas.pack(fill=X)
         self.initialize_permanence_in_goal_canvas(permanence_in_goal_canvas)
 
+        # Scene Selection Label
+        lbl_title = Label(self.algorithm_settings_frame, text="SCENE SELECTION / SCENE FILE NUMBER",
+                          font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        # Scene Selection Canvas
+        scene_selection_canvas = Canvas(self.algorithm_settings_frame)
+        scene_selection_canvas.pack(fill=X)
+        self.initialize_scene_selection_canvas(scene_selection_canvas)
+
         # Number of Agents Label
-        lbl_title = Label(self.algorithm_settings_frame, text="NUMBER OF AGENTS", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(self.algorithm_settings_frame, text="NUMBER OF AGENTS / INSTANCES CHOICE",
+                          font=("Helvetica", 16), fg="purple")
         lbl_title.pack(anchor=W, ipady=10)
 
         # Number of Agents Canvas
         number_of_agents_canvas = Canvas(self.algorithm_settings_frame)
-        number_of_agents_canvas.pack()
+        number_of_agents_canvas.pack(fill=X)
         self.initialize_n_of_agents_canvas(number_of_agents_canvas)
-
-        # Shuffle Button
-        shuffle_button = Button(self.algorithm_settings_frame, text="SHUFFLE INSTANCES", command=self.shuffle_instances)
-        self.buttons_list.append(shuffle_button)
-        shuffle_button.pack(anchor=W, pady=20)
 
         # Prepare Button
         prepare_button = Button(self.algorithm_settings_frame, text="PREPARE", command=self.prepare_simulation_function)
@@ -195,28 +211,68 @@ class StartMenu:
 
     def initialize_permanence_in_goal_canvas(self, canvas):
         """
-        Initialize the Permancence in Goal Canvas
+        Initialize the Permanence in Goal Canvas
         """
         # Load button images
         arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
         arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
 
-        # Goal Occupation Time Up Button
-        goal_occupation_time_up_button = Button(canvas, image=arrow_up_img,
-                                                command=self.goal_occupation_time_up_button)
-        goal_occupation_time_up_button.pack(side=RIGHT, padx=(0, 20))
-        self.buttons_list.append(goal_occupation_time_up_button)
+        # Goal Occupation Time Down Button
+        goal_occupation_time_down_button = Button(canvas, image=arrow_down_img,
+                                                  command=self.goal_occupation_time_down_button)
+        goal_occupation_time_down_button.pack(side=LEFT, padx=(10, 15))
+        self.buttons_list.append(goal_occupation_time_down_button)
 
         # Goal Occupation Time Text
         goal_occupation_time_txt = Label(canvas, textvariable=self.selected_goal_occupation_time,
                                          justify=LEFT, font=("Lucida Console", 10))
-        goal_occupation_time_txt.pack(side=RIGHT, padx=10)
+        goal_occupation_time_txt.pack(side=LEFT, padx=0)
 
-        # Goal Occupation Time Down Button
-        goal_occupation_time_down_button = Button(canvas, image=arrow_down_img,
-                                                  command=self.goal_occupation_time_down_button)
-        goal_occupation_time_down_button.pack(side=RIGHT, padx=(20, 0))
-        self.buttons_list.append(goal_occupation_time_down_button)
+        # Goal Occupation Time Up Button
+        goal_occupation_time_up_button = Button(canvas, image=arrow_up_img,
+                                                command=self.goal_occupation_time_up_button)
+        goal_occupation_time_up_button.pack(side=LEFT, padx=(15, 0))
+        self.buttons_list.append(goal_occupation_time_up_button)
+
+    def initialize_scene_selection_canvas(self, canvas):
+        """
+        Initialize the Scene Selection Canvas
+        """
+        # Load button images
+        arrow_right_img = self.load_image("Images/arrow_right.png", (30, 30))
+        arrow_left_img = self.load_image("Images/arrow_left.png", (30, 30))
+        arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
+        arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
+
+        # Change Scene Button
+        scene_down_button = Button(canvas, image=arrow_left_img, command=self.change_scene_button)
+        scene_down_button.pack(side=LEFT, padx=(10, 15))
+        self.buttons_list.append(scene_down_button)
+
+        # Scene Type Text
+        scene_type_txt = Label(canvas, textvariable=self.selected_scene_type, width=6, justify=LEFT,
+                               font=("Lucida Console", 10))
+        scene_type_txt.pack(side=LEFT, padx=0)
+
+        # Change Scene Button
+        scene_up_button = Button(canvas, image=arrow_right_img, command=self.change_scene_button)
+        self.buttons_list.append(scene_up_button)
+        scene_up_button.pack(side=LEFT, padx=(15, 20))
+
+        # Scene File Number Down Button
+        scene_file_number_down_button = Button(canvas, image=arrow_down_img, command=self.scene_file_number_down_button)
+        scene_file_number_down_button.pack(side=LEFT, padx=(10, 15))
+        self.buttons_list.append(scene_file_number_down_button)
+
+        # Scene File Number Text
+        scene_file_text = Label(canvas, textvariable=self.selected_scene_number, justify=LEFT,
+                                font=("Lucida Console", 10))
+        scene_file_text.pack(side=LEFT, padx=0)
+
+        # Scene File Number Up Button
+        scene_file_number_up_button = Button(canvas, image=arrow_up_img, command=self.scene_file_number_up_button)
+        scene_file_number_up_button.pack(side=LEFT, padx=(15, 0))
+        self.buttons_list.append(scene_file_number_up_button)
 
     def initialize_n_of_agents_canvas(self, canvas):
         """
@@ -226,20 +282,26 @@ class StartMenu:
         arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
         arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
 
-        # Number of Agents Up Button
-        n_of_agents_up_button = Button(canvas, image=arrow_up_img, command=self.n_of_agents_up_button)
-        self.buttons_list.append(n_of_agents_up_button)
-        n_of_agents_up_button.pack(side=RIGHT, padx=(0, 20))
+        # Number of Agents Down Button
+        n_of_agents_down_button = Button(canvas, image=arrow_down_img, command=self.n_of_agents_down_button)
+        n_of_agents_down_button.pack(side=LEFT, padx=(10, 15))
+        self.buttons_list.append(n_of_agents_down_button)
 
         # Number of Agents Text
         n_of_agents_txt = Label(canvas, textvariable=self.selected_n_of_agents, justify=LEFT,
                                 font=("Lucida Console", 10))
-        n_of_agents_txt.pack(side=RIGHT, padx=10)
+        n_of_agents_txt.pack(side=LEFT, padx=0)
 
-        # Number of Agents Down Button
-        n_of_agents_down_button = Button(canvas, image=arrow_down_img, command=self.n_of_agents_down_button)
-        n_of_agents_down_button.pack(side=RIGHT, padx=(20, 0))
-        self.buttons_list.append(n_of_agents_down_button)
+        # Number of Agents Up Button
+        n_of_agents_up_button = Button(canvas, image=arrow_up_img, command=self.n_of_agents_up_button)
+        self.buttons_list.append(n_of_agents_up_button)
+        n_of_agents_up_button.pack(side=LEFT, padx=(15, 20))
+
+        # Shuffle Button
+        change_scene_instances_button = Button(canvas, textvariable=self.selected_change_scene_instances_button_text,
+                                               command=self.change_scene_instances)
+        self.buttons_list.append(change_scene_instances_button)
+        change_scene_instances_button.pack(side=LEFT, padx=(50, 0))
 
     def prepare_simulation_function(self):
         """
@@ -254,17 +316,16 @@ class StartMenu:
 
         # Prepare to show the simulation on the given frame
         prepare_simulation(self.reader, self.simulation_frame, self.selected_algorithm_var.get(),
-                           self.independence_detection_var.get(), self.selected_map_var.get(), solver_settings,
-                           self.selected_n_of_agents.get())
+                           self.independence_detection_var.get(), solver_settings, self.selected_n_of_agents.get())
 
         # Enable all the Buttons
         self.enable_settings_buttons()
 
-    def shuffle_instances(self):
+    def change_scene_instances(self):
         """
         Shuffle the scen instances (shuffle the agent choice)
         """
-        self.reader.shuffle_instances()
+        self.reader.change_scene_instances()
 
     def goal_occupation_time_down_button(self):
         """
@@ -278,6 +339,35 @@ class StartMenu:
         Button function to increment the goal occupation time
         """
         self.selected_goal_occupation_time.set(self.selected_goal_occupation_time.get()+1)
+
+    def change_scene_button(self):
+        """
+        Change the type of the scene file to select
+        """
+        if self.selected_scene_type.get() == "Even":
+            self.selected_scene_type.set("Random")
+            self.selected_change_scene_instances_button_text.set("NEXT RANDOM SCENE")
+            self.reader.set_scene_type("random")
+        else:
+            self.selected_scene_type.set("Even")
+            self.selected_change_scene_instances_button_text.set("NEXT SCENE")
+            self.reader.set_scene_type("even")
+
+    def scene_file_number_down_button(self):
+        """
+        Button function to decrement the scene file number
+        """
+        if self.selected_scene_number.get() > 1:
+            self.selected_scene_number.set(self.selected_scene_number.get()-1)
+            self.reader.set_scene_file_number(self.selected_scene_number.get())
+
+    def scene_file_number_up_button(self):
+        """
+         Button function to increment the scene file number
+         """
+        if self.selected_scene_number.get() < 25:
+            self.selected_scene_number.set(self.selected_scene_number.get()+1)
+            self.reader.set_scene_file_number(self.selected_scene_number.get())
 
     def n_of_agents_down_button(self):
         """

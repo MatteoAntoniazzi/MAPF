@@ -224,7 +224,7 @@ class Visualize:
         """
         Increase the speed of the animation.
         """
-        if not self.animation_speed >= (SPEED_1X*2):
+        if not self.animation_speed >= (SPEED_1X*1.9):
             self.animation_speed = self.animation_speed + SPEED_1X/10
             self.speed_txt_var.set(str(self.animation_speed/SPEED_1X)+"X")
 

@@ -1,6 +1,8 @@
 import os
 import numpy as np
 
+from Utilities.macros import *
+
 
 def convert_nums(l):
     for i in range(len(l)):
@@ -14,13 +16,29 @@ def convert_nums(l):
     return l
 
 
-class Reader:
-    def __init__(self):
-        self._scene_file = None
-        self._scene_instances = None
-        self._shuffle = False
+def get_scene_file_path(map_number, scene_type, scene_number):
+    map_name = MAPS_NAMES_LIST.get(map_number)
+    scene_file_path = "Maps/scenes-" + scene_type + "/" + map_name + "-" + scene_type + "-" + str(scene_number) + ".scen"
+    print(scene_file_path)
+    return scene_file_path
 
-    def load_map_file(self, map_file, occupied_char='@', valid_chars={'@', '.', 'T'}):
+
+class Reader:
+    def __init__(self, map_number=0, scene_type="even", scene_file_number=1):
+        self._map_number = map_number
+        self._scene_type = scene_type
+        self._scene_file_number = scene_file_number
+
+        self._reload_instances = True  # If False it loads scene instances already loaded
+
+        self._scene_instances = None
+        self._change_scene_instances = False
+
+    def load_map_file(self, occupied_char='@', valid_chars={'@', '.', 'T'}):
+        assert(self._map_number is not None), "Map Number Not Set"
+
+        map_file = "Maps/maps/" + MAPS_NAMES_LIST.get(self._map_number) + ".map"
+
         if not os.path.isfile(map_file):
             print("Map file not found!")
             exit(-1)
@@ -39,24 +57,39 @@ class Reader:
                     occupancy_lst.add((x, y))
         return width, height, occupancy_lst
 
-    def load_random_scenario_file(self, scen_file, occupancy_lst, map_width, map_height, n_of_agents=10):
+    def load_scenario_file(self, occupancy_lst, map_width, map_height, n_of_agents=10):
         """
         Load a random scenario file. The random scenarios are used and since the agents are taken completely random the
         paths can be very long and the computation with some algorithm very long.
-        :param scen_file: scen file path
         :param occupancy_lst: list of the obstacles
         :param map_width: width of the map
         :param map_height: height of the map
         :param n_of_agents: number of agents to return
-        :return:
+        :return: array of start and destination couples
         """
-        if scen_file != self._scene_file:
-            self._scene_file = scen_file
-            self.load_instances(map_width, map_height)
+        scene_file_path = get_scene_file_path(self._map_number, self._scene_type, self._scene_file_number)
 
-        if self._shuffle:
-            np.random.shuffle(self._scene_instances)
-            self._shuffle = False
+        if self._reload_instances:
+            self.load_instances(scene_file_path, map_width, map_height)
+            self._reload_instances = False
+
+        if self._change_scene_instances:
+            if self._scene_type == "even":
+                values = [x[0] for x in self._scene_instances]
+                next_bucket_number = self._scene_instances[len(self._scene_instances)-1][0]
+                idx = values.index(next_bucket_number)
+                self._scene_instances = self._scene_instances[idx:] + self._scene_instances[:idx-1]
+
+                # from random import choice
+                # values = [x[0] for x in self._scene_instances]
+                # random_value = choice(tuple(set(values)))
+                # idx = values.index(random_value)
+                # self._scene_instances = self._scene_instances[idx:] + self._scene_instances[:idx - 1]
+
+            elif self._scene_type == "random":
+                np.random.shuffle(self._scene_instances)
+
+            self._change_scene_instances = False
 
         instances = [((i[4], i[5]), (i[6], i[7])) for i in self._scene_instances]
         for start, goal in instances:
@@ -64,33 +97,14 @@ class Reader:
             assert(goal not in occupancy_lst), "Overlapping error"
         return instances[:n_of_agents]
 
-    def load_even_scenario_file(self, scen_file, occupancy_list, map_width, map_height, n_of_agents=10):
-        if scen_file != self._scene_file:
-            self._scene_file = scen_file
-            self.load_instances(map_width, map_height)
+    def change_scene_instances(self):
+        self._change_scene_instances = True
 
-        if self._shuffle:
-            from random import choice
-            values = [x[0] for x in self._scene_instances]
-            random_value = choice(tuple(set(values)))
-            idx = values.index(random_value)
-            self._scene_instances = self._scene_instances[idx:] + self._scene_instances[:idx-1]
-            self._shuffle = False
-
-        instances = [((i[4], i[5]), (i[6], i[7])) for i in self._scene_instances]
-        for start, goal in instances:
-            assert (start not in occupancy_list), "Overlapping error"
-            assert (goal not in occupancy_list), "Overlapping error"
-        return instances[:n_of_agents]
-
-    def shuffle_instances(self):
-        self._shuffle = True
-
-    def load_instances(self, map_width, map_height):
-        if not os.path.isfile(self._scene_file):
+    def load_instances(self, scene_file_path, map_width, map_height):
+        if not os.path.isfile(scene_file_path):
             print("Scenario file not found!")
             exit(-1)
-        ls = open(self._scene_file, 'r').readlines()
+        ls = open(scene_file_path, 'r').readlines()
         if "version 1" not in ls[0]:
             print(".scen version type does not match!")
             exit(-1)
@@ -101,7 +115,20 @@ class Reader:
             assert (i[2] == map_width)
             assert (i[3] == map_height)
 
+    def set_map(self, map_number):
+        print("READER SET MAP ", map_number)
+        self._map_number = map_number
+        self._reload_instances = True
 
+    def set_scene_type(self, scene_type):
+        print("READER SCENE TYPE ", scene_type)
+        self._scene_type = scene_type
+        self._reload_instances = True
+
+    def set_scene_file_number(self, scene_file_number):
+        print("READER SET SCENE NUMBER ", scene_file_number)
+        self._scene_file_number = scene_file_number
+        self._reload_instances = True
 
     # TEST 1
     # return [instances[1], instances[7], instances[19], instances[22], instances[28], instances[42]]
@@ -119,8 +146,6 @@ class Reader:
     # return [instances[21], instances[33]]
     # TEST 8
     # return [instances[21], instances[42]]
-
-
 
     # def setup_args(self):
     #     parser = argparse.ArgumentParser()

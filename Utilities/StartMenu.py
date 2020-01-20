@@ -35,6 +35,7 @@ class StartMenu:
         self.selected_scene_type = StringVar()
         self.selected_scene_number = IntVar()
         self.selected_change_scene_instances_button_text = StringVar()
+        self.edge_conflicts_var = BooleanVar()
 
         self.initialize_variables()
 
@@ -86,6 +87,7 @@ class StartMenu:
         self.selected_scene_type.set("Even")
         self.selected_scene_number.set(1)
         self.selected_change_scene_instances_button_text.set("NEXT SCENE")
+        self.edge_conflicts_var.set(True)
 
     def choose_map_frame_initialization(self):
         """
@@ -103,7 +105,8 @@ class StartMenu:
         frame = Frame(self.choose_map_canvas)
         self.choose_map_canvas.create_window((0, 0), window=frame, anchor='nw')
 
-        for png_path in PNG_PATH_LIST:
+        for map_number in MAPS_NAMES_LIST:
+            png_path = "./Maps/pngs/" + MAPS_NAMES_LIST[map_number] + ".png"
             load = Image.open(png_path)
             load = load.resize((70, 70), Image.ANTIALIAS)
             self.map_images_list.append(ImageTk.PhotoImage(load))
@@ -141,16 +144,11 @@ class StartMenu:
             self.buttons_list.append(b)
             b.pack(anchor=W)
 
-        # Independence Detection
-        lbl_title = Label(self.algorithm_settings_frame, text="INDEPENDENCE DETECTION", font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
-
         # Independence Detection Checkbutton
         id_button = Checkbutton(self.algorithm_settings_frame, text="Independence Detection",
-                                variable=self.independence_detection_var, onvalue=True, offvalue=False,
-                                height=0, width=25)
+                                variable=self.independence_detection_var, onvalue=True, offvalue=False)
         self.buttons_list.append(id_button)
-        id_button.pack(anchor=W)
+        id_button.pack(anchor=W, pady=(10, 0))
 
         # Heuristics Label
         lbl_title = Label(self.algorithm_settings_frame, text="HEURISTICS", font=("Helvetica", 16), fg="purple")
@@ -203,6 +201,16 @@ class StartMenu:
         number_of_agents_canvas = Canvas(self.algorithm_settings_frame)
         number_of_agents_canvas.pack(fill=X)
         self.initialize_n_of_agents_canvas(number_of_agents_canvas)
+
+        # Edge Conflicts Label
+        lbl_title = Label(self.algorithm_settings_frame, text="EDGE CONFLICTS", font=("Helvetica", 16), fg="purple")
+        lbl_title.pack(anchor=W, ipady=10)
+
+        # Edge Conflicts Checkbutton
+        id_button = Checkbutton(self.algorithm_settings_frame, text="Edge Conflicts",
+                                variable=self.edge_conflicts_var, onvalue=True, offvalue=False)
+        self.buttons_list.append(id_button)
+        id_button.pack(anchor=W)
 
         # Prepare Button
         prepare_button = Button(self.algorithm_settings_frame, text="PREPARE", command=self.prepare_simulation_function)
@@ -312,7 +320,7 @@ class StartMenu:
 
         # Create an instance of the class SolverSettings
         solver_settings = SolverSettings(self.selected_heuristic_var.get(), self.selected_objective_function_var.get(),
-                                         self.selected_goal_occupation_time.get())
+                                         self.selected_goal_occupation_time.get(), self.edge_conflicts_var.get())
 
         # Prepare to show the simulation on the given frame
         prepare_simulation(self.reader, self.simulation_frame, self.selected_algorithm_var.get(),

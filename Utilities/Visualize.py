@@ -23,6 +23,7 @@ class Visualize:
         self._paths = paths
         self._output_infos = output_infos
         self.random_images_list = []
+        self._goals_list = [a.get_goal() for a in self._problem_instance.get_agents()]
 
         self.animation_speed = SPEED_1X
         self._frame_width, self._frame_height = get_frame_dimension(self._problem_instance.get_map().get_height(),
@@ -255,26 +256,29 @@ class Visualize:
         """
         Draw the agents inside the map.
         """
-        for a in self._problem_instance.get_agents():
+        for i, a in enumerate(self._problem_instance.get_agents()):
             s_col, s_row = a.get_start()
             g_col, g_row = a.get_goal()
 
-            random_color = '#%02x%02x%02x' % tuple(np.random.choice(range(256), size=3))
-            self.agents_colors.append(random_color)
+            agent_color = COLORS_LIST[i % len(COLORS_LIST)]
+            # random_color = '#%02x%02x%02x' % tuple(np.random.choice(range(256), size=3))
+            self.agents_colors.append(agent_color)
             self.agents_ovals.append(self.map_canvas.create_oval(FRAME_MARGIN + self.cell_w * s_col,
                                                                  FRAME_MARGIN + self.cell_h * s_row,
                                                                  FRAME_MARGIN + self.cell_w * (s_col + 1),
                                                                  FRAME_MARGIN + self.cell_h * (s_row + 1),
-                                                                 outline='black', fill=random_color))
-            self.map_canvas.itemconfig(self.vis_cells[s_row][s_col], fill=random_color, width=1.5)
-            self.map_canvas.itemconfig(self.vis_cells[g_row][g_col], fill=random_color, stipple="gray50", width=1.5)
+                                                                 outline='black', fill=agent_color))
+            self.map_canvas.itemconfig(self.vis_cells[s_row][s_col], fill=agent_color, width=1.5)
+            self.map_canvas.itemconfig(self.vis_cells[g_row][g_col], fill=agent_color, stipple="gray50", width=1.5)
             self.text_list.append(self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w / 2,
                                                               FRAME_MARGIN + self.cell_h * s_row + self.cell_h / 2,
-                                                              font=("Purisa", get_font_dimension(self.dynamic_cell_w, self.dynamic_cell_h)),
+                                                              font=("Purisa", get_font_dimension(self.dynamic_cell_w,
+                                                                                                 self.dynamic_cell_h)),
                                                               text="S"))
             self.text_list.append(self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * g_col + self.cell_w / 2,
                                                               FRAME_MARGIN + self.cell_h * g_row + self.cell_h / 2,
-                                                              font=("Purisa", get_font_dimension(self.dynamic_cell_w, self.dynamic_cell_h)),
+                                                              font=("Purisa", get_font_dimension(self.dynamic_cell_w,
+                                                                                                 self.dynamic_cell_h)),
                                                               text="G"))
 
     def draw_paths(self, paths):
@@ -314,8 +318,9 @@ class Visualize:
                     current_position = self.path_to_visit[i].pop(0)
                     if self._footsteps:
                         color = self.agents_colors[i]
-                        self.map_canvas.itemconfig(self.vis_cells[current_position[1]][current_position[0]],
-                                                   fill=color, stipple="", width=1.5)
+                        if current_position not in self._goals_list:  # To not overwrite others goals
+                            self.map_canvas.itemconfig(self.vis_cells[current_position[1]][current_position[0]],
+                                                       fill=color, stipple="", width=1.5)
                     if self.path_to_visit[i]:
                         next_position = self.path_to_visit[i][0]
                         self.x_moves[i] = float((next_position[0] - current_position[0]) * self.dynamic_cell_w) / N_OF_STEPS

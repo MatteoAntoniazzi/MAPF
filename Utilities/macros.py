@@ -78,83 +78,12 @@ MAPS_NAMES_LIST = {
     25: "room-64-64-8",
     26: "room-64-64-16",
     27: "w_woundedcoast",
-    28: "narrow_corridor.map"
+    28: "narrow_corridor"
 }
 
-RANDOM_SCENES_LIST = {
-    0: "Maps/scenes-random-1/Berlin_1_256-random-1.scen",
-    1: "Maps/scenes-random-1/Boston_0_256-random-1.scen",
-    2: "Maps/scenes-random-1/brc202d-random-1.scen",
-    3: "Maps/scenes-random-1/den312d-random-1.scen",
-    4: "Maps/scenes-random-1/den520d-random-1.scen",
-    5: "Maps/scenes-random-1/empty-8-8-random-1.scen",
-    6: "Maps/scenes-random-1/empty-16-16-random-1.scen",
-    7: "Maps/scenes-random-1/empty-32-32-random-1.scen",
-    8: "Maps/scenes-random-1/empty-48-48-random-1.scen",
-    9: "Maps/scenes-random-1/ht_chantry-random-1.scen",
-    10: "Maps/scenes-random-1/ht_mansion_n-random-1.scen",
-    11: "Maps/scenes-random-1/lak303d-random-1.scen",
-    12: "Maps/scenes-random-1/lt_gallowstemplar_n-random-1.scen",
-    13: "Maps/scenes-random-1/maze-32-32-2-random-1.scen",
-    14: "Maps/scenes-random-1/maze-32-32-4-random-1.scen",
-    15: "Maps/scenes-random-1/maze-128-128-2-random-1.scen",
-    16: "Maps/scenes-random-1/maze-128-128-10-random-1.scen",
-    17: "Maps/scenes-random-1/orz900d-random-1.scen",
-    18: "Maps/scenes-random-1/ost003d-random-1.scen",
-    19: "Maps/scenes-random-1/Paris_1_256-random-1.scen",
-    20: "Maps/scenes-random-1/random-32-32-10-random-1.scen",
-    21: "Maps/scenes-random-1/random-32-32-20-random-1.scen",
-    22: "Maps/scenes-random-1/random-64-64-10-random-1.scen",
-    23: "Maps/scenes-random-1/random-64-64-20-random-1.scen",
-    24: "Maps/scenes-random-1/room-32-32-4-random-1.scen",
-    25: "Maps/scenes-random-1/room-64-64-8-random-1.scen",
-    26: "Maps/scenes-random-1/room-64-64-16-random-1.scen",
-    27: "Maps/scenes-random-1/w_woundedcoast-random-1.scen",
-    28: "Maps/scenes-random-1/narrow_corridor.scen"
-}
-
-EVEN_SCENES_LIST = {
-    0: "Maps/scenes-even-1/Berlin_1_256-even-1.scen",
-    1: "Maps/scenes-even-1/Boston_0_256-even-1.scen",
-    2: "Maps/scenes-even-1/brc202d-even-1.scen",
-    3: "Maps/scenes-even-1/den312d-even-1.scen",
-    4: "Maps/scenes-even-1/den520d-even-1.scen",
-    5: "Maps/scenes-even-1/empty-8-8-even-1.scen",
-    6: "Maps/scenes-even-1/empty-16-16-even-1.scen",
-    7: "Maps/scenes-even-1/empty-32-32-even-1.scen",
-    8: "Maps/scenes-even-1/empty-48-48-even-1.scen",
-    9: "Maps/scenes-even-1/ht_chantry-even-1.scen",
-    10: "Maps/scenes-even-1/ht_mansion_n-even-1.scen",
-    11: "Maps/scenes-even-1/lak303d-even-1.scen",
-    12: "Maps/scenes-even-1/lt_gallowstemplar_n-even-1.scen",
-    13: "Maps/scenes-even-1/maze-32-32-2-even-1.scen",
-    14: "Maps/scenes-even-1/maze-32-32-4-even-1.scen",
-    15: "Maps/scenes-even-1/maze-128-128-2-even-1.scen",
-    16: "Maps/scenes-even-1/maze-128-128-10-even-1.scen",
-    17: "Maps/scenes-even-1/orz900d-even-1.scen",
-    18: "Maps/scenes-even-1/ost003d-even-1.scen",
-    19: "Maps/scenes-even-1/Paris_1_256-even-1.scen",
-    20: "Maps/scenes-even-1/random-32-32-10-even-1.scen",
-    21: "Maps/scenes-even-1/random-32-32-20-even-1.scen",
-    22: "Maps/scenes-even-1/random-64-64-10-even-1.scen",
-    23: "Maps/scenes-even-1/random-64-64-20-even-1.scen",
-    24: "Maps/scenes-even-1/room-32-32-4-even-1.scen",
-    25: "Maps/scenes-even-1/room-64-64-8-even-1.scen",
-    26: "Maps/scenes-even-1/room-64-64-16-even-1.scen",
-    27: "Maps/scenes-even-1/w_woundedcoast-even-1.scen",
-    28: "Maps/scenes-even-1/narrow_corridor.scen"
-}
-
-PNG_PATH_LIST = ["./Maps/pngs/Berlin_1_256.png", "./Maps/pngs/Boston_0_256.png", "./Maps/pngs/brc202d.png",
-                 "./Maps/pngs/den312d.png", "./Maps/pngs/den520d.png", "./Maps/pngs/empty-8-8.png",
-                 "./Maps/pngs/empty-16-16.png", "./Maps/pngs/empty-32-32.png", "./Maps/pngs/empty-48-48.png",
-                 "./Maps/pngs/ht_chantry.png", "./Maps/pngs/ht_mansion_n.png", "./Maps/pngs/lak303d.png",
-                 "./Maps/pngs/lt_gallowstemplar_n.png", "./Maps/pngs/maze-32-32-2.png", "./Maps/pngs/maze-32-32-4.png",
-                 "./Maps/pngs/maze-128-128-2.png", "./Maps/pngs/maze-128-128-10.png", "./Maps/pngs/orz900d.png",
-                 "./Maps/pngs/ost003d.png", "./Maps/pngs/Paris_1_256.png", "./Maps/pngs/random-32-32-10.png",
-                 "./Maps/pngs/random-32-32-20.png", "./Maps/pngs/random-64-64-10.png",
-                 "./Maps/pngs/random-64-64-20.png", "./Maps/pngs/room-32-32-4.png", "./Maps/pngs/room-64-64-8.png",
-                 "./Maps/pngs/room-64-64-16.png", "./Maps/pngs/w_woundedcoast.png", "./Maps/pngs/narrow_corridor.png"]
+COLORS_LIST =["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF", "#C0C0C0", "#808080", "#800000",
+              "#808000", "	#008000", "#800080", "#008080", "#000080", "#FF7F50", "#FF8C00", "#9ACD32", "#FFC0CB",
+              "#F5DEB3", "#D2691E"]
 
 HEURISTICS_MODES = [
     ("Manhattan Distance", "Manhattan"),

@@ -15,6 +15,7 @@ class StartMenu:
         """
         # Root: root frame for the gui
         self.root = Tk()
+        self.root.title("MULTI AGENT PATH FINDING SIMULATOR")
         self.root.maxsize(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT)
         self.root.resizable(False, False)
 

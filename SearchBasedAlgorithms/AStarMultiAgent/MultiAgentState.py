@@ -9,12 +9,13 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, obj_function, parent=None, time_step=0):
+    def __init__(self, problem_instance, single_agents_states, heuristics, obj_function, is_edge_conflict=True, parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
         self._heuristics = heuristics
         self._objective_function = obj_function
+        self._is_edge_conflict = is_edge_conflict
         self.calculate_cost()
         self.compute_heuristics()
 
@@ -51,6 +52,7 @@ class MultiAgentState(State):
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
             m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, self._objective_function,
+                                is_edge_conflict=self._is_edge_conflict,
                                 parent=self, time_step=self.time_step()+1)
             if not self.is_conflict(m):
                 free_conflict_states.append(m)
@@ -75,12 +77,15 @@ class MultiAgentState(State):
         if len(next_active_positions) != len(set(next_active_positions)):
             return True
 
-        for i, next_pos in enumerate(next_positions):
-            for j, cur_pos in enumerate(current_positions):
-                if i != j:
-                    if next_pos == cur_pos:
-                        if next_positions[j] == current_positions[i]:
-                            return True
+        if self._is_edge_conflict:
+            print("CHECK EDGE CONFLICTS")
+            for i, next_pos in enumerate(next_positions):
+                for j, cur_pos in enumerate(current_positions):
+                    if i != j:
+                        if next_pos == cur_pos:
+                            if next_positions[j] == current_positions[i]:
+                                return True
+
         return False
 
     def goal_test(self):
@@ -136,7 +141,8 @@ class MultiAgentState(State):
 
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
-        return MultiAgentState(self._problem_instance, clone_states, self._heuristics, self._objective_function, parent=self._parent,
+        return MultiAgentState(self._problem_instance, clone_states, self._heuristics, self._objective_function,
+                               is_edge_conflict=self._is_edge_conflict, parent=self._parent,
                                time_step=self._time_step)
 
     def clone_states(self):

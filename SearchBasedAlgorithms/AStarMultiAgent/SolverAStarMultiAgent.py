@@ -71,7 +71,8 @@ class SolverAStarMultiAgent(MAPFSolver):
             single_agents_states.append(s)
 
         starter_state = MultiAgentState(problem_instance, single_agents_states, self._heuristics,
-                                        self._solver_settings.get_objective_function())
+                                        self._solver_settings.get_objective_function(),
+                                        is_edge_conflict=self._solver_settings.get_edge_conflicts())
         self._frontier.add(starter_state)
 
     def __str__(self):

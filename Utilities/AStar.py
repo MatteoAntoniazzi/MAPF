@@ -66,9 +66,17 @@ class AStar:
                     busy_times = reservation_table.get(state.get_position(), [])
                     cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
 
-                    if not (state.time_step() in busy_times or (state.time_step()-1 in busy_times and
+                    if not (state.time_step() in busy_times or (state.time_step() - 1 in busy_times and
                                                                 state.time_step() in cur_pos_busy_times)):
                         expanded_nodes_no_conflicts.append(state)
+
+                    if state.time_step() not in busy_times:
+                        if self._solver_settings.get_edge_conflicts():
+                            if not (state.time_step() - 1 in busy_times and state.time_step() in cur_pos_busy_times):
+                                expanded_nodes_no_conflicts.append(state)
+                        else:
+                            expanded_nodes_no_conflicts.append(state)
+
 
                 self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
 

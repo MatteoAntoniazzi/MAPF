@@ -11,12 +11,11 @@ from SearchBasedAlgorithms.AStarMultiAgent.MultiAgentState import MultiAgentStat
 
 
 class ODState(MultiAgentState):
-    def __init__(self, problem_instance, single_agent_states, heuristics, obj_function, to_move=0, pre_state=None,
+    def __init__(self, problem_instance, single_agent_states, heuristics, obj_function, is_edge_conflict=True, to_move=0, pre_state=None,
                  parent=None, time_step=0):
-        super().__init__(problem_instance, single_agent_states, heuristics, obj_function, parent=parent,
-                         time_step=time_step)
+        super().__init__(problem_instance, single_agent_states, heuristics, obj_function,
+                         is_edge_conflict=is_edge_conflict, parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
-        self._heuristics = heuristics
         if pre_state is None:
             self._pre_state = self
         else:
@@ -53,7 +52,7 @@ class ODState(MultiAgentState):
             single_agent_states[self._to_move] = state
 
             s = ODState(self._problem_instance, single_agent_states, self._heuristics, self._objective_function,
-                        to_move=self.next_to_move(), pre_state=next_pre_state, parent=self,
+                        is_edge_conflict=self._is_edge_conflict, to_move=self.next_to_move(), pre_state=next_pre_state, parent=self,
                         time_step=next_time_step)
 
             if s.is_a_standard_state():

@@ -87,7 +87,7 @@ class IncreasingCostTreeNode:
         candidate_solutions = list(itertools.product(*candidate_paths))
 
         for solution in candidate_solutions:
-            if check_validity(solution):
+            if self.check_validity(solution):
                 self._solution = solution
                 return solution
         return None
@@ -116,28 +116,28 @@ class IncreasingCostTreeNode:
         if self._solver_settings.get_objective_function() == "Makespan":
             return max(self._path_costs_vector)
 
+    def check_validity(self, solution):
+        """
+        Check if a solution has no conflicts.
+        Will be checked that:
+            1. no agents occupy the same position in the same time step;
+            2. no agent overlap (switch places).
+        """
+        reservation_table = dict()
 
-def check_validity(solution):
-    """
-    Check if a solution has no conflicts.
-    Will be checked that:
-        1. no agents occupy the same position in the same time step;
-        2. no agent overlap (switch places).
-    """
-    reservation_table = dict()
+        for i, path in enumerate(solution):
+            for ts, pos in enumerate(path):
+                if reservation_table.get((pos, ts)) is not None:
+                    return False
+                reservation_table[(pos, ts)] = i
 
-    for i, path in enumerate(solution):
-        for ts, pos in enumerate(path):
-            if reservation_table.get((pos, ts)) is not None:
-                return False
-            reservation_table[(pos, ts)] = i
+        if self._solver_settings.get_edge_conflicts():
+            for ag_i, path in enumerate(solution):
+                for ts, pos in enumerate(path):
+                    ag_j = reservation_table.get((pos, ts - 1))
+                    if ag_j is not None and ag_j != ag_i:
+                        if len(solution[ag_j]) > ts:
+                            if solution[ag_j][ts] == path[ts - 1]:
+                                return False
 
-    for ag_i, path in enumerate(solution):
-        for ts, pos in enumerate(path):
-            ag_j = reservation_table.get((pos, ts - 1))
-            if ag_j is not None and ag_j != ag_i:
-                if len(solution[ag_j]) > ts:
-                    if solution[ag_j][ts] == path[ts - 1]:
-                        return False
-
-    return True
+        return True

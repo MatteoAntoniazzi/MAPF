@@ -10,12 +10,14 @@ import itertools
 
 
 class MStarState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, obj_function, parent=None, time_step=0):
+    def __init__(self, problem_instance, single_agents_states, heuristics, obj_function, is_edge_conflict=True,
+                 parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
         self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
         self._heuristics = heuristics
         self._objective_function = obj_function
+        self._is_edge_conflict = is_edge_conflict
         self._back_propagation_set = []
         self._collisions_set = set()
         self.calculate_cost()
@@ -59,8 +61,8 @@ class MStarState(State):
 
         expanded_states = []
         for i, multi_state in enumerate(valid_states):
-            m = MStarState(self._problem_instance, multi_state, self._heuristics, self._objective_function, parent=self,
-                           time_step=self.time_step()+1)
+            m = MStarState(self._problem_instance, multi_state, self._heuristics, self._objective_function,
+                           self._is_edge_conflict, parent=self, time_step=self.time_step()+1)
             m.set_back_propagation_set([self])
             m.set_collisions_set(self.colliding_robots(m))
             expanded_states.append(m)
@@ -85,16 +87,18 @@ class MStarState(State):
                         not next_state_i.is_completed() and not next_state_j.is_completed():
                     colliding_robots.add(i)
                     colliding_robots.add(j)
-        current_positions = self.get_positions_list()
-        next_positions = multi_state.get_positions_list()
 
-        for i, next_pos in enumerate(next_positions):
-            for j, cur_pos in enumerate(current_positions):
-                if i != j:
-                    if next_pos == cur_pos:
-                        if next_positions[j] == current_positions[i]:
-                            colliding_robots.add(i)
-                            colliding_robots.add(j)
+        if self._is_edge_conflict:
+            current_positions = self.get_positions_list()
+            next_positions = multi_state.get_positions_list()
+
+            for i, next_pos in enumerate(next_positions):
+                for j, cur_pos in enumerate(current_positions):
+                    if i != j:
+                        if next_pos == cur_pos:
+                            if next_positions[j] == current_positions[i]:
+                                colliding_robots.add(i)
+                                colliding_robots.add(j)
 
         return colliding_robots
 

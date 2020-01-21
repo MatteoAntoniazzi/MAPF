@@ -328,7 +328,10 @@ class StartMenu:
                            self.independence_detection_var.get(), solver_settings, self.selected_n_of_agents.get())
 
         # Enable all the Buttons
-        self.enable_settings_buttons()
+        try:
+            self.enable_settings_buttons()
+        except TclError:
+            exit(-1)
 
     def change_scene_instances(self):
         """

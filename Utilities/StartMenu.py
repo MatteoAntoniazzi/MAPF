@@ -2,6 +2,7 @@ from Utilities.SolverSettings import SolverSettings
 from Utilities.start_simulation import *
 from tkinter import *
 from PIL import Image, ImageTk
+import platform
 
 
 class StartMenu:
@@ -13,6 +14,11 @@ class StartMenu:
         """
         Initialize the start menu of the GUI
         """
+        # Return the Operating System of the machine running it
+        self.os = platform.system()
+        self.font_titles = ("Helvetica", 13)
+        self.color_titles = "purple"
+
         # Root: root frame for the gui
         self.root = Tk()
         self.root.title("MULTI AGENT PATH FINDING SIMULATOR")
@@ -113,13 +119,13 @@ class StartMenu:
             self.map_images_list.append(ImageTk.PhotoImage(load))
 
         # Map Label
-        lbl_title = Label(frame, text="MAP", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(frame, text="MAP", font=self.font_titles, fg=self.color_titles)
         lbl_title.pack(anchor=W, ipady=10)
 
         # Maps Radiobuttons
         for i, img in enumerate(self.map_images_list):
-            b = Radiobutton(frame, image=img, height=80, width=10, variable=self.selected_map_var, value=i,
-                            command=self.set_reader_map)
+            b = Radiobutton(frame, image=img, height=80, width=100, variable=self.selected_map_var, borderwidth=0,
+                            value=i, command=self.set_reader_map)
             # WIDTH: 10 su Linux, 100 su Windows/Mac
             self.buttons_list.append(b)
             b.pack(anchor=W)
@@ -136,12 +142,13 @@ class StartMenu:
         detection options, the heuristics, the permanence time and the number of agents
         """
         # Algorithm Label
-        lbl_title = Label(self.algorithm_settings_frame, text="ALGORITHM", font=("Helvetica", 16), fg="purple")
+        lbl_title = Label(self.algorithm_settings_frame, text="ALGORITHM", font=self.font_titles, fg=self.color_titles)
         lbl_title.pack(anchor=W, ipady=10)
 
         # Algorithm Radiobuttons
         for text, mode in ALGORITHMS_MODES:
-            b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_algorithm_var, value=mode)
+            b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_algorithm_var,
+                            borderwidth=0, value=mode)
             self.buttons_list.append(b)
             b.pack(anchor=W)
 
@@ -152,31 +159,32 @@ class StartMenu:
         id_button.pack(anchor=W, pady=(10, 0))
 
         # Heuristics Label
-        lbl_title = Label(self.algorithm_settings_frame, text="HEURISTICS", font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
+        lbl_title = Label(self.algorithm_settings_frame, text="HEURISTICS", font=self.font_titles, fg=self.color_titles)
+        lbl_title.pack(anchor=W, pady=10)
 
         # Heuristics Radiobuttons
         for text, mode in HEURISTICS_MODES:
-            b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_heuristic_var, value=mode)
+            b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_heuristic_var,
+                            borderwidth=0, value=mode)
             self.buttons_list.append(b)
 
             b.pack(anchor=W)
 
         # Objective Function Label
-        lbl_title = Label(self.algorithm_settings_frame, text="OBJECTIVE FUNCTION", font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
+        lbl_title = Label(self.algorithm_settings_frame, text="OBJECTIVE FUNCTION", font=self.font_titles, fg=self.color_titles)
+        lbl_title.pack(anchor=W, pady=10)
 
         # Heuristics Radiobuttons
         for text, mode in OBJECTIVE_FUNCTION_MODES:
             b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_objective_function_var,
-                            value=mode)
+                            borderwidth=0, value=mode)
             self.buttons_list.append(b)
 
             b.pack(anchor=W)
 
         # Permanence in Goal Label
-        lbl_title = Label(self.algorithm_settings_frame, text="PERMANENCE IN GOAL", font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
+        lbl_title = Label(self.algorithm_settings_frame, text="PERMANENCE IN GOAL", font=self.font_titles, fg=self.color_titles)
+        lbl_title.pack(anchor=W, pady=10)
 
         # Permanence in Goal Canvas
         permanence_in_goal_canvas = Canvas(self.algorithm_settings_frame)
@@ -185,8 +193,8 @@ class StartMenu:
 
         # Scene Selection Label
         lbl_title = Label(self.algorithm_settings_frame, text="SCENE SELECTION / SCENE FILE NUMBER",
-                          font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
+                          font=self.font_titles, fg=self.color_titles)
+        lbl_title.pack(anchor=W, pady=10)
 
         # Scene Selection Canvas
         scene_selection_canvas = Canvas(self.algorithm_settings_frame)
@@ -195,8 +203,8 @@ class StartMenu:
 
         # Number of Agents Label
         lbl_title = Label(self.algorithm_settings_frame, text="NUMBER OF AGENTS / INSTANCES CHOICE",
-                          font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
+                          font=self.font_titles, fg=self.color_titles)
+        lbl_title.pack(anchor=W, pady=10)
 
         # Number of Agents Canvas
         number_of_agents_canvas = Canvas(self.algorithm_settings_frame)
@@ -204,8 +212,8 @@ class StartMenu:
         self.initialize_n_of_agents_canvas(number_of_agents_canvas)
 
         # Edge Conflicts Label
-        lbl_title = Label(self.algorithm_settings_frame, text="EDGE CONFLICTS", font=("Helvetica", 16), fg="purple")
-        lbl_title.pack(anchor=W, ipady=10)
+        lbl_title = Label(self.algorithm_settings_frame, text="EDGE CONFLICTS", font=self.font_titles, fg=self.color_titles)
+        lbl_title.pack(anchor=W, pady=10)
 
         # Edge Conflicts Checkbutton
         id_button = Checkbutton(self.algorithm_settings_frame, text="Edge Conflicts",

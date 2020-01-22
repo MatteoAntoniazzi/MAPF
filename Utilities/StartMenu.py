@@ -16,7 +16,12 @@ class StartMenu:
         """
         # Return the Operating System of the machine running it
         self.os = platform.system()
-        self.font_titles = ("Helvetica", 13)
+        if self.os == "Linux":
+            self.font_titles = ("Helvetica", 16)
+            self.pady_titles = 10
+        else:
+            self.font_titles = ("Helvetica", 13)
+            self.pady_titles = 5
         self.color_titles = "purple"
 
         # Root: root frame for the gui
@@ -120,7 +125,7 @@ class StartMenu:
 
         # Map Label
         lbl_title = Label(frame, text="MAP", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, ipady=10)
+        lbl_title.pack(anchor=W, ipady=self.pady_titles)
 
         # Maps Radiobuttons
         for i, img in enumerate(self.map_images_list):
@@ -143,7 +148,7 @@ class StartMenu:
         """
         # Algorithm Label
         lbl_title = Label(self.algorithm_settings_frame, text="ALGORITHM", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, ipady=10)
+        lbl_title.pack(anchor=W, ipady=self.pady_titles)
 
         # Algorithm Radiobuttons
         for text, mode in ALGORITHMS_MODES:
@@ -156,11 +161,11 @@ class StartMenu:
         id_button = Checkbutton(self.algorithm_settings_frame, text="Independence Detection",
                                 variable=self.independence_detection_var, onvalue=True, offvalue=False)
         self.buttons_list.append(id_button)
-        id_button.pack(anchor=W, pady=(10, 0))
+        id_button.pack(anchor=W, pady=(self.pady_titles, 0))
 
         # Heuristics Label
         lbl_title = Label(self.algorithm_settings_frame, text="HEURISTICS", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=10)
+        lbl_title.pack(anchor=W, pady=self.pady_titles)
 
         # Heuristics Radiobuttons
         for text, mode in HEURISTICS_MODES:
@@ -172,7 +177,7 @@ class StartMenu:
 
         # Objective Function Label
         lbl_title = Label(self.algorithm_settings_frame, text="OBJECTIVE FUNCTION", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=10)
+        lbl_title.pack(anchor=W, pady=self.pady_titles)
 
         # Heuristics Radiobuttons
         for text, mode in OBJECTIVE_FUNCTION_MODES:
@@ -184,7 +189,7 @@ class StartMenu:
 
         # Permanence in Goal Label
         lbl_title = Label(self.algorithm_settings_frame, text="PERMANENCE IN GOAL", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=10)
+        lbl_title.pack(anchor=W, pady=self.pady_titles)
 
         # Permanence in Goal Canvas
         permanence_in_goal_canvas = Canvas(self.algorithm_settings_frame)
@@ -194,7 +199,7 @@ class StartMenu:
         # Scene Selection Label
         lbl_title = Label(self.algorithm_settings_frame, text="SCENE SELECTION / SCENE FILE NUMBER",
                           font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=10)
+        lbl_title.pack(anchor=W, pady=self.pady_titles)
 
         # Scene Selection Canvas
         scene_selection_canvas = Canvas(self.algorithm_settings_frame)
@@ -204,7 +209,7 @@ class StartMenu:
         # Number of Agents Label
         lbl_title = Label(self.algorithm_settings_frame, text="NUMBER OF AGENTS / INSTANCES CHOICE",
                           font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=10)
+        lbl_title.pack(anchor=W, pady=self.pady_titles)
 
         # Number of Agents Canvas
         number_of_agents_canvas = Canvas(self.algorithm_settings_frame)
@@ -213,7 +218,7 @@ class StartMenu:
 
         # Edge Conflicts Label
         lbl_title = Label(self.algorithm_settings_frame, text="EDGE CONFLICTS", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=10)
+        lbl_title.pack(anchor=W, pady=self.pady_titles)
 
         # Edge Conflicts Checkbutton
         id_button = Checkbutton(self.algorithm_settings_frame, text="Edge Conflicts",
@@ -224,7 +229,7 @@ class StartMenu:
         # Prepare Button
         prepare_button = Button(self.algorithm_settings_frame, text="PREPARE", command=self.prepare_simulation_function)
         self.buttons_list.append(prepare_button)
-        prepare_button.pack(anchor=E, pady=20)
+        prepare_button.pack(anchor=E, pady=self.pady_titles*2)
 
     def initialize_permanence_in_goal_canvas(self, canvas):
         """

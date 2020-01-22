@@ -188,8 +188,9 @@ class StartMenu:
             b.pack(anchor=W)
 
         # Permanence in Goal Label
-        lbl_title = Label(self.algorithm_settings_frame, text="PERMANENCE IN GOAL", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=self.pady_titles)
+        lbl_title = Label(self.algorithm_settings_frame, text="PERMANENCE IN GOAL", font=self.font_titles,
+                          fg=self.color_titles)
+        lbl_title.pack(anchor=W, ipady=self.pady_titles)
 
         # Permanence in Goal Canvas
         permanence_in_goal_canvas = Canvas(self.algorithm_settings_frame)
@@ -199,7 +200,7 @@ class StartMenu:
         # Scene Selection Label
         lbl_title = Label(self.algorithm_settings_frame, text="SCENE SELECTION / SCENE FILE NUMBER",
                           font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=self.pady_titles)
+        lbl_title.pack(anchor=W, ipady=self.pady_titles, pady=(self.pady_titles, 0))
 
         # Scene Selection Canvas
         scene_selection_canvas = Canvas(self.algorithm_settings_frame)
@@ -209,7 +210,7 @@ class StartMenu:
         # Number of Agents Label
         lbl_title = Label(self.algorithm_settings_frame, text="NUMBER OF AGENTS / INSTANCES CHOICE",
                           font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=self.pady_titles)
+        lbl_title.pack(anchor=W, ipady=self.pady_titles, pady=(self.pady_titles, 0))
 
         # Number of Agents Canvas
         number_of_agents_canvas = Canvas(self.algorithm_settings_frame)
@@ -218,7 +219,7 @@ class StartMenu:
 
         # Edge Conflicts Label
         lbl_title = Label(self.algorithm_settings_frame, text="EDGE CONFLICTS", font=self.font_titles, fg=self.color_titles)
-        lbl_title.pack(anchor=W, pady=self.pady_titles)
+        lbl_title.pack(anchor=W, ipady=self.pady_titles, pady=(self.pady_titles, 0))
 
         # Edge Conflicts Checkbutton
         id_button = Checkbutton(self.algorithm_settings_frame, text="Edge Conflicts",

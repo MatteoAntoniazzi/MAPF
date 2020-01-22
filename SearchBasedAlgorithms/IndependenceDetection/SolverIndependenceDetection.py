@@ -130,13 +130,14 @@ class SolverIndependenceDetection(MAPFSolver):
                     return reservation_table[(pos, ts)], i
                 reservation_table[(pos, ts)] = i
 
-        for ag_i, path in enumerate(self._paths):
-            for ts, pos in enumerate(path):
-                ag_j = reservation_table.get((pos, ts-1))
-                if ag_j is not None and ag_j != ag_i:
-                    if len(self._paths[ag_j]) > ts:
-                        if self._paths[ag_j][ts] == path[ts-1]:
-                            return ag_i, ag_j
+        if self._solver_settings.get_edge_conflicts():
+            for ag_i, path in enumerate(self._paths):
+                for ts, pos in enumerate(path):
+                    ag_j = reservation_table.get((pos, ts-1))
+                    if ag_j is not None and ag_j != ag_i:
+                        if len(self._paths[ag_j]) > ts:
+                            if self._paths[ag_j][ts] == path[ts-1]:
+                                return ag_i, ag_j
 
         return None
 

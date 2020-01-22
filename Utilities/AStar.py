@@ -82,7 +82,7 @@ class AStar:
 
         return []
 
-    def find_path_with_constraints(self, map, start_pos, goal_pos, constraints, transactional_constraints):
+    def find_path_with_constraints(self, map, start_pos, goal_pos, constraints, transactional_constraints=None):
         """
         It computes the path from his start position to his goal position using the A* algorithm with reservation table.
         It return the path as list of (x, y) positions.
@@ -108,7 +108,7 @@ class AStar:
                 for state in expanded_nodes:
                     if (state.get_position(), state.time_step()) not in constraints:
                         if (state.predecessor().get_position(), state.get_position(), state.time_step()) not in \
-                                transactional_constraints:
+                                transactional_constraints or transactional_constraints is None:
                             expanded_nodes_no_conflicts.append(state)
                 self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
 

@@ -22,12 +22,13 @@ class SolverConflictBasedSearch(MAPFSolver):
         Solve the MAPF problem using the CBS algorithm returning the paths as lists of list of (x, y) positions.
         """
         self.initialize_problem(problem_instance)
-        solution, output_infos = self.high_level_search(verbose=verbose, print_output=print_output, return_infos=return_infos)
-
         if return_infos:
+            solution, output_infos = self.high_level_search(verbose=verbose, print_output=print_output,
+                                                            return_infos=return_infos)
             return solution, output_infos
-
-        return solution
+        else:
+            solution = self.high_level_search(verbose=verbose, print_output=print_output, return_infos=return_infos)
+            return solution
 
     def high_level_search(self, verbose=False, print_output=True, return_infos=False):
         """

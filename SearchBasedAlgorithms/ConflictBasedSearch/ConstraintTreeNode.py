@@ -57,10 +57,11 @@ class ConstraintTreeNode:
                 agent_constraints.append((pos, ts))
 
         agent_transactional_constraints = []
-        for constraint in self._transactional_constraints:
-            agent_id, pos_i, pos_f, ts = constraint
-            if agent_id == agent.get_id():
-                agent_transactional_constraints.append((pos_i, pos_f, ts))
+        if self._solver_settings.get_edge_conflicts():
+            for constraint in self._transactional_constraints:
+                agent_id, pos_i, pos_f, ts = constraint
+                if agent_id == agent.get_id():
+                    agent_transactional_constraints.append((pos_i, pos_f, ts))
 
         solver = AStar(self._solver_settings)
         path = solver.find_path_with_constraints(self._problem_instance.get_map(), agent.get_start(),
@@ -83,14 +84,15 @@ class ConstraintTreeNode:
                     return 'INPLACE', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]
                 reservation_table[(pos, ts)] = ag_i
 
-        for ag_i, path in enumerate(self._solution):
-            for ts, pos in enumerate(path):
-                ag_j = reservation_table.get((pos, ts-1))  # Agent in the pos position at the previous time step
-                if ag_j is not None and ag_j != ag_i:
-                    if len(self._solution[ag_j]) > ts:
-                        if self._solution[ag_j][ts] == path[ts-1]:
-                            return 'TRANSACTIONAL', [(ag_j, self._solution[ag_j][ts-1], self._solution[ag_j][ts], ts),
-                                                     (ag_i, path[ts-1], path[ts], ts)]
+        if self._solver_settings.get_edge_conflicts():
+            for ag_i, path in enumerate(self._solution):
+                for ts, pos in enumerate(path):
+                    ag_j = reservation_table.get((pos, ts-1))  # Agent in the pos position at the previous time step
+                    if ag_j is not None and ag_j != ag_i:
+                        if len(self._solution[ag_j]) > ts:
+                            if self._solution[ag_j][ts] == path[ts-1]:
+                                return 'TRANSACTIONAL', [(ag_j, self._solution[ag_j][ts-1], self._solution[ag_j][ts], ts),
+                                                         (ag_i, path[ts-1], path[ts], ts)]
         return None
 
     def expand(self):

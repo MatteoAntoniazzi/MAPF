@@ -158,10 +158,9 @@ class Visualize:
 
     def windows_zoom(self, event):
         if event.delta > 0:
-            self.map_canvas.scale("all", event.x, event.y, 1.1, 1.1)
+            self.linux_zoom_p(event)
         elif event.delta < 0:
-            self.map_canvas.scale("all", event.x, event.y, 0.9, 0.9)
-        self.map_canvas.configure(scrollregion=self.map_canvas.bbox("all"))
+            self.linux_zoom_m(event)
 
     def start_function(self):
         """
@@ -181,6 +180,7 @@ class Visualize:
         for widget in self._frame.winfo_children():
             widget.destroy()
         self._problem_instance.plot_on_gui(self._frame, self._paths, self._output_infos)
+        self.quit_function()
 
     def quit_function(self):
         """
@@ -335,7 +335,7 @@ class Visualize:
 
         else:
             # Animation ended
-            self.start_button.configure(state=NORMAL)
+            self.start_button.configure(state=DISABLED)
             self.reset_button.configure(state=NORMAL)
             self.quit_button.configure(state=NORMAL)
 

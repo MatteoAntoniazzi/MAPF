@@ -129,9 +129,9 @@ class StartMenu:
 
         # Maps Radiobuttons
         for i, img in enumerate(self.map_images_list):
-            b = Radiobutton(frame, image=img, height=80, width=100, variable=self.selected_map_var, borderwidth=0,
+            width = 10 if (self.os == "Linux") else 100
+            b = Radiobutton(frame, image=img, height=80, width=width, variable=self.selected_map_var, borderwidth=0,
                             value=i, command=self.set_reader_map)
-            # WIDTH: 10 su Linux, 100 su Windows/Mac
             self.buttons_list.append(b)
             b.pack(anchor=W)
 

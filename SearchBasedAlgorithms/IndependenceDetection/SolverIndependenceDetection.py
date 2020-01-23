@@ -24,6 +24,7 @@ class SolverIndependenceDetection(MAPFSolver):
         self._solver = solver
         self._problems = []
         self._paths = []
+        self._biggest_subset = 1
 
     def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
         """
@@ -41,6 +42,7 @@ class SolverIndependenceDetection(MAPFSolver):
         # Check collisions
         conflict = self.check_conflicts()
         while conflict is not None:
+            print("A")
             self.merge_group(conflict, problem_instance, verbose=verbose)
             conflict = self.check_conflicts()
 
@@ -53,7 +55,8 @@ class SolverIndependenceDetection(MAPFSolver):
                 "sum_of_costs": sum([len(path)-self._solver_settings.get_goal_occupation_time() for path in self._paths]),
                 "makespan": max([len(path)-1 for path in self._paths]),
                 "expanded_nodes": 0,
-                "computation_time": time.time() - start
+                "computation_time": time.time() - start,
+                "biggest_subset": self._biggest_subset
             }
             return self._paths, output_infos
 
@@ -102,8 +105,16 @@ class SolverIndependenceDetection(MAPFSolver):
                           str(conflicting_problems[1].get_agents_id_list()),
                           str(merged_problem.get_agents_id_list())))
 
+        if len(merged_problem.get_agents_id_list()) > self._biggest_subset:
+            self._biggest_subset = len(merged_problem.get_agents_id_list())
+
+        print("B")
+
         self._problems = new_problems
+        print("C")
+
         self.update_paths()
+        print("D")
 
     def update_paths(self):
         """

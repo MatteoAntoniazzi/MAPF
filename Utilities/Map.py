@@ -36,3 +36,6 @@ class Map:
 
     def is_obstacle(self, x, y):
         return (x, y) in self._obstacles_xy
+
+    def __str__(self):
+        return "H: " + str(self._h) + ". W: " + str(self._w) + ". OBSTACLES: " + str(self._obstacles_xy)

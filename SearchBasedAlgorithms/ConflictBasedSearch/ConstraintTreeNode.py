@@ -10,8 +10,8 @@ from Utilities.macros import *
 
 
 class ConstraintTreeNode:
-    def __init__(self, problem_instance, solver_settings, constraints_set=None, transactional_constraints=None, previous_solution=None,
-                 agent_to_recompute=None, parent=None):
+    def __init__(self, problem_instance, solver_settings, constraints_set=None, transactional_constraints=None,
+                 previous_solution=None, agent_to_recompute=None, parent=None):
 
         self._problem_instance = problem_instance
         self._solver_settings = solver_settings

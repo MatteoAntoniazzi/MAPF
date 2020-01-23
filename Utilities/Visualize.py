@@ -1,3 +1,5 @@
+import pathlib
+
 from Utilities.macros import *
 from tkinter import *
 import numpy as np
@@ -46,11 +48,12 @@ class Visualize:
         # Infos and Buttons Canvas
         self.infos_and_buttons_canvas = Canvas(self.visualize_frame)
         self.infos_and_buttons_canvas.pack(fill=X)
-        self.infos_txt_var = StringVar()
-        self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT,
-                           padx=5, pady=2, font=("Lucida Console", 10))
-        self.set_infos_txt()
-        self.infos.pack(side=LEFT)
+        if self._output_infos is not None:
+            self.infos_txt_var = StringVar()
+            self.infos = Label(self.infos_and_buttons_canvas, textvariable=self.infos_txt_var, justify=LEFT,
+                               padx=5, pady=2, font=("Lucida Console", 10))
+            self.set_infos_txt()
+            self.infos.pack(side=LEFT)
 
         # Quit Button
         self.quit_button = Button(self.infos_and_buttons_canvas, text="QUIT", command=self.quit_function)
@@ -195,8 +198,9 @@ class Visualize:
         Insert the speed widgets in the frame.
         """
         # Load Images
-        speed_up_img = self.load_image("Images/speed_up.png", (30, 30))
-        speed_down_img = self.load_image("Images/speed_down.png", (30, 30))
+        root_path = pathlib.Path(__file__).parent.parent
+        speed_up_img = self.load_image(root_path / "Images/speed_up.png", (30, 30))
+        speed_down_img = self.load_image(root_path / "Images/speed_down.png", (30, 30))
 
         # Speed Up Button
         speed_up_button = Button(self.infos_and_buttons_canvas, image=speed_up_img, command=self.speed_up_function)

@@ -33,8 +33,6 @@ class SolverAStarOD(MAPFSolver):
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
-            print(cur_state)
-
             if cur_state.is_completed():
                 if print_output:
                     print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,

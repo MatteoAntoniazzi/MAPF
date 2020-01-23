@@ -78,7 +78,6 @@ class MultiAgentState(State):
             return True
 
         if self._is_edge_conflict:
-            print("CHECK EDGE CONFLICTS")
             for i, next_pos in enumerate(next_positions):
                 for j, cur_pos in enumerate(current_positions):
                     if i != j:

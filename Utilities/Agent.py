@@ -13,3 +13,6 @@ class Agent(object):
 
     def get_goal(self):
         return self._goal
+
+    def __str__(self):
+        return "ID: " + str(self._id) + ". START: " + str(self._start) + ". GOAL: " + str(self._goal)

@@ -59,3 +59,6 @@ class ProblemInstance:
         for i in range(len(grid)):
             print(*grid[i], Fore.BLUE + Back.RESET + '', sep='')
         print(Fore.RESET + Back.RESET + '')
+
+    def __str__(self):
+        return "MAP: {" + self._map.__str__() + "}. AGENTS: {" + str([a.__str__() for a in self._agents]) + "}"

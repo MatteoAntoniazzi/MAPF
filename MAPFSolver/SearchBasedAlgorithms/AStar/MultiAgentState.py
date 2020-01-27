@@ -4,7 +4,7 @@ It is a subclass of the state Class and in addition it stores all the single age
 (the positions and time step) of each agent.
 """
 from Utilities.State import State
-from Utilities.SingleAgentState import SingleAgentState
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 import itertools
 
 

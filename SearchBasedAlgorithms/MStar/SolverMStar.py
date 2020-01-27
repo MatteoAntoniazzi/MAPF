@@ -12,8 +12,8 @@ successors.
 Only robots in the collision set are allowed to consider any possible action. All other robots must obey their
 individual policies
 """
-from Utilities.MAPFSolver import MAPFSolver
-from Utilities.SingleAgentState import SingleAgentState
+from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from Heuristics.initialize_heuristics import initialize_heuristics
 from Utilities.StatesQueue import StatesQueue
 from SearchBasedAlgorithms.MStar.MStarState import MStarState
@@ -108,7 +108,7 @@ class SolverMStar(MAPFSolver):
 
         starter_state = MStarState(problem_instance, single_agents_states, self._heuristics,
                                    self._solver_settings.get_objective_function(),
-                                   self._solver_settings.get_edge_conflicts())
+                                   self._solver_settings.is_edge_conflict())
         self._frontier.add(starter_state)
 
     def __str__(self):

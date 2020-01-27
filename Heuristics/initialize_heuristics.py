@@ -1,9 +1,9 @@
-from Heuristics.RRAStarHeuristics import RRAStarHeuristics
-from Heuristics.ManhattanHeuristics import ManhattanHeuristics
+from Heuristics.RRAStarHeuristics import RRAStarHeuristic
+from Heuristics.ManhattanHeuristics import ManhattanHeuristic
 
 
 def initialize_heuristics(heuristics_name, problem_instance):
     if heuristics_name == "Manhattan":
-        return ManhattanHeuristics(problem_instance)
+        return ManhattanHeuristic(problem_instance)
     if heuristics_name == "RRA":
-        return RRAStarHeuristics(problem_instance)
+        return RRAStarHeuristic(problem_instance)

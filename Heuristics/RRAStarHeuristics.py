@@ -1,10 +1,9 @@
-from Heuristics.Heuristics import Heuristics
-from Heuristics.ManhattanHeuristics import ManhattanHeuristics
-from Utilities.SingleAgentState import SingleAgentState
+from Heuristics.Heuristic import Heuristic
+from Heuristics.ManhattanHeuristics import ManhattanHeuristic
 from Utilities.StatesQueue import StatesQueue
 
 
-class RRAStarHeuristics(Heuristics):
+class RRAStarHeuristic(Heuristic):
 
     def __init__(self, problem_instance):
         self._problem_instance = problem_instance
@@ -31,7 +30,7 @@ class RRAStarHeuristics(Heuristics):
                         self._open_lists[goal_pos].update(state)
         return False
 
-    def compute_heuristics(self, position, goal):
+    def compute_heuristic(self, position, goal):
         if self._closed_lists[goal].contains_position(position):
             return self._closed_lists[goal].get_state_by_position(position).g_value()
         if self.resume_rra_star(position, goal):
@@ -46,8 +45,9 @@ class RRAStarHeuristics(Heuristics):
             self._closed_lists[goal_pos] = StatesQueue()
 
             # Invert start with goal
+            from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
             starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_start(),
-                                             agent.get_goal(), 0, ManhattanHeuristics(self._problem_instance), 1)
+                                             agent.get_goal(), 0, ManhattanHeuristic(self._problem_instance), 1)
 
             self._open_lists[goal_pos].add(starter_state)
             self.resume_rra_star(agent.get_start(), goal_pos)

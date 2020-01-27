@@ -1,4 +1,4 @@
-from Utilities.SolverSettings import SolverSettings
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from Utilities.start_simulation import *
 from tkinter import *
 from PIL import Image, ImageTk

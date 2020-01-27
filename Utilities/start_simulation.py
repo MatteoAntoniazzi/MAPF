@@ -1,12 +1,11 @@
-from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarMultiAgent import SolverAStarMultiAgent
+from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
 from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarOD import SolverAStarOD
 from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
 from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
 from SearchBasedAlgorithms.IndependenceDetection.SolverIndependenceDetection import SolverIndependenceDetection
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
 from SearchBasedAlgorithms.MStar.SolverMStar import SolverMStar
-from Utilities.Reader import *
-from Utilities.ProblemInstance import *
+from MAPFSolver.Utilities.ProblemInstance import *
 from Utilities.Agent import *
 from Utilities.Map import *
 
@@ -39,7 +38,7 @@ def get_solver(algorithm, solver_settings, independence_detection):
     """
     switcher = {
         "Cooperative A*": SolverCooperativeAStar(solver_settings),
-        "A*": SolverAStarMultiAgent(solver_settings),
+        "A*": AStarSolver(solver_settings),
         "A* with Operator Decomposition": SolverAStarOD(solver_settings),
         "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(solver_settings),
         "Conflict Based Search": SolverConflictBasedSearch(solver_settings),

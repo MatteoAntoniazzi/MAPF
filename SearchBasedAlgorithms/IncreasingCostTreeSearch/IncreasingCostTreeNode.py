@@ -5,7 +5,7 @@ represents all possible complete solutions in which the cost of the individual p
 """
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDD import MDD
 from Utilities.AStar import AStar
-from Utilities.SolverSettings import SolverSettings
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 import itertools
 
 
@@ -27,7 +27,9 @@ class IncreasingCostTreeNode:
 
         self._solution = None
         self._mdd_vector = self.compute_mdds()
+        print("i")
         self._total_mdd = self.compute_total_mdd()
+        print("ii")
 
     def expand(self):
         """
@@ -72,6 +74,7 @@ class IncreasingCostTreeNode:
         """
         mdd_vector = []
         for i, agent in enumerate(self._problem_instance.get_agents()):
+            print(i)
             mdd_vector.append(MDD(self._problem_instance.get_map(), agent, self._path_costs_vector[i],
                                   self._solver_settings.get_goal_occupation_time()))
         return mdd_vector
@@ -84,9 +87,12 @@ class IncreasingCostTreeNode:
         candidate_paths = []
         for mdd in self._mdd_vector:
             candidate_paths.append(mdd.get_paths())
+        print("one")
         candidate_solutions = list(itertools.product(*candidate_paths))
+        print("two")
 
-        for solution in candidate_solutions:
+        for i, solution in enumerate(candidate_solutions):
+            print(i, "of", len(candidate_solutions))
             if self.check_validity(solution):
                 self._solution = solution
                 return solution
@@ -94,7 +100,7 @@ class IncreasingCostTreeNode:
 
     def compute_root_path_costs_vector(self):
         path_costs_vector = []
-        solver = AStar(SolverSettings(heuristics=self._solver_settings.get_heuristics_str()))
+        solver = AStar(SolverSettings(heuristic=self._solver_settings.get_heuristics_str()))
         for agent in self._problem_instance.get_agents():
             path = solver.find_path(self._problem_instance.get_map(), agent.get_start(), agent.get_goal())
             cost = len(path) - self._solver_settings.get_goal_occupation_time()
@@ -131,7 +137,7 @@ class IncreasingCostTreeNode:
                     return False
                 reservation_table[(pos, ts)] = i
 
-        if self._solver_settings.get_edge_conflicts():
+        if self._solver_settings.is_edge_conflict():
             for ag_i, path in enumerate(solution):
                 for ts, pos in enumerate(path):
                     ag_j = reservation_table.get((pos, ts - 1))

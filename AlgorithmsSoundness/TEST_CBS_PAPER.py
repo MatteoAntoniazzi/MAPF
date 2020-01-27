@@ -7,16 +7,13 @@ The inadmissible algorithm, hierarchical cooperative A* (HCA*), from (Silver 200
 standard algorithm (S), operator decomposition (OD), and independence detection (ID) were run on the same 10,000
 instances with a random number of agents chosen uniformly between 2 and 60.
 """
-from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarOD import SolverAStarOD
 from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
-from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
 from SearchBasedAlgorithms.IndependenceDetection.SolverIndependenceDetection import SolverIndependenceDetection
 from Utilities.Agent import Agent
 from Utilities.Map import Map
-from Utilities.ProblemInstance import ProblemInstance
-from Utilities.SolverSettings import SolverSettings
+from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 import random
-from tkinter import *
 
 occupancy_lst = set()
 free_lst = set()
@@ -60,12 +57,12 @@ for n in range(3, 14):  # Da 3 a 13
 
         problem_instance = ProblemInstance(map, agents)
 
+        print("PROBLEM: ", problem_instance.get_original_agents_id_list(), " ------------", problem_instance)
+
         solver_settings = SolverSettings(goal_occupation_time=1)
         solver = SolverIndependenceDetection(SolverConflictBasedSearch(solver_settings), solver_settings)
 
-        [print(a) for a in agents]
-
-        paths, output_infos = solver.solve(problem_instance, return_infos=True)
+        paths, output_infos = solver.solve(problem_instance, return_infos=True, verbose=True)
 
         if output_infos["biggest_subset"] == n:
             agent_configurations.append(agents)

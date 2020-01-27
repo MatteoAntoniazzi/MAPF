@@ -1,6 +1,6 @@
 from Heuristics.initialize_heuristics import initialize_heuristics
-from Utilities.ProblemInstance import ProblemInstance
-from Utilities.SingleAgentState import SingleAgentState
+from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from Utilities.StatesQueue import StatesQueue
 from Utilities.Agent import Agent
 
@@ -71,7 +71,7 @@ class AStar:
                         expanded_nodes_no_conflicts.append(state)
 
                     if state.time_step() not in busy_times:
-                        if self._solver_settings.get_edge_conflicts():
+                        if self._solver_settings.is_edge_conflict():
                             if not (state.time_step() - 1 in busy_times and state.time_step() in cur_pos_busy_times):
                                 expanded_nodes_no_conflicts.append(state)
                         else:

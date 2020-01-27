@@ -1,23 +1,27 @@
 """
 Classical A* multi agent algorithm. It is complete and optimal.
 """
-from Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from Utilities.StatesQueue import StatesQueue
-from Utilities.SingleAgentState import SingleAgentState
-from SearchBasedAlgorithms.AStarMultiAgent.MultiAgentState import MultiAgentState
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
+from MAPFSolver.SearchBasedAlgorithms.AStar.MultiAgentState import MultiAgentState
 from Heuristics.initialize_heuristics import *
 import time
 
 
-class SolverAStarMultiAgent(MAPFSolver):
+class AStarSolver(MAPFSolver):
     def __init__(self, solver_settings):
+        """
+        Initialize the A* solver.
+        :param solver_settings: settings used by the A* solver.
+        """
         super().__init__(solver_settings)
         self._frontier = None
         self._closed_list = None
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
 
-    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
+    def solve(self, problem_instance, verbose=False, return_infos=False):
         """
         Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
         """
@@ -30,20 +34,16 @@ class SolverAStarMultiAgent(MAPFSolver):
             cur_state = self._frontier.pop()
 
             if cur_state.is_completed():
-                if print_output:
-                    print("Total Expanded Nodes: ", self._n_of_expanded_nodes, " Number of loops: ", self._n_of_loops,
-                          " Total time: ", cur_state.time_step()-1, " Total cost:", cur_state.g_value())
+                paths = cur_state.get_paths_to_parent()
+                output_infos = self.generate_output_infos(cur_state.g_value(), cur_state.time_step() - 1,
+                                                          self._n_of_expanded_nodes, time.time() - start)
+                if verbose:
+                    print("PROBLEM SOLVED: ", output_infos)
 
                 if return_infos:
-                    output_infos = {
-                        "sum_of_costs": cur_state.g_value(),
-                        "makespan": cur_state.time_step()-1,
-                        "expanded_nodes": self._n_of_expanded_nodes,
-                        "computation_time": time.time() - start
-                    }
-                    return cur_state.get_paths_to_parent(), output_infos
-
-                return cur_state.get_paths_to_parent()
+                    return paths, output_infos
+                else:
+                    return paths
 
             if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)
@@ -58,7 +58,7 @@ class SolverAStarMultiAgent(MAPFSolver):
         """
         Initialize the frontier and the heuristic for the given problem.
         """
-        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristics_str(), problem_instance)
+        self._solver_settings.initialize_heuristic(problem_instance)
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()
         self._n_of_expanded_nodes = 0
@@ -67,14 +67,14 @@ class SolverAStarMultiAgent(MAPFSolver):
         single_agents_states = []
         for i, agent in enumerate(problem_instance.get_agents()):
             s = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(), agent.get_start(), 0,
-                                 self._heuristics, self._solver_settings.get_goal_occupation_time())
+                                 self._solver_settings)
             single_agents_states.append(s)
 
-        starter_state = MultiAgentState(problem_instance, single_agents_states, self._heuristics,
+        starter_state = MultiAgentState(problem_instance, single_agents_states, self._solver_settings.get_heuristic_object(),
                                         self._solver_settings.get_objective_function(),
-                                        is_edge_conflict=self._solver_settings.get_edge_conflicts())
+                                        is_edge_conflict=self._solver_settings.is_edge_conflict())
         self._frontier.add(starter_state)
 
     def __str__(self):
         return "A* Multi Agent Solver using " + self._solver_settings.get_heuristics_str() + \
-               " heuristics minimazing " + self._solver_settings.get_objective_function()
+               " heuristics minimizing " + self._solver_settings.get_objective_function()

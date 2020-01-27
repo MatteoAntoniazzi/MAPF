@@ -8,11 +8,10 @@ standard algorithm (S), operator decomposition (OD), and independence detection 
 instances with a random number of agents chosen uniformly between 2 and 60.
 """
 from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarOD import SolverAStarOD
-from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
 from Utilities.Agent import Agent
 from Utilities.Map import Map
-from Utilities.ProblemInstance import ProblemInstance
-from Utilities.SolverSettings import SolverSettings
+from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 import random
 from tkinter import *
 

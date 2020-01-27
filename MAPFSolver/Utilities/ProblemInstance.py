@@ -1,3 +1,4 @@
+from Utilities.Agent import Agent
 from Utilities.Visualize import Visualize
 from Utilities.macros import *
 from colorama import Fore, Back
@@ -7,8 +8,12 @@ from random import choice
 class ProblemInstance:
     def __init__(self, map, agents):
         self._map = map
-        self._agents = agents
-        self._agents.sort(key=lambda x: x.get_id(), reverse=False)
+        self._agents = []
+        self._original_agents = agents  # Used for the Independence Detection framework
+        self._original_agents.sort(key=lambda x: x.get_id(), reverse=False)
+
+        for i, a in enumerate(self._original_agents):
+            self._agents.append(Agent(i, a.get_start(), a.get_goal()))
 
         assert not self._duplicate_goals_or_starts(), "Agent initial or goal positions duplicates."
 
@@ -30,8 +35,14 @@ class ProblemInstance:
     def get_agents(self):
         return self._agents
 
+    def get_original_agents(self):
+        return self._original_agents
+
     def get_agents_id_list(self):
         return [a.get_id() for a in self._agents]
+
+    def get_original_agents_id_list(self):
+        return [a.get_id() for a in self._original_agents]
 
     def get_agent_by_id(self, agent_id):
         for agent in self._agents:

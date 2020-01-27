@@ -4,9 +4,9 @@ Agents are considered one at a time and a state requires n operators to advance 
 An operator in this representation consists of assigning a move to the next unassigned agent in a fixed order,
 leaving the moves of the remaining agents to descendant nodes within the same search.
 """
-from Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from SearchBasedAlgorithms.AStarMultiAgent.ODState import ODState
-from Utilities.SingleAgentState import SingleAgentState
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from Heuristics.initialize_heuristics import initialize_heuristics
 from Utilities.StatesQueue import StatesQueue
 import time
@@ -76,7 +76,7 @@ class SolverAStarOD(MAPFSolver):
 
         starter_state = ODState(problem_instance, single_agents_states, self._heuristics,
                                 self._solver_settings.get_objective_function(),
-                                self._solver_settings.get_edge_conflicts())
+                                self._solver_settings.is_edge_conflict())
         self._frontier.add(starter_state)
 
     def __str__(self):

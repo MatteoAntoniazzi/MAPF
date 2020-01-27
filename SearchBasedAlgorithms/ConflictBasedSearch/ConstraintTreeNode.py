@@ -5,8 +5,6 @@ switch places is not allowed. The attributes previous solution and agent_to_reco
 and avoid to recompute each time the path for each agent.
 """
 from Utilities.AStar import AStar
-from Utilities.SolverSettings import SolverSettings
-from Utilities.macros import *
 
 
 class ConstraintTreeNode:
@@ -57,7 +55,7 @@ class ConstraintTreeNode:
                 agent_constraints.append((pos, ts))
 
         agent_transactional_constraints = []
-        if self._solver_settings.get_edge_conflicts():
+        if self._solver_settings.is_edge_conflict():
             for constraint in self._transactional_constraints:
                 agent_id, pos_i, pos_f, ts = constraint
                 if agent_id == agent.get_id():
@@ -84,7 +82,7 @@ class ConstraintTreeNode:
                     return 'INPLACE', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]
                 reservation_table[(pos, ts)] = ag_i
 
-        if self._solver_settings.get_edge_conflicts():
+        if self._solver_settings.is_edge_conflict():
             for ag_i, path in enumerate(self._solution):
                 for ts, pos in enumerate(path):
                     ag_j = reservation_table.get((pos, ts-1))  # Agent in the pos position at the previous time step

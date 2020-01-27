@@ -2,20 +2,23 @@
 Class representing a single agent state. It stores the agent position at a specific time step. As superclass of State it
 has a g-value, an h-value, and the sum f-value.
 """
-from Utilities.SolverSettings import SolverSettings
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from Utilities.State import State
 
 
 class SingleAgentState(State):
-    def __init__(self, map, agent_id, goal, position, path_cost, heuristics, goal_occupation_time, parent=None,
-                 time_step=0):
+    def __init__(self, map, agent_id, goal, position, path_cost, solver_settings, parent=None, time_step=0,
+                 remaining_time_step_in_goal=None):
         super().__init__(parent, time_step)
         self._map = map
         self._agent_id = agent_id
-        self._position = position  # In (x, y) Coordinates
+        self._position = position
         self._goal = goal
-        self._goal_occupation_time = goal_occupation_time
-        self._heuristics = heuristics
+        self._solver_settings = solver_settings
+        if remaining_time_step_in_goal is None:
+            self._remaining_time_step_in_goal = solver_settings.get_goal_occupation_time()
+        else:
+            self._remaining_time_step_in_goal = remaining_time_step_in_goal
         self._g = path_cost
         self.compute_heuristics()
 
@@ -32,20 +35,20 @@ class SingleAgentState(State):
         if self.goal_test():
             if self.is_completed():
                 return [self.clone_state()]   # Time_step remain blocked so once arrived it doesn't block others
-            elif self._goal_occupation_time == 1:
+            elif self._remaining_time_step_in_goal == 1:
                 return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
-                                         self._heuristics, goal_occupation_time=0, parent=self,
-                                         time_step=self._time_step+1)]
+                                         self._solver_settings, parent=self, time_step=self._time_step+1,
+                                         remaining_time_step_in_goal=0)]
             else:
                 return [SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
-                                         self._heuristics, self._goal_occupation_time-1, parent=self,
-                                         time_step=self._time_step+1)]
+                                         self._solver_settings, parent=self, time_step=self._time_step+1,
+                                         remaining_time_step_in_goal=self._remaining_time_step_in_goal-1)]
 
         expanded_nodes_list = [self.wait_state()]
         possible_moves = self._map.get_neighbours_xy(self._position)
         for i in possible_moves:
             expanded_nodes_list.append(SingleAgentState(self._map, self._agent_id, self._goal, i, self._g + 1,
-                                                        self._heuristics, self._goal_occupation_time, parent=self,
+                                                        self._solver_settings, parent=self,
                                                         time_step=self._time_step + 1))
         return expanded_nodes_list
 
@@ -60,14 +63,14 @@ class SingleAgentState(State):
         if self.goal_test():
             if self.is_completed():
                 return self.clone_state()   # Time_step remain blocked so once arrived it doesn't block others
-            elif self._goal_occupation_time == 1:
+            elif self._remaining_time_step_in_goal == 1:
                 return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
-                                        self._heuristics, goal_occupation_time=0, parent=self,
-                                        time_step=self._time_step+1)
+                                        self._solver_settings, parent=self, time_step=self._time_step+1,
+                                        remaining_time_step_in_goal=0)
             else:
                 return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g,
-                                        self._heuristics, self._goal_occupation_time-1, parent=self,
-                                        time_step=self._time_step+1)
+                                        self._solver_settings, parent=self, time_step=self._time_step+1,
+                                        remaining_time_step_in_goal=self._remaining_time_step_in_goal-1)
 
         next_node = self.get_next_optimal_state()
 
@@ -82,14 +85,14 @@ class SingleAgentState(State):
         solver = AStar(SolverSettings())  # Forse serve il goal occupation time generale
         path = solver.find_path(self._map, self._position, self._goal)
         next_pos = path[1]
-        return SingleAgentState(self._map, self._agent_id, self._goal, next_pos, self._g+1, self._heuristics,
-                                self._goal_occupation_time, parent=self, time_step=self._time_step+1)
+        return SingleAgentState(self._map, self._agent_id, self._goal, next_pos, self._g+1, self._solver_settings,
+                                parent=self, time_step=self._time_step+1)
 
     def goal_test(self):
         return self._position == self._goal
 
     def compute_heuristics(self):
-        self._h = self._heuristics.compute_heuristics(self._position, self._goal)
+        self._h = self._solver_settings.get_heuristic_object().compute_heuristic(self._position, self._goal)
 
     def calculate_cost(self):
         if self.is_root():
@@ -99,11 +102,12 @@ class SingleAgentState(State):
         return
 
     def wait_state(self):
-        return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g+1, self._heuristics,
-                                self._goal_occupation_time, parent=self, time_step=self._time_step+1)
+        return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g+1, self._solver_settings,
+                                parent=self, time_step=self._time_step+1,
+                                remaining_time_step_in_goal=self._remaining_time_step_in_goal)
 
     def is_completed(self):
-        return self._goal_occupation_time == 0
+        return self._remaining_time_step_in_goal == 0
 
     def get_position(self):
         return self._position
@@ -123,8 +127,9 @@ class SingleAgentState(State):
         return self._agent_id
 
     def clone_state(self):
-        return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g, self._heuristics,
-                                self._goal_occupation_time, parent=self._parent, time_step=self._time_step)
+        return SingleAgentState(self._map, self._agent_id, self._goal, self._position, self._g, self._solver_settings,
+                                parent=self._parent, time_step=self._time_step,
+                                remaining_time_step_in_goal=self._remaining_time_step_in_goal)
 
     def equal_position(self, other):
         assert isinstance(other, SingleAgentState)

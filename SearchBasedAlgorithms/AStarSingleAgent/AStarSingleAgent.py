@@ -1,7 +1,7 @@
 """
 A* single agent solver. It computes the path for each agent without considering any conflict.
 """
-from Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from Utilities.AStar import AStar
 import time
 

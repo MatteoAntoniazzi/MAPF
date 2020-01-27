@@ -7,7 +7,7 @@ the previous standard state.
 The standard states are the ones where each agent has moved, while the intermediate states are the ones where only a
 subset of agents has moved.
 """
-from SearchBasedAlgorithms.AStarMultiAgent.MultiAgentState import MultiAgentState
+from MAPFSolver.SearchBasedAlgorithms.AStar.MultiAgentState import MultiAgentState
 
 
 class ODState(MultiAgentState):

@@ -5,7 +5,7 @@ and in addition it keeps a collision set, which contains the agents that has a c
 successors, and a back propagation set, which contains the set of state where back propagate the collision set.
 """
 from Utilities.State import State
-from Utilities.SingleAgentState import SingleAgentState
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 import itertools
 
 

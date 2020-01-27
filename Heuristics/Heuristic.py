@@ -1,7 +1,7 @@
 import abc
 
 
-class Heuristics(object):
+class Heuristic(object):
 
     __metaclass__ = abc.ABCMeta
 
@@ -9,7 +9,7 @@ class Heuristics(object):
     ================== A* functions =================
     """
     @abc.abstractmethod
-    def compute_heuristics(self, position, goal):
+    def compute_heuristic(self, position, goal):
         """
         Compute the value of the heuristic in that position
         """

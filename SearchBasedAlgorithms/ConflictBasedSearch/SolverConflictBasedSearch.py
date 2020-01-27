@@ -4,7 +4,7 @@ constraints. If these paths have conflicts, and are thus invalid, the conflicts 
 CBS works in two levels. At the high level conflicts are found and constraints are added. The low-level updates the
 agents paths to be consistent with the new constraints.
 """
-from Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNode import ConstraintTreeNode
 from SearchBasedAlgorithms.ConflictBasedSearch.ConstraintTreeNodesQueue import ConstraintTreeNodesQueue
 import time

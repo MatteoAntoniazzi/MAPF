@@ -13,8 +13,8 @@ In simple words it works like this:
     2.2. Merge conflicting agents to one group
     2.3. Solve optimally new group
 """
-from Utilities.MAPFSolver import MAPFSolver
-from Utilities.ProblemInstance import ProblemInstance
+from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 import time
 
 
@@ -42,7 +42,6 @@ class SolverIndependenceDetection(MAPFSolver):
         # Check collisions
         conflict = self.check_conflicts()
         while conflict is not None:
-            print("A")
             self.merge_group(conflict, problem_instance, verbose=verbose)
             conflict = self.check_conflicts()
 
@@ -62,12 +61,33 @@ class SolverIndependenceDetection(MAPFSolver):
 
         return self._paths
 
+    def all_agents_in_the_same_subset(self, problem_instance, verbose=False):
+        """
+        Return True if the dimension of the largest subset is equal to the number of agents.
+        When agents are all in the same independent group found by ID.
+        """
+        if not self.initialize_paths(problem_instance):
+            print("FFalse")
+            return False
+
+        # Check collisions
+        conflict = self.check_conflicts()
+        while conflict is not None:
+            print("BIG:", self._biggest_subset)
+            if self._biggest_subset == len(problem_instance.get_agents()):
+                print("TRUE")
+                return True
+            self.merge_group(conflict, problem_instance, verbose=verbose)
+            conflict = self.check_conflicts()
+        print("FALSE")
+        return False
+
     def initialize_paths(self, problem_instance):
         """
         Initialize the groups with singleton groups. The list problem will contains the single agent problem for each
         agent. Solve the problems in this way and return the paths (with possible conflicts).
         """
-        for agent in problem_instance.get_agents():
+        for agent in problem_instance.get_original_agents():
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
@@ -89,32 +109,30 @@ class SolverIndependenceDetection(MAPFSolver):
 
         conflicting_problems = []
         for problem in self._problems:
-            if j in problem.get_agents_id_list() or k in problem.get_agents_id_list():
+            if j in problem.get_original_agents_id_list() or k in problem.get_original_agents_id_list():
                 conflicting_problems.append(problem)
             else:
                 new_problems.append(problem)
 
         merged_problem = ProblemInstance(problem_instance.get_map(),
-                                         conflicting_problems[0].get_agents() + conflicting_problems[1].get_agents())
-
+                                         conflicting_problems[0].get_original_agents() +
+                                         conflicting_problems[1].get_original_agents())
+        print("A")
         new_problems.append(merged_problem)
 
         if verbose:
             print("Merged problem: {:<24} with problem: {:<24} ---> New problem: {:<24}"
-                  .format(str(conflicting_problems[0].get_agents_id_list()),
-                          str(conflicting_problems[1].get_agents_id_list()),
-                          str(merged_problem.get_agents_id_list())))
+                  .format(str(conflicting_problems[0].get_original_agents_id_list()),
+                          str(conflicting_problems[1].get_original_agents_id_list()),
+                          str(merged_problem.get_original_agents_id_list())))
 
-        if len(merged_problem.get_agents_id_list()) > self._biggest_subset:
-            self._biggest_subset = len(merged_problem.get_agents_id_list())
-
-        print("B")
+        if len(merged_problem.get_original_agents_id_list()) > self._biggest_subset:
+            self._biggest_subset = len(merged_problem.get_original_agents_id_list())
 
         self._problems = new_problems
-        print("C")
-
+        print("B")
         self.update_paths()
-        print("D")
+        print("C")
 
     def update_paths(self):
         """
@@ -126,7 +144,8 @@ class SolverIndependenceDetection(MAPFSolver):
                 return False
 
             for i, path in enumerate(paths):
-                self._paths[problem.get_agents()[i].get_id()] = path
+                self._paths[problem.get_original_agents()[i].get_id()] = path
+
         return True
 
     def check_conflicts(self):
@@ -141,7 +160,7 @@ class SolverIndependenceDetection(MAPFSolver):
                     return reservation_table[(pos, ts)], i
                 reservation_table[(pos, ts)] = i
 
-        if self._solver_settings.get_edge_conflicts():
+        if self._solver_settings.is_edge_conflict():
             for ag_i, path in enumerate(self._paths):
                 for ts, pos in enumerate(path):
                     ag_j = reservation_table.get((pos, ts-1))

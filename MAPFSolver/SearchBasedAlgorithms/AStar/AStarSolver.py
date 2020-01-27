@@ -5,7 +5,6 @@ from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from Utilities.StatesQueue import StatesQueue
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.SearchBasedAlgorithms.AStar.MultiAgentState import MultiAgentState
-from Heuristics.initialize_heuristics import *
 import time
 
 
@@ -70,9 +69,7 @@ class AStarSolver(MAPFSolver):
                                  self._solver_settings)
             single_agents_states.append(s)
 
-        starter_state = MultiAgentState(problem_instance, single_agents_states, self._solver_settings.get_heuristic_object(),
-                                        self._solver_settings.get_objective_function(),
-                                        is_edge_conflict=self._solver_settings.is_edge_conflict())
+        starter_state = MultiAgentState(single_agents_states, self._solver_settings)
         self._frontier.add(starter_state)
 
     def __str__(self):

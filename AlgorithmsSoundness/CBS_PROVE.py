@@ -31,16 +31,17 @@ agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3))
           Agent(8, (7,7), (1,7))]
 """
 
-agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3))]
+agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3)), Agent(3, (0,2), (7,4))]
 
 problem_instance = ProblemInstance(map, agents)
 
-solver_settings = SolverSettings(goal_occupation_time=1, is_edge_conflict=True)
+solver_settings = SolverSettings(stay_in_goal=True, goal_occupation_time=3, is_edge_conflict=True)
 # solver = SolverIndependenceDetection(SolverConflictBasedSearch(solver_settings), solver_settings)
 solver = AStarSolver(solver_settings)
 
 print("Solve")
 paths = solver.solve(problem_instance, verbose=True)
+print(paths)
 
 root = Tk()
 frame = Frame(root)

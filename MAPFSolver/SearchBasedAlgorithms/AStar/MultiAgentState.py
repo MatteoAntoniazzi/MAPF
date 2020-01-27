@@ -9,13 +9,10 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, problem_instance, single_agents_states, heuristics, obj_function, is_edge_conflict=True, parent=None, time_step=0):
+    def __init__(self, single_agents_states, solver_settings, parent=None, time_step=0):
         super().__init__(parent=parent, time_step=time_step)
-        self._problem_instance = problem_instance
         self._single_agents_states = single_agents_states
-        self._heuristics = heuristics
-        self._objective_function = obj_function
-        self._is_edge_conflict = is_edge_conflict
+        self._solver_settings = solver_settings
         self.calculate_cost()
         self.compute_heuristics()
 
@@ -51,9 +48,7 @@ class MultiAgentState(State):
 
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
-            m = MultiAgentState(self._problem_instance, multi_state, self._heuristics, self._objective_function,
-                                is_edge_conflict=self._is_edge_conflict,
-                                parent=self, time_step=self.time_step()+1)
+            m = MultiAgentState(multi_state, self._solver_settings, parent=self, time_step=self.time_step()+1)
             if not self.is_conflict(m):
                 free_conflict_states.append(m)
 
@@ -77,7 +72,7 @@ class MultiAgentState(State):
         if len(next_active_positions) != len(set(next_active_positions)):
             return True
 
-        if self._is_edge_conflict:
+        if self._solver_settings.is_edge_conflict():
             for i, next_pos in enumerate(next_positions):
                 for j, cur_pos in enumerate(current_positions):
                     if i != j:
@@ -109,20 +104,20 @@ class MultiAgentState(State):
 
     def compute_heuristics(self):
         self._h = 0
-        if self._objective_function == "SOC":
+        if self._solver_settings.get_objective_function() == "SOC":
             for single_state in self._single_agents_states:
                 self._h += single_state.h_value()
-        if self._objective_function == "Makespan":
+        if self._solver_settings.get_objective_function() == "Makespan":
             self._h = max([single_state.h_value() for single_state in self._single_agents_states])
 
     def calculate_cost(self):
         self._g = 0
         if self.is_root():
             return
-        if self._objective_function == "SOC":
+        if self._solver_settings.get_objective_function() == "SOC":
             for single_state in self._single_agents_states:
                 self._g += single_state.g_value()
-        if self._objective_function == "Makespan":
+        if self._solver_settings.get_objective_function() == "Makespan":
             self._g = max([single_state.g_value() for single_state in self._single_agents_states])
 
     def get_single_agent_states(self):
@@ -134,15 +129,13 @@ class MultiAgentState(State):
     def get_active_positions_list(self):
         pos_list = []
         for state in self._single_agents_states:
-            if not state.is_completed():
+            if not state.is_completed() or self._solver_settings.stay_in_goal():
                 pos_list.append(state.get_position())
         return pos_list
 
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
-        return MultiAgentState(self._problem_instance, clone_states, self._heuristics, self._objective_function,
-                               is_edge_conflict=self._is_edge_conflict, parent=self._parent,
-                               time_step=self._time_step)
+        return MultiAgentState(clone_states, self._solver_settings, parent=self._parent, time_step=self._time_step)
 
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]

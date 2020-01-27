@@ -6,13 +6,13 @@ from Heuristics.initialize_heuristics import initialize_heuristics
 
 
 class SolverSettings:
-    def __init__(self, heuristic="Manhattan", objective_function="SOC", disappear_at_goal=False,
+    def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_in_goal=False,
                  goal_occupation_time=1, is_edge_conflict=True):
         """
         Initialization of the variables representing the solver settings.
         :param heuristic: heuristic used.
         :param objective_function: objective function that the solver will minimize.
-        :param disappear_at_goal: False if the agents never disappear once reach the goal.
+        :param stay_in_goal: True if the agents never disappear once reach the goal.
         :param goal_occupation_time: if disappear_at_goal is True, this variable tells how many time step the agents
         will stay in the goal before disappearing.
         :param is_edge_conflict: if True, also the edge conflicts will be considered in addition to the vertex
@@ -21,9 +21,11 @@ class SolverSettings:
         self._heuristic_str = heuristic
         self._heuristic_obj = None
         self._objective_function = objective_function
-        self._disappear_at_goal = disappear_at_goal
+        self._stay_in_goal = stay_in_goal
         self._goal_occupation_time = goal_occupation_time
         self._is_edge_conflict = is_edge_conflict
+
+        print("SOLVER SETTINGS STAY IN GOAL", self._stay_in_goal)
 
     def initialize_heuristic(self, problem_instance):
         """
@@ -51,11 +53,11 @@ class SolverSettings:
         """
         return self._objective_function
 
-    def disappear_at_goal(self):
+    def stay_in_goal(self):
         """
-        Return False if the agents never disappear once reached the goal.
+        Return True if the agents never disappear once reached the goal.
         """
-        return self._disappear_at_goal
+        return self._stay_in_goal
 
     def get_goal_occupation_time(self):
         """

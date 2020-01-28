@@ -6,6 +6,7 @@ from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 import random
 
+
 occupancy_lst = set()
 free_lst = set()
 
@@ -35,7 +36,7 @@ agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3))
 
 problem_instance = ProblemInstance(map, agents)
 
-solver_settings = SolverSettings(stay_in_goal=False, goal_occupation_time=3, is_edge_conflict=True)
+solver_settings = SolverSettings(stay_in_goal=False, goal_occupation_time=5, is_edge_conflict=True)
 # solver = SolverIndependenceDetection(SolverConflictBasedSearch(solver_settings), solver_settings)
 solver = AStarSolver(solver_settings)
 

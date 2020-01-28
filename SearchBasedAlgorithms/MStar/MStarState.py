@@ -29,7 +29,7 @@ class MStarState(State):
         """
         paths = []
         for single_state in self._single_agents_states:
-            paths.append(single_state.get_path_to_parent())
+            paths.append(single_state.get_path_to_root())
         return paths
 
     def expand(self, verbose=False):

@@ -34,7 +34,7 @@ class AStarSolver(MAPFSolver):
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_parent()
-                output_infos = self.generate_output_infos(cur_state.g_value(), cur_state.time_step() - 1,
+                output_infos = self.generate_output_infos(cur_state.g_value(), cur_state.time_step(),
                                                           self._n_of_expanded_nodes, time.time() - start)
                 if verbose:
                     print("PROBLEM SOLVED: ", output_infos)
@@ -65,7 +65,7 @@ class AStarSolver(MAPFSolver):
 
         single_agents_states = []
         for agent in problem_instance.get_agents():
-            s = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(), agent.get_start(),
+            s = SingleAgentState(problem_instance.get_map(), agent.get_goal(), agent.get_start(),
                                  self._solver_settings)
             single_agents_states.append(s)
 

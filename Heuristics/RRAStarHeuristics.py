@@ -46,7 +46,7 @@ class RRAStarHeuristic(Heuristic):
 
             # Invert start with goal
             from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
-            starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_id(), agent.get_start(),
+            starter_state = SingleAgentState(self._problem_instance.get_map(), agent.get_start(),
                                              agent.get_goal(), ManhattanHeuristic(self._problem_instance), 1)
 
             self._open_lists[goal_pos].add(starter_state)

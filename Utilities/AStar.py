@@ -25,7 +25,7 @@ class AStar:
             cur_state = self._frontier.pop()
 
             if cur_state.goal_test():
-                path = cur_state.get_path_to_parent()
+                path = cur_state.get_path_to_root()
                 goal = cur_state.get_position()
                 for i in range(self._solver_settings.get_goal_occupation_time()-1):
                     path.append(goal)
@@ -53,7 +53,7 @@ class AStar:
             cur_state = self._frontier.pop()
 
             if cur_state.is_completed():
-                return cur_state.get_path_to_parent()
+                return cur_state.get_path_to_root()
 
             if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)
@@ -97,7 +97,7 @@ class AStar:
             cur_state = self._frontier.pop()
 
             if cur_state.is_completed():
-                return cur_state.get_path_to_parent()
+                return cur_state.get_path_to_root()
 
             if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)

@@ -22,7 +22,7 @@ class MultiAgentState(State):
         """
         paths = []
         for single_state in self._single_agents_states:
-            paths.append(single_state.get_path_to_parent())
+            paths.append(single_state.get_path_to_root())
         return paths
 
     def expand(self, verbose=False):
@@ -133,17 +133,13 @@ class MultiAgentState(State):
                 pos_list.append(state.get_position())
         return pos_list
 
-    def clone_state(self):
-        clone_states = [state.clone_state() for state in self._single_agents_states]
-        return MultiAgentState(clone_states, self._solver_settings, parent=self._parent)
-
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]
 
     def print_infos(self):
         print("gValue=", self.g_value(), "hValue=", self.h_value(), "fValue=", self.f_value(), end=' ')
-        for agent_state in self._single_agents_states:
-            print(" ID:", agent_state.get_agent_id(), " POS:", agent_state.get_position(), end=' ')
+        for i, agent_state in enumerate(self._single_agents_states):
+            print(" ID:", i, " POS:", agent_state.get_position(), end=' ')
         print('')
 
     def equal_position(self, other):

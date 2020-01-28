@@ -1,6 +1,6 @@
 from Heuristics.Heuristic import Heuristic
 from Heuristics.ManhattanHeuristics import ManhattanHeuristic
-from Utilities.StatesQueue import StatesQueue
+from MAPFSolver.Utilities.StatesQueue import StatesQueue
 
 
 class RRAStarHeuristic(Heuristic):

@@ -2,7 +2,7 @@
 Classical A* multi agent algorithm. It is complete and optimal.
 """
 from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
-from Utilities.StatesQueue import StatesQueue
+from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.SearchBasedAlgorithms.AStar.MultiAgentState import MultiAgentState
 import time
@@ -23,6 +23,10 @@ class AStarSolver(MAPFSolver):
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
         Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
+        :param problem_instance: problem instance to solve
+        :param verbose: if True will be printed some computation infos on terminal.
+        :param return_infos: if True returns in addition to the paths a struct with the output information.
+        :return: list of paths, and if return_infos is True some output information.
         """
         start = time.time()
 
@@ -65,8 +69,7 @@ class AStarSolver(MAPFSolver):
 
         single_agents_states = []
         for agent in problem_instance.get_agents():
-            s = SingleAgentState(problem_instance.get_map(), agent.get_goal(), agent.get_start(),
-                                 self._solver_settings)
+            s = SingleAgentState(problem_instance.get_map(), agent.get_goal(), agent.get_start(), self._solver_settings)
             single_agents_states.append(s)
 
         starter_state = MultiAgentState(single_agents_states, self._solver_settings)

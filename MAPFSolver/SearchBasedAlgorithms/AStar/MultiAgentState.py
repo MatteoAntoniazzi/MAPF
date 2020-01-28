@@ -1,29 +1,27 @@
-"""
-This class represent the single state (node) object for the A* algorithm.
-It is a subclass of the state Class and in addition it stores all the single agent states
-(the positions and time step) of each agent.
-"""
-from Utilities.State import State
+from MAPFSolver.Utilities.State import State
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 import itertools
 
 
 class MultiAgentState(State):
+    """
+    This class represent the single state (node) object for the A* algorithm.
+    It is a subclass of the State class and in addition it stores all the single agent states (the positions and time
+    step) of each agent.
+    """
+
     def __init__(self, single_agents_states, solver_settings, parent=None):
+        """
+        Initialize the Multi Agent State. It receives the solver settings and the list of all single agent states.
+        :param single_agents_states: list of SingleAgentState instances.
+        :param solver_settings: settings of the solver.
+        :param parent: Eventual parent State.
+        """
         super().__init__(parent=parent)
         self._single_agents_states = single_agents_states
         self._solver_settings = solver_settings
         self.compute_cost()
         self.compute_heuristics()
-
-    def get_paths_to_parent(self):
-        """
-        Compute and return the list of paths for each agent.
-        """
-        paths = []
-        for single_state in self._single_agents_states:
-            paths.append(single_state.get_path_to_root())
-        return paths
 
     def expand(self, verbose=False):
         """
@@ -43,7 +41,7 @@ class MultiAgentState(State):
 
         valid_states = []
         for i, multi_state in enumerate(candidate_state_list):
-            if is_valid(multi_state):  # a shallow copy to prevent change of multi_state
+            if is_valid(multi_state):
                 valid_states.append(multi_state)
 
         free_conflict_states = []
@@ -68,7 +66,6 @@ class MultiAgentState(State):
         next_positions = multi_state.get_positions_list()
 
         next_active_positions = multi_state.get_active_positions_list()
-
         if len(next_active_positions) != len(set(next_active_positions)):
             return True
 
@@ -79,8 +76,17 @@ class MultiAgentState(State):
                         if next_pos == cur_pos:
                             if next_positions[j] == current_positions[i]:
                                 return True
-
         return False
+
+    def get_active_positions_list(self):
+        """
+        Return the list of positions occupied by the agents.
+        """
+        pos_list = []
+        for state in self._single_agents_states:
+            if not state.is_gone():
+                pos_list.append(state.get_position())
+        return pos_list
 
     def goal_test(self):
         """
@@ -103,6 +109,11 @@ class MultiAgentState(State):
         return True
 
     def compute_heuristics(self):
+        """
+        Compute the heuristic value for this state using the selected heuristic. (h-value)
+        If the heuristic is Sum Of Cost it computes the sum over all single state heuristics.
+        If the heuristic is Makespan it computes the maximum value over all single state heuristics.
+        """
         self._h = 0
         if self._solver_settings.get_objective_function() == "SOC":
             for single_state in self._single_agents_states:
@@ -111,6 +122,11 @@ class MultiAgentState(State):
             self._h = max([single_state.h_value() for single_state in self._single_agents_states])
 
     def compute_cost(self):
+        """
+        Compute the cost of the current state. (g-value)
+        If the heuristic is Sum Of Cost it computes the sum over all single state path costs.
+        If the heuristic is Makespan it computes the maximum value over all single path costs.
+        """
         self._g = 0
         if self.is_root():
             return
@@ -120,29 +136,36 @@ class MultiAgentState(State):
         if self._solver_settings.get_objective_function() == "Makespan":
             self._g = max([single_state.g_value() for single_state in self._single_agents_states])
 
+    def get_paths_to_parent(self):
+        """
+        Compute and return the list of paths for each agent.
+        """
+        paths = []
+        for single_state in self._single_agents_states:
+            paths.append(single_state.get_path_to_root())
+        return paths
+
     def get_single_agent_states(self):
+        """
+        Return the list of the single agent states.
+        """
         return self._single_agents_states
 
     def get_positions_list(self):
+        """
+        Return the list of the positions of the single agent states.
+        """
         return [state.get_position() for state in self._single_agents_states]
-
-    def get_active_positions_list(self):
-        pos_list = []
-        for state in self._single_agents_states:
-            if not state.is_completed() or self._solver_settings.stay_in_goal():
-                pos_list.append(state.get_position())
-        return pos_list
 
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]
 
-    def print_infos(self):
-        print("gValue=", self.g_value(), "hValue=", self.h_value(), "fValue=", self.f_value(), end=' ')
-        for i, agent_state in enumerate(self._single_agents_states):
-            print(" ID:", i, " POS:", agent_state.get_position(), end=' ')
-        print('')
-
     def equal_position(self, other):
+        """
+        Return True if the multi agent state and the given multi agent state has the same positions for all the single
+        agent states.
+        :param other: state to compare positions.
+        """
         assert isinstance(other, MultiAgentState)
         for i, single_state in enumerate(self._single_agents_states):
             if not single_state.equal_position(other.get_single_agent_states()[i]):
@@ -150,6 +173,11 @@ class MultiAgentState(State):
         return True
 
     def equal(self, other):
+        """
+        Return True if the multi agent state and the given multi agent state has the same positions and the same time
+        steps for all the single agent states.
+        :param other: state to compare position.
+        """
         assert isinstance(other, MultiAgentState)
         for i, single_state in enumerate(self._single_agents_states):
             if not single_state.equal(other.get_single_agent_states()[i]):
@@ -165,6 +193,11 @@ class MultiAgentState(State):
 
 
 def is_valid(multi_state):
+    """
+    Check that the multi state has valid single agent states.
+    :param multi_state: list of single agent states
+    :return: True if the multi state is valid.
+    """
     if len(multi_state) == 1:
         return True
     for s in multi_state:

@@ -1,5 +1,5 @@
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
-from Utilities.State import State
+from MAPFSolver.Utilities.State import State
 
 
 class SingleAgentState(State):
@@ -116,7 +116,9 @@ class SingleAgentState(State):
 
     def is_completed(self):
         """
-        Return True if the current state is completed.
+        Return True if the current state is completed. If stay in goal settings is set it just check that the agent has
+        reached his goal, otherwise it checks that the agent has reached his goal and has already spent the goal
+        occupation time there.
         If the settings requires that agents stays in goal also after arrived we just check the goal test, otherwise we
         check that the agent has already spent the needed time stopped in the goal.
         """
@@ -129,6 +131,15 @@ class SingleAgentState(State):
                     return False
                 state = state.predecessor()
             return True
+
+    def is_gone(self):
+        """
+        Return True if the agent has completed his task and he is already been removed from his goal.
+        If the stay in goal setting is set than the agent will never be gone.
+        """
+        if self._solver_settings.stay_in_goal():
+            return False
+        return self.is_completed()
 
     def get_position(self):
         """

@@ -1,7 +1,7 @@
 from Heuristics.initialize_heuristics import initialize_heuristics
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
-from Utilities.StatesQueue import StatesQueue
+from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from MAPFSolver.Utilities.Agent import Agent
 
 
@@ -38,7 +38,7 @@ class AStar:
 
         return []
 
-    def find_path_with_reservation_table(self, map, start_pos, goal_pos, reservation_table):
+    def find_path_with_reservation_table(self, problem_map, start_pos, goal_pos, reservation_table):
         """
         It computes the path from his start position to his goal position using the A* algorithm with reservation table.
         It return the path as list of (x, y) positions.
@@ -46,7 +46,7 @@ class AStar:
         Closed lists are used to accelerate the process. When a state with a conflict is found the closed list with the
         positions empty in order to allow the wait moves.
         """
-        self.initialize_problem(map, start_pos, goal_pos)
+        self.initialize_problem(problem_map, start_pos, goal_pos)
 
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()

@@ -15,7 +15,7 @@ individual policies
 from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from Heuristics.initialize_heuristics import initialize_heuristics
-from Utilities.StatesQueue import StatesQueue
+from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from SearchBasedAlgorithms.MStar.MStarState import MStarState
 import time
 

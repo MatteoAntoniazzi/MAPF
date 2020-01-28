@@ -64,8 +64,8 @@ class AStarSolver(MAPFSolver):
         self._n_of_loops = 0
 
         single_agents_states = []
-        for i, agent in enumerate(problem_instance.get_agents()):
-            s = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(), agent.get_start(), 0,
+        for agent in problem_instance.get_agents():
+            s = SingleAgentState(problem_instance.get_map(), agent.get_id(), agent.get_goal(), agent.get_start(),
                                  self._solver_settings)
             single_agents_states.append(s)
 

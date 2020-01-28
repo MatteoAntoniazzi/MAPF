@@ -20,7 +20,7 @@ class MStarState(State):
         self._is_edge_conflict = is_edge_conflict
         self._back_propagation_set = []
         self._collisions_set = set()
-        self.calculate_cost()
+        self.compute_cost()
         self.compute_heuristics()
 
     def get_paths_to_parent(self):
@@ -142,7 +142,7 @@ class MStarState(State):
         if self._objective_function == "Makespan":
             self._h = max([single_state.h_value() for single_state in self._single_agents_states])
 
-    def calculate_cost(self):
+    def compute_cost(self):
         self._g = 0
         if self.is_root():
             return

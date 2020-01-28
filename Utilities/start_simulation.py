@@ -6,8 +6,8 @@ from SearchBasedAlgorithms.IndependenceDetection.SolverIndependenceDetection imp
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
 from SearchBasedAlgorithms.MStar.SolverMStar import SolverMStar
 from MAPFSolver.Utilities.ProblemInstance import *
-from Utilities.Agent import *
-from Utilities.Map import *
+from MAPFSolver.Utilities.Agent import *
+from MAPFSolver.Utilities.Map import *
 
 
 def prepare_simulation(reader, frame, algorithm, independence_detection, solver_settings, n_of_agents):

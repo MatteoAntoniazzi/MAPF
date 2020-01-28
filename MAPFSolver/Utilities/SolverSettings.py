@@ -1,11 +1,12 @@
-"""
-This class contains all the settings of the solver. An instance of this object will be passed to the solver for his
-initialization.
-"""
 from Heuristics.initialize_heuristics import initialize_heuristics
 
 
 class SolverSettings:
+    """
+    This class contains all the settings of the solver. An instance of this object will be passed to the solver for his
+    initialization.
+    """
+
     def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_in_goal=False,
                  goal_occupation_time=1, is_edge_conflict=True):
         """

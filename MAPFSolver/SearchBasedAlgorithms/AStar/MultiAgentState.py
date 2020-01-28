@@ -9,11 +9,11 @@ import itertools
 
 
 class MultiAgentState(State):
-    def __init__(self, single_agents_states, solver_settings, parent=None, time_step=0):
-        super().__init__(parent=parent, time_step=time_step)
+    def __init__(self, single_agents_states, solver_settings, parent=None):
+        super().__init__(parent=parent)
         self._single_agents_states = single_agents_states
         self._solver_settings = solver_settings
-        self.calculate_cost()
+        self.compute_cost()
         self.compute_heuristics()
 
     def get_paths_to_parent(self):
@@ -48,7 +48,7 @@ class MultiAgentState(State):
 
         free_conflict_states = []
         for i, multi_state in enumerate(valid_states):
-            m = MultiAgentState(multi_state, self._solver_settings, parent=self, time_step=self.time_step()+1)
+            m = MultiAgentState(multi_state, self._solver_settings, parent=self)
             if not self.is_conflict(m):
                 free_conflict_states.append(m)
 
@@ -110,7 +110,7 @@ class MultiAgentState(State):
         if self._solver_settings.get_objective_function() == "Makespan":
             self._h = max([single_state.h_value() for single_state in self._single_agents_states])
 
-    def calculate_cost(self):
+    def compute_cost(self):
         self._g = 0
         if self.is_root():
             return
@@ -135,7 +135,7 @@ class MultiAgentState(State):
 
     def clone_state(self):
         clone_states = [state.clone_state() for state in self._single_agents_states]
-        return MultiAgentState(clone_states, self._solver_settings, parent=self._parent, time_step=self._time_step)
+        return MultiAgentState(clone_states, self._solver_settings, parent=self._parent)
 
     def clone_states(self):
         return [state.clone_state() for state in self._single_agents_states]

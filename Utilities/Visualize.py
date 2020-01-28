@@ -253,7 +253,7 @@ class Visualize:
                                                                             FRAME_MARGIN + self.cell_h * row,
                                                                             FRAME_MARGIN + self.cell_w * (col + 1),
                                                                             FRAME_MARGIN + self.cell_h * (row + 1))
-                if self._problem_instance.get_map().is_obstacle(col, row):
+                if self._problem_instance.get_map().is_obstacle((col, row)):
                     self.map_canvas.itemconfig(self.vis_cells[row][col], fill='gray', width=2)
 
     def draw_agents(self):

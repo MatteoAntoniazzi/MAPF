@@ -9,8 +9,8 @@ instances with a random number of agents chosen uniformly between 2 and 60.
 """
 from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
 from SearchBasedAlgorithms.IndependenceDetection.SolverIndependenceDetection import SolverIndependenceDetection
-from Utilities.Agent import Agent
-from Utilities.Map import Map
+from MAPFSolver.Utilities.Agent import Agent
+from MAPFSolver.Utilities.Map import Map
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 import random

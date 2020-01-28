@@ -2,7 +2,7 @@ from Heuristics.initialize_heuristics import initialize_heuristics
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from Utilities.StatesQueue import StatesQueue
-from Utilities.Agent import Agent
+from MAPFSolver.Utilities.Agent import Agent
 
 
 class AStar:
@@ -13,12 +13,12 @@ class AStar:
         self._closed_list = None  # Keep all the states already expanded
         self._closed_list_of_positions = None  # Keep all the positions already visited
 
-    def find_path(self, map, start_pos, goal_pos):
+    def find_path(self, problem_map, start_pos, goal_pos):
         """
         It computes the path from his start position to his goal position using the A* algorithm.
         It return the path as list of (x, y) positions
         """
-        self.initialize_problem(map, start_pos, goal_pos)
+        self.initialize_problem(problem_map, start_pos, goal_pos)
 
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
@@ -122,7 +122,7 @@ class AStar:
         self._closed_list = StatesQueue()
         self._closed_list_of_positions = []
 
-        starter_state = SingleAgentState(map, 0, goal_pos, start_pos, 0, self._heuristics,
+        starter_state = SingleAgentState(map, 0, goal_pos, start_pos, self._heuristics,
                                          self._solver_settings.get_goal_occupation_time())
         self._frontier.add(starter_state)
 

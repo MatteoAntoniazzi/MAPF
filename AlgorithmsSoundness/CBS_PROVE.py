@@ -1,7 +1,7 @@
 from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
 from tkinter import *
-from Utilities.Agent import Agent
-from Utilities.Map import Map
+from MAPFSolver.Utilities.Agent import Agent
+from MAPFSolver.Utilities.Map import Map
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 import random
@@ -35,7 +35,7 @@ agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3))
 
 problem_instance = ProblemInstance(map, agents)
 
-solver_settings = SolverSettings(stay_in_goal=True, goal_occupation_time=3, is_edge_conflict=True)
+solver_settings = SolverSettings(stay_in_goal=False, goal_occupation_time=3, is_edge_conflict=True)
 # solver = SolverIndependenceDetection(SolverConflictBasedSearch(solver_settings), solver_settings)
 solver = AStarSolver(solver_settings)
 

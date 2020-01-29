@@ -65,7 +65,7 @@ class AStarSolver(MAPFSolver):
         self._solver_settings.initialize_heuristic(problem_instance)
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()
-        self._n_of_generated_nodes = 0
+        self._n_of_generated_nodes = 1
         self._n_of_expanded_nodes = 0
 
         single_agents_states = []

@@ -20,7 +20,6 @@ agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3))
           Agent(8, (7,7), (1,7))]
 """
 
-"""
 agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3)), Agent(3, (0,2), (7,4))]
 
 problem_instance = ProblemInstance(problem_map, agents)
@@ -31,15 +30,17 @@ solver = AStarSolver(solver_settings)
 
 paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
 print(paths)
+
+
 """
 total_nodes = 0
 total_time = 0
 total_cost = 0
 
 
-for i in range(500):
+for i in range(100):
     print(i)
-    agents = generate_random_agents(problem_map, 3)
+    agents = generate_random_agents(problem_map, 5)
     problem_instance = ProblemInstance(problem_map, agents)
 
     # problem_instance = generate_problem_from_map_and_scene(Reader(), 4)
@@ -56,9 +57,10 @@ for i in range(500):
     total_cost += output_infos["sum_of_costs"]
 
 
-print(total_nodes/500)
-print(total_time/500)
-print(total_cost/500)
+print(total_nodes/100)
+print(total_time/100)
+print(total_cost/100)
+"""
 
 """
 root = Tk()

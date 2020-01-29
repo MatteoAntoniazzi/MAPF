@@ -7,8 +7,8 @@ class SolverSettings:
     initialization.
     """
 
-    def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_in_goal=False,
-                 goal_occupation_time=1, is_edge_conflict=True):
+    def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_in_goal=False,  goal_occupation_time=1,
+                 is_edge_conflict=True):
         """
         Initialization of the variables representing the solver settings.
         :param heuristic: heuristic used. ("Manhattan" or "RRA")
@@ -25,8 +25,6 @@ class SolverSettings:
         self._stay_in_goal = stay_in_goal
         self._goal_occupation_time = goal_occupation_time
         self._is_edge_conflict = is_edge_conflict
-
-        print("SOLVER SETTINGS STAY IN GOAL", self._stay_in_goal)
 
     def initialize_heuristic(self, problem_instance):
         """

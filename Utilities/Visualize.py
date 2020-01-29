@@ -238,7 +238,8 @@ class Visualize:
         Set the text inside the infos with the output infos.
         """
         self.infos_txt_var.set("SUM OF COSTS: " + str(self._output_infos["sum_of_costs"]) + "\nMAKESPAN: " +
-                               str(self._output_infos["makespan"]) + "\nN° OF EXPANDED NODES: " +
+                               str(self._output_infos["makespan"]) + "\nN° OF GENERATED NODES: " +
+                               str(self._output_infos["generated_nodes"]) + "\nN° OF EXPANDED NODES: " +
                                str(self._output_infos["expanded_nodes"]) + "\nCOMPUTATIONAL TIME: " +
                                str(round(self._output_infos["computation_time"], 2)))
 
@@ -273,7 +274,7 @@ class Visualize:
                                                                  FRAME_MARGIN + self.cell_h * (s_row + 1),
                                                                  outline='black', fill=agent_color))
             self.map_canvas.itemconfig(self.vis_cells[s_row][s_col], fill=agent_color, width=1.5)
-            self.map_canvas.itemconfig(self.vis_cells[g_row][g_col], fill=agent_color, stipple="gray50", width=1.5)
+            self.map_canvas.itemconfig(self.vis_cells[g_row][g_col], fill=agent_color, stipple="gray75", width=1.5)
             self.text_list.append(self.map_canvas.create_text(FRAME_MARGIN + self.cell_w * s_col + self.cell_w / 2,
                                                               FRAME_MARGIN + self.cell_h * s_row + self.cell_h / 2,
                                                               font=("Purisa", get_font_dimension(self.dynamic_cell_w,

@@ -24,20 +24,13 @@ class SingleAgentState(State):
     def expand(self, verbose=False):
         """
         Expand the current state. It computes the possible neighbour positions and creates a state for each new possible
-        position. In addition of the neighbours we add the possibility to remain in the same position, obviously the
-        time-step will be incremented and the cost of the wait move is equal to the cost to move, that is 1.
-        If the state is a goal state or not we allow i both cases all the possible node expansions. So, even if the
+        position. We can see that even if an agent has reached his goal the expansion is still possible. He will be able
+        to move from the goal with an increase of the cost or stay in the goal without increase the cost.
+        If the state is a goal state or not we allow in both cases all the possible node expansions. So, even if the
         agent is in the goal state we allow him to be expanded and maybe return to a non goal state.
-        Even if the state is completed we can expand it, this why we want to allow the agent to move from the goal if
-        other agents for example need to pass from there. In this case we append itself to the expansion.
         :return: the list of possible next states.
         """
-        expanded_nodes_list = []
-
-        if self.is_completed():
-            expanded_nodes_list.append(self)
-
-        expanded_nodes_list.append(self.wait_state())
+        expanded_nodes_list = [self.wait_state()]
         possible_moves = self._map.get_neighbours_xy(self._position)
         for i in possible_moves:
             expanded_nodes_list.append(SingleAgentState(self._map, self._goal, i, self._solver_settings, parent=self))
@@ -104,14 +97,21 @@ class SingleAgentState(State):
 
             self._g = 0
             if self._solver_settings.stay_in_goal():
-                self._g = len(list_of_states) - 1
-            for i, s in enumerate(list_of_states):
-                if not s.goal_test() or (s.goal_test() and i >= self._solver_settings.get_goal_occupation_time()):
-                    if i == 0:
-                        self._g = len(list_of_states) - i - 1
-                    else:
-                        self._g = len(list_of_states) - i
-                    break
+                for i, s in enumerate(list_of_states):
+                    if not s.goal_test():
+                        if i == 0:
+                            self._g = len(list_of_states) - 1
+                        else:
+                            self._g = len(list_of_states) - i
+                        break
+            else:
+                for i, s in enumerate(list_of_states):
+                    if not s.goal_test():
+                        if i == 0:
+                            self._g = len(list_of_states) - 1
+                        else:
+                            self._g = len(list_of_states) - i
+                        break
 
     def goal_test(self):
         """
@@ -139,14 +139,22 @@ class SingleAgentState(State):
                 state = state.predecessor()
             return True
 
-    def is_gone(self, time_step):
+    def is_gone(self):
         """
         Return True if the agent has completed his task and he is already been removed from his goal at the given time
-        step. If the stay in goal setting is set than the agent will never be gone so it always returns False.
+        step. If the stay_in_goal setting is set than the agent will never be gone so it always returns False.
+        Is different from is_completed because an agent can be completed but he disappear the next time_step.
+        Se, we have to check that he's already spent the needed time in the goal before this state.
         """
         if self._solver_settings.stay_in_goal():
             return False
-        return self.is_completed() and time_step > self.time_step()
+        else:
+            state = self
+            for i in range(self._solver_settings.get_goal_occupation_time()+1):
+                if not state.goal_test():
+                    return False
+                state = state.predecessor()
+            return True
 
     def get_position(self):
         """
@@ -162,13 +170,27 @@ class SingleAgentState(State):
 
     def get_path_to_root(self):
         """
-        Compute and return the path to the root.
+        Compute and return the path to the root. If stay_in_goal is True I truncate the repeated end goals.
         """
         path = []
         node = self
-        while node._parent is not None:
+
+        if self._solver_settings.stay_in_goal():
+            while node.predecessor().goal_test():
+                node = node.predecessor()
+
+        else:
+            counter = self._solver_settings.get_goal_occupation_time()
+            while node.goal_test() and counter > 0:
+                path.append(node._position)
+                node = node.predecessor()
+                counter -= 1
+            while node.goal_test():
+                node = node.predecessor()
+
+        while node.predecessor() is not None:
             path.append(node._position)
-            node = node._parent
+            node = node.predecessor()
         path.append(node._position)
         path.reverse()
         return path

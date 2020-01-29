@@ -17,23 +17,20 @@ class Map:
     def get_neighbours_xy(self, xy):
         """
         Returns the positions of the neighbours in (x, y) Coordinates. It considers as neighbours only the horizontal
-        and vertical neighbours, not the traversals ones.
+        and vertical neighbours, not the traversals ones, so it'll move left, right, up and down.
         """
         x, y = xy
         neighbours = []
 
-        # Move left
         if x > 0 and not (x-1, y) in self._obstacles_xy:
             neighbours.append((x-1, y))
-        # Move right
         if x < self._w-1 and not (x+1, y) in self._obstacles_xy:
             neighbours.append((x+1, y))
-        # Move up
         if y > 0 and not (x, y-1) in self._obstacles_xy:
             neighbours.append((x, y-1))
-        # Move down
         if y < self._h-1 and not (x, y+1) in self._obstacles_xy:
             neighbours.append((x, y+1))
+
         return neighbours
 
     def get_height(self):

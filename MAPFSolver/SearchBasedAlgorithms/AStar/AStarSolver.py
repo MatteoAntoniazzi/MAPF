@@ -17,8 +17,8 @@ class AStarSolver(MAPFSolver):
         super().__init__(solver_settings)
         self._frontier = None
         self._closed_list = None
+        self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
-        self._n_of_loops = 0
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
@@ -38,7 +38,8 @@ class AStarSolver(MAPFSolver):
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_parent()
                 output_infos = self.generate_output_infos(self.calculate_soc(paths), self.calculate_makespan(paths),
-                                                          self._n_of_expanded_nodes, time.time()-start)
+                                                          self._n_of_generated_nodes, self._n_of_expanded_nodes,
+                                                          time.time() - start)
                 if verbose:
                     print("PROBLEM SOLVED: ", output_infos)
 
@@ -49,8 +50,8 @@ class AStarSolver(MAPFSolver):
             if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
-                self._n_of_expanded_nodes += len(expanded_nodes)
-                self._n_of_loops += 1
+                self._n_of_generated_nodes += len(expanded_nodes)
+                self._n_of_expanded_nodes += 1
                 self._frontier.add_list_of_states(expanded_nodes)
 
         if return_infos:
@@ -64,8 +65,8 @@ class AStarSolver(MAPFSolver):
         self._solver_settings.initialize_heuristic(problem_instance)
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()
+        self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
-        self._n_of_loops = 0
 
         single_agents_states = []
         for agent in problem_instance.get_agents():

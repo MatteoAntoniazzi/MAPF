@@ -84,7 +84,7 @@ class MultiAgentState(State):
         """
         pos_list = []
         for state in self._single_agents_states:
-            if not state.is_gone(self.time_step()):
+            if not state.is_gone():
                 pos_list.append(state.get_position())
         return pos_list
 

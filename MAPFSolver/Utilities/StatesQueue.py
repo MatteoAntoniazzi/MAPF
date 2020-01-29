@@ -84,7 +84,7 @@ class StatesQueue:
 
     def __str__(self):
         string = ''
-        for s in self._queue[:5]:
-            string = string + ' [F: ' + str(s.f_value()) + ' ' + str(s.get_positions_list()) + \
-                     ' TS:' + str(s.time_step()) + '] '
+        for s in self._queue[:]:
+            string = string + ' [F:' + str(s.f_value()) + ' G:' + str(s.g_value()) + ' H:' + str(s.h_value()) + ' ' \
+                     + str(s.get_positions_list()) + ' TS:' + str(s.time_step()) + '] '
         return string

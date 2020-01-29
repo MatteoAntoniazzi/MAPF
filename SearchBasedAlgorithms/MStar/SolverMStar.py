@@ -14,7 +14,7 @@ individual policies
 """
 from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
-from Heuristics.initialize_heuristics import initialize_heuristics
+from Heuristics.initialize_heuristic import initialize_heuristics
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from SearchBasedAlgorithms.MStar.MStarState import MStarState
 import time
@@ -95,7 +95,7 @@ class SolverMStar(MAPFSolver):
         """
         Initialize the frontier and the heuristic for the given problem.
         """
-        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristics_str(), problem_instance)
+        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristic_str(), problem_instance)
         self._frontier = StatesQueue()
         self._n_of_expanded_nodes = 0
         self._n_of_loops = 0
@@ -112,5 +112,5 @@ class SolverMStar(MAPFSolver):
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "M* Solver using " + self._solver_settings.get_heuristics_str() + " heuristics minimazing " + \
+        return "M* Solver using " + self._solver_settings.get_heuristic_str() + " heuristics minimazing " + \
                self._solver_settings.get_objective_function()

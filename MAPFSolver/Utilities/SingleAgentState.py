@@ -103,9 +103,14 @@ class SingleAgentState(State):
                 list_of_states.append(state)
 
             self._g = 0
+            if self._solver_settings.stay_in_goal():
+                self._g = len(list_of_states) - 1
             for i, s in enumerate(list_of_states):
                 if not s.goal_test() or (s.goal_test() and i >= self._solver_settings.get_goal_occupation_time()):
-                    self._g += len(list_of_states) - i
+                    if i == 0:
+                        self._g = len(list_of_states) - i - 1
+                    else:
+                        self._g = len(list_of_states) - i
                     break
 
     def goal_test(self):
@@ -121,6 +126,8 @@ class SingleAgentState(State):
         occupation time there.
         If the settings requires that agents stays in goal also after arrived we just check the goal test, otherwise we
         check that the agent has already spent the needed time stopped in the goal.
+        This function not means that the agent is already gone. It just tells if it has been completed or be in the
+        time step of completion.
         """
         if self._solver_settings.stay_in_goal():
             return self.goal_test()
@@ -132,20 +139,26 @@ class SingleAgentState(State):
                 state = state.predecessor()
             return True
 
-    def is_gone(self):
+    def is_gone(self, time_step):
         """
-        Return True if the agent has completed his task and he is already been removed from his goal.
-        If the stay in goal setting is set than the agent will never be gone.
+        Return True if the agent has completed his task and he is already been removed from his goal at the given time
+        step. If the stay in goal setting is set than the agent will never be gone so it always returns False.
         """
         if self._solver_settings.stay_in_goal():
             return False
-        return self.is_completed()
+        return self.is_completed() and time_step > self.time_step()
 
     def get_position(self):
         """
         Return the state position.
         """
         return self._position
+
+    def get_positions_list(self):
+        """
+        Return the list of the positions of the single agent states. Since it is a single state only one
+        """
+        return [self.get_position()]
 
     def get_path_to_root(self):
         """
@@ -180,4 +193,5 @@ class SingleAgentState(State):
         return self._position == other._position and self.time_step() == other.time_step()
 
     def __str__(self):
-        return '[STATE -> F: ' + str(self.f_value()) + ' ' + str(self._position) + ' TS:' + str(self.time_step()) + ']'
+        return '[STATE -> F:' + str(self.f_value()) + ' G:' + str(self.g_value()) + ' H:' + str(self.h_value()) + ' '\
+               + str(self._position) + ' TS:' + str(self.time_step()) + ']'

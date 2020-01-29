@@ -7,7 +7,7 @@ leaving the moves of the remaining agents to descendant nodes within the same se
 from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
 from SearchBasedAlgorithms.AStarMultiAgent.ODState import ODState
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
-from Heuristics.initialize_heuristics import initialize_heuristics
+from Heuristics.initialize_heuristic import initialize_heuristics
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
 import time
 
@@ -62,7 +62,7 @@ class SolverAStarOD(MAPFSolver):
         """
         Initialize the frontier and the heuristic for the given problem.
         """
-        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristics_str(), problem_instance)
+        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristic_str(), problem_instance)
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()
         self._n_of_expanded_nodes = 0
@@ -80,5 +80,5 @@ class SolverAStarOD(MAPFSolver):
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "A* Multi Agent Solver with Operator Decomposition using " + self._solver_settings.get_heuristics_str()\
+        return "A* Multi Agent Solver with Operator Decomposition using " + self._solver_settings.get_heuristic_str()\
                + " heuristics minimazing " + self._solver_settings.get_objective_function()

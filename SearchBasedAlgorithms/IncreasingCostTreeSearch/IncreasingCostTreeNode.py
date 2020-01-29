@@ -100,7 +100,7 @@ class IncreasingCostTreeNode:
 
     def compute_root_path_costs_vector(self):
         path_costs_vector = []
-        solver = AStar(SolverSettings(heuristic=self._solver_settings.get_heuristics_str()))
+        solver = AStar(SolverSettings(heuristic=self._solver_settings.get_heuristic_str()))
         for agent in self._problem_instance.get_agents():
             path = solver.find_path(self._problem_instance.get_map(), agent.get_start(), agent.get_goal())
             cost = len(path) - self._solver_settings.get_goal_occupation_time()

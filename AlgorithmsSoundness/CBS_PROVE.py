@@ -31,12 +31,12 @@ agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3))
           Agent(4, (7,2), (3,2)), Agent(5, (7,1), (6,5)), Agent(6, (5,7), (0,1)), Agent(7, (4,7), (4,2)),
           Agent(8, (7,7), (1,7))]
 """
-
 agents = [Agent(0, (6,6), (0,4)), Agent(1, (2,0), (4,6)), Agent(2, (3,6), (4,3)), Agent(3, (0,2), (7,4))]
 
 problem_instance = ProblemInstance(map, agents)
 
-solver_settings = SolverSettings(stay_in_goal=False, goal_occupation_time=5, is_edge_conflict=True)
+solver_settings = SolverSettings(heuristic="Manhattan", objective_function="SOC", stay_in_goal=False,
+                                 goal_occupation_time=1, is_edge_conflict=True)
 # solver = SolverIndependenceDetection(SolverConflictBasedSearch(solver_settings), solver_settings)
 solver = AStarSolver(solver_settings)
 

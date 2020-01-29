@@ -1,4 +1,4 @@
-from Heuristics.initialize_heuristics import initialize_heuristics
+from Heuristics.initialize_heuristic import initialize_heuristics
 
 
 class SolverSettings:
@@ -11,8 +11,8 @@ class SolverSettings:
                  goal_occupation_time=1, is_edge_conflict=True):
         """
         Initialization of the variables representing the solver settings.
-        :param heuristic: heuristic used.
-        :param objective_function: objective function that the solver will minimize.
+        :param heuristic: heuristic used. ("Manhattan" or "RRA")
+        :param objective_function: objective function that the solver will minimize. ("SOC" or "Makespan")
         :param stay_in_goal: True if the agents never disappear once reach the goal.
         :param goal_occupation_time: if disappear_at_goal is True, this variable tells how many time step the agents
         will stay in the goal before disappearing.
@@ -35,9 +35,9 @@ class SolverSettings:
         """
         self._heuristic_obj = initialize_heuristics(self._heuristic_str, problem_instance)
 
-    def get_heuristics_str(self):
+    def get_heuristic_str(self):
         """
-        Return the heuristics used as string. ("Manhattan" or "RRA")
+        Return the heuristic used as string. ("Manhattan" or "RRA")
         """
         return self._heuristic_str
 
@@ -50,7 +50,7 @@ class SolverSettings:
 
     def get_objective_function(self):
         """
-        Return the objective function used.
+        Return the objective function used. ("SOC" or "Makespan")
         """
         return self._objective_function
 

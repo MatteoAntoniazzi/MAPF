@@ -1,4 +1,4 @@
-from Heuristics.initialize_heuristics import initialize_heuristics
+from Heuristics.initialize_heuristic import initialize_heuristics
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
@@ -116,7 +116,7 @@ class AStar:
 
     def initialize_problem(self, map, start_pos, goal_pos):
         problem_instance = ProblemInstance(map, [Agent(0, start_pos, goal_pos)])
-        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristics_str(), problem_instance)
+        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristic_str(), problem_instance)
 
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()

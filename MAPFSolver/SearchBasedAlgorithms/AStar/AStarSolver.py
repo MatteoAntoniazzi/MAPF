@@ -31,22 +31,20 @@ class AStarSolver(MAPFSolver):
         start = time.time()
 
         self.initialize_problem(problem_instance)
-
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_parent()
-                output_infos = self.generate_output_infos(cur_state.g_value(), cur_state.time_step(),
-                                                          self._n_of_expanded_nodes, time.time() - start)
+                output_infos = self.generate_output_infos(self.calculate_soc(paths), self.calculate_makespan(paths),
+                                                          self._n_of_expanded_nodes, time.time()-start)
                 if verbose:
                     print("PROBLEM SOLVED: ", output_infos)
 
                 if return_infos:
                     return paths, output_infos
-                else:
-                    return paths
+                return paths
 
             if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)
@@ -55,6 +53,8 @@ class AStarSolver(MAPFSolver):
                 self._n_of_loops += 1
                 self._frontier.add_list_of_states(expanded_nodes)
 
+        if return_infos:
+            return [], None
         return []
 
     def initialize_problem(self, problem_instance):
@@ -76,5 +76,5 @@ class AStarSolver(MAPFSolver):
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "A* Multi Agent Solver using " + self._solver_settings.get_heuristics_str() + \
+        return "A* Multi Agent Solver using " + self._solver_settings.get_heuristic_str() + \
                " heuristics minimizing " + self._solver_settings.get_objective_function()

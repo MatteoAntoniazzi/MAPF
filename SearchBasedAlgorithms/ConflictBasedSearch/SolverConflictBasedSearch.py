@@ -98,5 +98,5 @@ class SolverConflictBasedSearch(MAPFSolver):
         self._frontier.add(starter_state)
 
     def __str__(self):
-        return "Conflict Based Search Solver using " + self._solver_settings.get_heuristics_str() + \
+        return "Conflict Based Search Solver using " + self._solver_settings.get_heuristic_str() + \
                " heuristics minimazing " + self._solver_settings.get_objective_function()

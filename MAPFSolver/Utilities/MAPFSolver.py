@@ -25,7 +25,7 @@ class MAPFSolver:
         soc = 0
         if self._solver_settings.stay_in_goal():
             for path in paths:
-                soc += len(path)
+                soc += len(path) - 1
         else:
             for path in paths:
                 soc += len(path) - self._solver_settings.get_goal_occupation_time()
@@ -38,7 +38,7 @@ class MAPFSolver:
         :return: Makespan value
         """
         if self._solver_settings.stay_in_goal():
-            makespan = max([len(path) for path in paths])
+            makespan = max([len(path)-1 for path in paths])
         else:
             makespan = max([len(path) for path in paths]) - self._solver_settings.get_goal_occupation_time()
         return makespan

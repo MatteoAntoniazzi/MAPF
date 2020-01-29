@@ -84,7 +84,7 @@ class MultiAgentState(State):
         """
         pos_list = []
         for state in self._single_agents_states:
-            if not state.is_gone():
+            if not state.is_gone(self.time_step()):
                 pos_list.append(state.get_position())
         return pos_list
 
@@ -101,7 +101,7 @@ class MultiAgentState(State):
     def is_completed(self):
         """
         Return True if all agents have arrived to the goal position and stayed there for the time needed.
-        So, all the agents will have completed and will be disappeared.
+        So, all the agents will have completed.
         """
         for single_state in self._single_agents_states:
             if not single_state.is_completed():

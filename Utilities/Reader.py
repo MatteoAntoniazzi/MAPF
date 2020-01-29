@@ -1,4 +1,6 @@
 import os
+import pathlib
+
 import numpy as np
 
 from Utilities.macros import *
@@ -18,7 +20,8 @@ def convert_nums(l):
 
 def get_scene_file_path(map_number, scene_type, scene_number):
     map_name = MAPS_NAMES_LIST.get(map_number)
-    scene_file_path = "Maps/scenes-" + scene_type + "/" + map_name + "-" + scene_type + "-" + str(scene_number) + ".scen"
+    root_path = pathlib.Path(__file__).parent.parent
+    scene_file_path = str(root_path / "Maps/scenes-") + scene_type + "/" + map_name + "-" + scene_type + "-" + str(scene_number) + ".scen"
     print(scene_file_path)
     return scene_file_path
 
@@ -37,12 +40,13 @@ class Reader:
     def load_map_file(self, occupied_char='@', valid_chars={'@', '.', 'T'}):
         assert(self._map_number is not None), "Map Number Not Set"
 
-        map_file = "Maps/maps/" + MAPS_NAMES_LIST.get(self._map_number) + ".map"
-
-        if not os.path.isfile(map_file):
+        root_path = pathlib.Path(__file__).parent.parent
+        map_path = str(root_path / "Maps/maps/" / MAPS_NAMES_LIST.get(self._map_number)) + ".map"
+        print(map_path)
+        if not os.path.isfile(map_path):
             print("Map file not found!")
             exit(-1)
-        map_ls = open(map_file, 'r').readlines()
+        map_ls = open(map_path, 'r').readlines()
         height = int(map_ls[1].replace("height ", ""))
         width = int(map_ls[2].replace("width ", ""))
         map_ls = map_ls[4:]

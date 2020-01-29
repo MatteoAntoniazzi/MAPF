@@ -235,7 +235,7 @@ class Visualize:
 
     def set_infos_txt(self):
         """
-        Set the text inside the infos with the ouput infos.
+        Set the text inside the infos with the output infos.
         """
         self.infos_txt_var.set("SUM OF COSTS: " + str(self._output_infos["sum_of_costs"]) + "\nMAKESPAN: " +
                                str(self._output_infos["makespan"]) + "\nN° OF EXPANDED NODES: " +

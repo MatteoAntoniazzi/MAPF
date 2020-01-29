@@ -1,5 +1,6 @@
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from Utilities.start_simulation import *
+from Utilities.Reader import Reader
 from tkinter import *
 from PIL import Image, ImageTk
 import platform

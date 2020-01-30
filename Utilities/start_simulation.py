@@ -2,7 +2,7 @@ from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
 from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarOD import SolverAStarOD
 from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
 from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
-from SearchBasedAlgorithms.IndependenceDetection.SolverIndependenceDetection import SolverIndependenceDetection
+from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
 from SearchBasedAlgorithms.MStar.SolverMStar import SolverMStar
 from MAPFSolver.Utilities.ProblemInstance import *
@@ -45,7 +45,7 @@ def get_solver(algorithm, solver_settings, independence_detection):
         "M*": SolverMStar(solver_settings)
     }
     if independence_detection:
-        return SolverIndependenceDetection(switcher.get(algorithm), solver_settings)
+        return IDFramework(switcher.get(algorithm), solver_settings)
     else:
         return switcher.get(algorithm)
 

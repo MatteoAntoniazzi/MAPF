@@ -1,4 +1,4 @@
-from Heuristics.Heuristic import Heuristic
+from MAPFSolver.Heuristics.Heuristic import Heuristic
 
 
 class ManhattanHeuristic(Heuristic):

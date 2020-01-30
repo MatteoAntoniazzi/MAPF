@@ -1,7 +1,11 @@
+from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
+from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.Agent import Agent
 from MAPFSolver.Utilities.Map import Map
 import random
+
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 
 
 def generate_random_problem(map_width, map_height, obstacle_probability, n_of_agents):
@@ -31,6 +35,88 @@ def generate_problem_from_map_and_scene(reader, n_of_agents):
     problem_map = get_map(reader)
     problem_agents = get_agents(reader, problem_map, n_of_agents)
     return ProblemInstance(problem_map, problem_agents)
+
+
+def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflicts, min_n_of_agents, max_n_of_agents,
+                                                   n_of_buckets):
+    """
+    It returns a bucket of agent for all the desired number of agent k. The length of the list will be
+    (max_n_of_agents - min_n_of_agents). For each k will have a set of k agents.
+    Example: min is 2 and max is 3 and n_of_buckets is 3.
+    Return: [[[a0, a1], [a2, a3], [a4, a5]], [[a10, a11, a12], [a13, a14, a15], [a16, a17, a18]]]
+    :param problem_map: map of the problem where generate the agents.
+    :param is_edge_conflicts: if True also the edge conflicts are considered.
+    :param min_n_of_agents: minimum value of number of agent for which we want a bucket.
+    :param max_n_of_agents: maximum value of number of agent for which we want a bucket.
+    :param n_of_buckets: number of buckets for each number of agents.
+    :return: k list of buckets of agents.
+    """
+    n_of_free_cells = len(get_free_lst(problem_map))
+    desired_range_length = max_n_of_agents + 1 - min_n_of_agents
+
+    buckets_of_agents = []
+    for j in range(desired_range_length):
+        buckets_of_agents.append([])
+
+    for j in range(n_of_buckets):
+        print(j)
+        single_buckets_of_ids = []
+        single_buckets_of_agents = []
+        temp_min = min_n_of_agents
+
+        while len(single_buckets_of_ids) < desired_range_length:
+            problem_agents = generate_random_agents(problem_map, int(max_n_of_agents*2))
+            problem_instance = ProblemInstance(problem_map, problem_agents)
+
+            solver_settings = SolverSettings(stay_in_goal=True, is_edge_conflict=is_edge_conflicts)
+            a_star_solver = AStarSolver(solver_settings)
+            id_framework = IDFramework(a_star_solver, solver_settings)
+            returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,
+                                                                                         max_n_of_agents)
+            single_buckets_of_ids.extend(returning_buckets_of_ids)
+
+            for bucket in returning_buckets_of_ids:
+                agent_list = []
+                for i, agent_id in enumerate(bucket):
+                    agent_selected = problem_instance.get_original_agents()[agent_id]
+                    agent_list.append(Agent(i, agent_selected.get_start(), agent_selected.get_goal()))
+                single_buckets_of_agents.append(agent_list)
+
+            temp_min = min_n_of_agents if len(single_buckets_of_ids) == 0 else \
+                len(single_buckets_of_ids[len(single_buckets_of_ids)-1]) + 1
+
+        for c, bucket in enumerate(single_buckets_of_agents):
+            buckets_of_agents[c].append(bucket)
+
+    return buckets_of_agents
+
+
+def generate_random_agent_buckets(problem_map, is_edge_conflicts, min_n_of_agents, max_n_of_agents, n_of_buckets):
+    """
+    It returns a bucket of agent for all the desired number of agent k. The length of the list will be
+    (max_n_of_agents - min_n_of_agents). For each k will have a set of k agents.
+    Example: min is 2 and max is 3 and n_of_buckets is 3.
+    Return: [[[a0, a1], [a2, a3], [a4, a5]], [[a10, a11, a12], [a13, a14, a15], [a16, a17, a18]]]
+    :param problem_map: map of the problem where generate the agents.
+    :param is_edge_conflicts: if True also the edge conflicts are considered.
+    :param min_n_of_agents: minimum value of number of agent for which we want a bucket.
+    :param max_n_of_agents: maximum value of number of agent for which we want a bucket.
+    :param n_of_buckets: number of buckets for each number of agents.
+    :return: k list of buckets of agents.
+    """
+    n_of_free_cells = len(get_free_lst(problem_map))
+    desired_range_length = max_n_of_agents + 1 - min_n_of_agents
+
+    buckets_of_agents = []
+
+    for i in range(desired_range_length):
+        bucket = []
+        for j in range(n_of_buckets):
+            problem_agents = generate_random_agents(problem_map, i+min_n_of_agents)
+            bucket.append(problem_agents)
+        buckets_of_agents.append(bucket)
+
+    return buckets_of_agents
 
 
 def generate_random_map(map_width, map_height, obstacle_probability):

@@ -1,5 +1,5 @@
-from Heuristics.RRAStarHeuristic import RRAStarHeuristic
-from Heuristics.ManhattanHeuristic import ManhattanHeuristic
+from MAPFSolver.Heuristics.RRAStarHeuristic import RRAStarHeuristic
+from MAPFSolver.Heuristics.ManhattanHeuristic import ManhattanHeuristic
 
 
 def initialize_heuristics(heuristics_name, problem_instance):

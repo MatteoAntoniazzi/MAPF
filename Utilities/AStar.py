@@ -1,4 +1,4 @@
-from Heuristics.initialize_heuristic import initialize_heuristics
+from MAPFSolver.Heuristics.initialize_heuristic import initialize_heuristics
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.StatesQueue import StatesQueue

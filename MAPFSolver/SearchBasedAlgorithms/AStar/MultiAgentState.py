@@ -6,8 +6,7 @@ import itertools
 class MultiAgentState(State):
     """
     This class represent the single state (node) object for the A* algorithm.
-    It is a subclass of the State class and in addition it stores all the single agent states (the positions and time
-    step) of each agent.
+    It is a subclass of the State class and in addition it stores all the single agent states of each agent.
     """
 
     def __init__(self, single_agents_states, solver_settings, parent=None):

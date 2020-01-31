@@ -47,6 +47,13 @@ class State(object):
         """
         return self._parent is None
 
+    def set_time_step(self, ts):
+        """
+        Modify the time step value with ts.
+        :param ts: time step to set.
+        """
+        self._time_step = ts
+
     def time_step(self):
         """
         Return the time step of the state.

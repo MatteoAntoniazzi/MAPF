@@ -1,5 +1,5 @@
 from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
-from SearchBasedAlgorithms.AStarMultiAgent.SolverAStarOD import SolverAStarOD
+from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import SolverAStarOD
 from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
 from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
 from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework

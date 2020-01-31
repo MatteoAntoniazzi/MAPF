@@ -36,12 +36,10 @@ print(paths)"""
 
 min_n_of_agents = 3
 max_n_of_agents = 5
-buckets_size = 5
+buckets_size = 20
 
-print("Buckets generation...")
 problem_agents_buckets = generate_agent_buckets_with_coupling_mechanism(problem_map, True, min_n_of_agents,
                                                                         max_n_of_agents, buckets_size)
-print("Buckets done.")
 
 for k in range(max_n_of_agents - min_n_of_agents + 1):
     print("Solving for number of agents:", k+min_n_of_agents, " with ", buckets_size, " number of instances...")
@@ -51,13 +49,10 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
 
     for b in range(buckets_size):
         problem_instance = ProblemInstance(problem_map, problem_agents_buckets[k][b])
-
-        # problem_instance = generate_problem_from_map_and_scene(Reader(), 4)
-
         solver_settings = SolverSettings(heuristic="Manhattan", objective_function="SOC", stay_in_goal=True,
                                          goal_occupation_time=1, is_edge_conflict=True)
-        # solver = IDFramework(AStarSolver(solver_settings), solver_settings)
-        solver = AStarSolver(solver_settings)
+        solver = IDFramework(AStarSolver(solver_settings), solver_settings)
+        # solver = AStarSolver(solver_settings)
 
         paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 

@@ -52,8 +52,8 @@ class IDFramework(MAPFSolver):
 
         conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
         while conflict is not None:
-            self.merge_group(conflict, problem_instance, verbose=verbose)
-            self.update_paths()
+            merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
+            self.update_merged_paths(merged_problem)
             conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
 
         output_infos = self.generate_output_infos(self.calculate_soc(self._paths), self.calculate_makespan(self._paths),
@@ -103,8 +103,8 @@ class IDFramework(MAPFSolver):
             if self._biggest_subset == len(problem_instance.get_agents()):
                 print("TRUE")
                 return True
-            self.merge_group(conflict, problem_instance, verbose=verbose)
-            self.update_paths()
+            merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
+            self.update_merged_paths(merged_problem)
             conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
         print("FALSE")
         return False
@@ -161,6 +161,17 @@ class IDFramework(MAPFSolver):
 
         return True
 
+    def update_merged_paths(self, merged_problem):
+        """
+        Recompute the paths of the merged problem.
+        """
+        paths, output_infos = self._solver.solve(merged_problem, return_infos=True)
+        self._n_of_generated_nodes += output_infos["generated_nodes"]
+        self._n_of_expanded_nodes += output_infos["expanded_nodes"]
+
+        for i, agent_id in enumerate(merged_problem.get_original_agents_id_list()):
+            self._paths[agent_id] = paths[i]
+
     def get_some_conflicting_ids_for_buckets(self, problem_instance, min_n_of_agents, max_n_of_agents):
         """
         This function generate buckets from a min to a max with the ids of the conflicting agents.
@@ -171,32 +182,34 @@ class IDFramework(MAPFSolver):
         :param problem_instance: instance of the problem.
         :param min_n_of_agents: minimum value of number of agent for which we want a bucket.
         :param max_n_of_agents: maximum value of number of agent for which we want a bucket.
-        :return: k list of agent ids.
+        :return: if found k list of agent ids otherwise it returns None.
         """
-        buckets_of_ids = []
+        list_of_buckets = []
         counter = min_n_of_agents
+        merged_problem = None
 
         if not self.initialize_paths(problem_instance):
             return False
 
         while counter < (max_n_of_agents + 1):
-
-            self.update_paths()
+            if merged_problem is not None:
+                self.update_merged_paths(merged_problem)
             conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
 
             if conflict is None:
                 break
 
-            merged_problem = self.merge_group(conflict, problem_instance)
+            merged_problem = self.merge_group(conflict, problem_instance, verbose=False)
             merged_problem_id_list = merged_problem.get_original_agents_id_list()
+
             if len(merged_problem_id_list) > counter:
                 break
 
             if len(merged_problem_id_list) == counter:
-                buckets_of_ids.append(merged_problem_id_list)
+                list_of_buckets.append(merged_problem_id_list)
                 counter += 1
 
-        return buckets_of_ids
+        return list_of_buckets
 
     def __str__(self):
         return self._solver.__str__() + " with ID Framework."

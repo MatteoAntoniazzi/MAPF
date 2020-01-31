@@ -156,9 +156,6 @@ class MultiAgentState(State):
         """
         return [state.get_position() for state in self._single_agents_states]
 
-    def clone_states(self):
-        return [state.clone_state() for state in self._single_agents_states]
-
     def equal_position(self, other):
         """
         Return True if the multi agent state and the given multi agent state has the same positions for all the single

@@ -24,7 +24,6 @@ class ODState(MultiAgentState):
         self.set_time_step(single_agent_states[to_move].time_step())
         self._pre_state = self if pre_state is None else pre_state
         self._to_move = to_move
-        self._to_expand = self._single_agents_states[self._to_move]
 
     def expand(self, verbose=False):
         """
@@ -37,11 +36,12 @@ class ODState(MultiAgentState):
 
         next_pre_state = self if self.next_to_move() == 1 else self._pre_state
 
-        expanded_states_list = self._to_expand.expand()
+        state_to_expand = self._single_agents_states[self._to_move]
+        expanded_states_list = state_to_expand.expand()
 
         candidate_list = []
         for state in expanded_states_list:
-            single_agent_states = self.clone_states()
+            single_agent_states = [state for state in self._single_agents_states]
             single_agent_states[self._to_move] = state
 
             s = ODState(single_agent_states, self._solver_settings, parent=self, to_move=self.next_to_move(),
@@ -73,7 +73,9 @@ class ODState(MultiAgentState):
         so if the agents will remain in the goal position for tot time step this will continue to occupy that position.
         The state must be a standard state.
         """
-        return super().goal_test()
+        if self.is_a_standard_state():
+            return super().goal_test()
+        return False
 
     def is_completed(self):
         """
@@ -81,15 +83,15 @@ class ODState(MultiAgentState):
         So, all the agents will have completed and will be disappeared.
         The state must be a standard state.
         """
-        return super().is_completed()
-
+        if self.is_a_standard_state():
+            return super().is_completed()
+        return False
 
     def is_a_standard_state(self):
         """
         Return True if it is a standard state.
         """
         return self._to_move == 0
-
 
 """
 Function to accelerate the process.

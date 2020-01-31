@@ -183,7 +183,7 @@ class Visualize:
         for widget in self._frame.winfo_children():
             widget.destroy()
         self._problem_instance.plot_on_gui(self._frame, self._paths, self._output_infos)
-        self.quit_function()
+        # self.quit_function()
 
     def quit_function(self):
         """

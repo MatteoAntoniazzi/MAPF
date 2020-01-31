@@ -1,3 +1,5 @@
+import copy
+
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.State import State
 
@@ -194,9 +196,6 @@ class SingleAgentState(State):
         path.append(node._position)
         path.reverse()
         return path
-
-    def clone_state(self):
-        return self
 
     def equal_position(self, other):
         """

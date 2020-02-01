@@ -1,11 +1,15 @@
-from MAPFSolver.Heuristics.initialize_heuristic import initialize_heuristics
+from MAPFSolver.Utilities.Agent import Agent
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
-from MAPFSolver.Utilities.Agent import Agent
+from MAPFSolver.Utilities.problem_generation import generate_random_map
 
 
 class AStar:
+    """
+    This class represents a single agent A* solver.
+    """
     def __init__(self, solver_settings):
         self._solver_settings = solver_settings
         self._heuristics = None
@@ -16,7 +20,8 @@ class AStar:
     def find_path(self, problem_map, start_pos, goal_pos):
         """
         It computes the path from his start position to his goal position using the A* algorithm.
-        It return the path as list of (x, y) positions
+        It return the path as list of (x, y) positions. If stay in goal is True it will return the goal position once,
+        otherwise it will return the goal position as many times as the value of goal occupation time.
         """
         self.initialize_problem(problem_map, start_pos, goal_pos)
 
@@ -27,8 +32,9 @@ class AStar:
             if cur_state.goal_test():
                 path = cur_state.get_path_to_root()
                 goal = cur_state.get_position()
-                for i in range(self._solver_settings.get_goal_occupation_time()-1):
-                    path.append(goal)
+                if not self._solver_settings.stay_in_goal():
+                    for i in range(self._solver_settings.get_goal_occupation_time()-1):
+                        path.append(goal)
                 return path
 
             if cur_state.get_position() not in self._closed_list_of_positions:
@@ -41,10 +47,14 @@ class AStar:
     def find_path_with_reservation_table(self, problem_map, start_pos, goal_pos, reservation_table):
         """
         It computes the path from his start position to his goal position using the A* algorithm with reservation table.
-        It return the path as list of (x, y) positions.
+        It return the path as list of (x, y) positions. Closed lists are used to accelerate the process.
 
-        Closed lists are used to accelerate the process. When a state with a conflict is found the closed list with the
-        positions empty in order to allow the wait moves.
+        ?????????????????????????????
+
+        TO MODIFY AND KEEP INTO ACCOUNT STAY_IN_GOAL AND GOAL_OCCUPATION_TIME.
+
+        ?????????????????????????????
+
         """
         self.initialize_problem(problem_map, start_pos, goal_pos)
 
@@ -57,12 +67,10 @@ class AStar:
 
             if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)
-
                 expanded_nodes = cur_state.expand()
 
                 expanded_nodes_no_conflicts = []
                 for state in expanded_nodes:
-
                     busy_times = reservation_table.get(state.get_position(), [])
                     cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
 
@@ -77,20 +85,24 @@ class AStar:
                         else:
                             expanded_nodes_no_conflicts.append(state)
 
-
                 self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
 
         return []
 
-    def find_path_with_constraints(self, map, start_pos, goal_pos, constraints, transactional_constraints=None):
+    def find_path_with_constraints(self, problem_map, start_pos, goal_pos, vertex_constraints, edge_constraints=None):
         """
         It computes the path from his start position to his goal position using the A* algorithm with reservation table.
-        It return the path as list of (x, y) positions.
-
-        Closed lists are used to accelerate the process. When a state with a conflict is found the closed list with the
-        positions empty in order to allow the wait moves.
+        It return the path as list of (x, y) positions. Closed lists are used to accelerate the process.
+        :param problem_map: map of the problem.
+        :param start_pos: start position of the agent.
+        :param goal_pos: goal position of the agent.
+        :param vertex_constraints: list of vertex constraints.
+        :param edge_constraints: list of edge constraints.
+        :return: solution path.
         """
-        self.initialize_problem(map, start_pos, goal_pos)
+        self.initialize_problem(problem_map, start_pos, goal_pos)
+        if edge_constraints is None:
+            edge_constraints = []
 
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
@@ -101,28 +113,42 @@ class AStar:
 
             if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)
-
                 expanded_nodes = cur_state.expand()
 
                 expanded_nodes_no_conflicts = []
                 for state in expanded_nodes:
-                    if (state.get_position(), state.time_step()) not in constraints:
+                    if (state.get_position(), state.time_step()) not in vertex_constraints:
                         if (state.predecessor().get_position(), state.get_position(), state.time_step()) not in \
-                                transactional_constraints or transactional_constraints is None:
+                                edge_constraints or edge_constraints is None:
                             expanded_nodes_no_conflicts.append(state)
                 self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
 
         return []
 
-    def initialize_problem(self, map, start_pos, goal_pos):
-        problem_instance = ProblemInstance(map, [Agent(0, start_pos, goal_pos)])
-        self._heuristics = initialize_heuristics(self._solver_settings.get_heuristic_str(), problem_instance)
+    def initialize_problem(self, problem_map, start_pos, goal_pos):
+        """
+        Initialize the A* problem. Initialize the frontier and the closed lists.
+        :param problem_map: map of the problem.
+        :param start_pos: start position of the agent.
+        :param goal_pos: goal position of the agent.
+        """
+        problem_instance = ProblemInstance(problem_map, [Agent(0, start_pos, goal_pos)])
+        self._solver_settings.initialize_heuristic(problem_instance)
 
         self._frontier = StatesQueue()
         self._closed_list = StatesQueue()
         self._closed_list_of_positions = []
 
-        starter_state = SingleAgentState(map, 0, goal_pos, start_pos, self._heuristics,
-                                         self._solver_settings.get_goal_occupation_time())
+        starter_state = SingleAgentState(problem_map, goal_pos, start_pos, self._solver_settings)
         self._frontier.add(starter_state)
 
+
+"""
+prob_map = generate_random_map(8, 8, 0)
+solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=4,
+                                 is_edge_conflict=True)
+solver = AStar(solver_settings)
+
+solution_path = solver.find_path_with_constraints(prob_map, (6, 6), (0, 4), [((4, 6), 3)], [((5, 6), (4, 6), 2)])
+print(solution_path)
+"""

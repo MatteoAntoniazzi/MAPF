@@ -1,27 +1,71 @@
-def check_conflicts(paths, is_edge_conflict):
+def check_conflicts(paths, stay_in_goal, is_edge_conflict):
     """
     Return the two agents ids that has a conflict. In order to identify the conflicts correctly we need to normalize
-    the paths lengths.
+    the paths lengths. If stay in goal is True I need to normalized the vector since the agents will stay in the goal
+    even the next time steps.
+    :param paths: paths where check conflicts.
+    :param stay_in_goal: True if the agents stays in the goal after arrived. The paths should stay in goal at the end
+    one time step
+    :param is_edge_conflict: if True also the edge conflicts are checked.
+    :return: the two conflicting agents.
     """
     reservation_table = dict()
-    normalized_paths = normalize_paths_lengths(paths)
+    if stay_in_goal:
+        paths = normalize_paths_lengths(paths)
 
-    for i, path in enumerate(normalized_paths):
+    for ag_i, path in enumerate(paths):
         for ts, pos in enumerate(path):
             if reservation_table.get((pos, ts)) is not None:
-                return reservation_table[(pos, ts)], i
-            reservation_table[(pos, ts)] = i
+                return reservation_table[(pos, ts)], ag_i
+            reservation_table[(pos, ts)] = ag_i
 
     if is_edge_conflict:
-        for ag_i, path in enumerate(normalized_paths):
+        for ag_i, path in enumerate(paths):
             for ts, pos in enumerate(path):
                 ag_j = reservation_table.get((pos, ts - 1))
                 if ag_j is not None and ag_j != ag_i:
-                    if len(normalized_paths[ag_j]) > ts:
-                        if normalized_paths[ag_j][ts] == path[ts - 1]:
+                    if len(paths[ag_j]) > ts:   # To be sure that the ag_j will still exists in the next time step.
+                        if paths[ag_j][ts] == path[ts - 1]:
                             return ag_i, ag_j
 
     return None
+
+
+def calculate_soc(paths, stay_in_goal, goal_occupation_time):
+    """
+    Given the list of paths it return the sum of cost value. Time spent in goal is not considered.
+    :param paths: list of paths.
+    :param stay_in_goal: True if the agents stays in the goal after arrived. The paths should stay in goal at the end
+    one time step
+    :param goal_occupation_time: time that the agent will spent in the goal before disappear. Have sense only if stay in
+    goal is false.
+    :return: Sum Of Cost value
+    """
+    soc = 0
+    if stay_in_goal:
+        for path in paths:
+            soc += len(path) - 1
+    else:
+        for path in paths:
+            soc += len(path) - goal_occupation_time
+    return soc
+
+
+def calculate_makespan(paths, stay_in_goal, goal_occupation_time):
+    """
+    Given the list of paths it return the makespan value. Time spent in goal is not considered.
+    :param paths: list of paths.
+    :param stay_in_goal: True if the agents stays in the goal after arrived. The paths should stay in goal at the end
+    one time step
+    :param goal_occupation_time: time that the agent will spent in the goal before disappear. Have sense only if stay in
+    goal is false.
+    :return: Makespan value
+    """
+    if stay_in_goal:
+        makespan = max([len(path)-1 for path in paths])
+    else:
+        makespan = max([len(path) for path in paths]) - goal_occupation_time
+    return makespan
 
 
 def normalize_paths_lengths(paths):

@@ -3,6 +3,9 @@ class StatesQueue:
     Structure used as queue of states.
     """
     def __init__(self):
+        """
+        Initialize a new queue.
+        """
         self._queue = []
 
     def contains_state(self, item):

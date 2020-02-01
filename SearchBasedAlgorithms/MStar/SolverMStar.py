@@ -12,7 +12,7 @@ successors.
 Only robots in the collision set are allowed to consider any possible action. All other robots must obey their
 individual policies
 """
-from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Heuristics.initialize_heuristic import initialize_heuristics
 from MAPFSolver.Utilities.StatesQueue import StatesQueue

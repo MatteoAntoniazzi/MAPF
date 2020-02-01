@@ -1,7 +1,7 @@
 from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
 from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import SolverAStarOD
 from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
-from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
+from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
 from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
 from SearchBasedAlgorithms.MStar.SolverMStar import SolverMStar
@@ -41,7 +41,7 @@ def get_solver(algorithm, solver_settings, independence_detection):
         "A*": AStarSolver(solver_settings),
         "A* with Operator Decomposition": SolverAStarOD(solver_settings),
         "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(solver_settings),
-        "Conflict Based Search": SolverConflictBasedSearch(solver_settings),
+        "Conflict Based Search": CBSSolver(solver_settings),
         "M*": SolverMStar(solver_settings)
     }
     if independence_detection:

@@ -1,11 +1,13 @@
 """
 Classical A* multi agent algorithm. It is complete and optimal.
 """
-from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.SearchBasedAlgorithms.AStar.MultiAgentState import MultiAgentState
 import time
+
+from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 
 
 class AStarSolver(MAPFSolver):
@@ -37,9 +39,12 @@ class AStarSolver(MAPFSolver):
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_parent()
-                output_infos = self.generate_output_infos(self.calculate_soc(paths), self.calculate_makespan(paths),
-                                                          self._n_of_generated_nodes, self._n_of_expanded_nodes,
-                                                          time.time() - start)
+                soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
+                                    self._solver_settings.get_goal_occupation_time())
+                makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
+                                              self._solver_settings.get_goal_occupation_time())
+                output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
+                                                          self._n_of_expanded_nodes, time.time() - start)
                 if verbose:
                     print("PROBLEM SOLVED: ", output_infos)
 
@@ -75,7 +80,3 @@ class AStarSolver(MAPFSolver):
 
         starter_state = MultiAgentState(single_agents_states, self._solver_settings)
         self._frontier.add(starter_state)
-
-    def __str__(self):
-        return "A* Multi Agent Solver using " + self._solver_settings.get_heuristic_str() + \
-               " heuristics minimizing " + self._solver_settings.get_objective_function()

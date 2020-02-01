@@ -1,8 +1,10 @@
-from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
 from MAPFSolver.SearchBasedAlgorithms.AStarOD.ODState import ODState
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
 import time
+
+from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 
 
 class AStarODSolver(MAPFSolver):
@@ -16,7 +18,7 @@ class AStarODSolver(MAPFSolver):
     def __init__(self, solver_settings):
         """
         Initialize the A*+OD solver.
-        :param solver_settings: settings used by the A* solver.
+        :param solver_settings: settings used by the A* + OD solver.
         """
         super().__init__(solver_settings)
         self._frontier = None
@@ -39,9 +41,13 @@ class AStarODSolver(MAPFSolver):
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_parent()
-                output_infos = self.generate_output_infos(self.calculate_soc(paths), self.calculate_makespan(paths),
-                                                          self._n_of_generated_nodes, self._n_of_expanded_nodes,
-                                                          time.time() - start)
+                soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
+                                    self._solver_settings.get_goal_occupation_time())
+                makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
+                                              self._solver_settings.get_goal_occupation_time())
+                output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
+                                                          self._n_of_expanded_nodes, time.time() - start)
+
                 if verbose:
                     print("PROBLEM SOLVED: ", output_infos)
 
@@ -78,7 +84,3 @@ class AStarODSolver(MAPFSolver):
 
         starter_state = ODState(single_agents_states, self._solver_settings)
         self._frontier.add(starter_state)
-
-    def __str__(self):
-        return "A* Multi Agent Solver with Operator Decomposition using " + self._solver_settings.get_heuristic_str()\
-               + " heuristics minimazing " + self._solver_settings.get_objective_function()

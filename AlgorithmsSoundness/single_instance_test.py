@@ -1,5 +1,6 @@
 from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import AStarODSolver
 from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
+from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
 from MAPFSolver.Utilities.problem_generation import generate_random_map
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
@@ -12,9 +13,9 @@ problem_agents = [Agent(0, (6, 6), (0, 4)), Agent(1, (2, 0), (4, 6)), Agent(3, (
 
 problem_instance = ProblemInstance(problem_map, problem_agents)
 
-solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=False,  goal_occupation_time=4,
+solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=4,
                                  is_edge_conflict=True)
-solver = AStarODSolver(solver_settings)
+solver = CBSSolver(solver_settings)
 
 paths = solver.solve(problem_instance, verbose=True)
 

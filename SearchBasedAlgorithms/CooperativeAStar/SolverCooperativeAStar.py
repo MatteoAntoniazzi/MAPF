@@ -13,8 +13,8 @@ for precisely the duration of the intersection, thus preventing any other agent 
 small proportion of grid locations will be touched, and so the grid can be efficiently implemented as a hash table,
 hashing on a randomly distributed function of the (x, y, t) key.
 """
-from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
-from Utilities.AStar import AStar
+from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AStar import AStar
 import time
 
 

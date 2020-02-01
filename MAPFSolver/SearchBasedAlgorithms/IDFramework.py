@@ -1,4 +1,4 @@
-from MAPFSolver.Utilities.MAPFSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 import time
 
@@ -50,15 +50,21 @@ class IDFramework(MAPFSolver):
         if not self.initialize_paths(problem_instance):
             return False
 
-        conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
+        conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+                                   self._solver_settings.is_edge_conflict())
         while conflict is not None:
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
             self.update_merged_paths(merged_problem)
-            conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
+            conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+                                       self._solver_settings.is_edge_conflict())
 
-        output_infos = self.generate_output_infos(self.calculate_soc(self._paths), self.calculate_makespan(self._paths),
-                                                  self._n_of_generated_nodes, self._n_of_expanded_nodes,
-                                                  time.time() - start)
+        paths = self._paths
+        soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
+                            self._solver_settings.get_goal_occupation_time())
+        makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
+                                      self._solver_settings.get_goal_occupation_time())
+        output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
+                                                  self._n_of_expanded_nodes, time.time() - start)
 
         if verbose:
             print("PROBLEM SOLVED: ", output_infos)
@@ -97,7 +103,8 @@ class IDFramework(MAPFSolver):
             return False
 
         # Check collisions
-        conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
+        conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+                                   self._solver_settings.is_edge_conflict())
         while conflict is not None:
             print("BIG:", self._biggest_subset)
             if self._biggest_subset == len(problem_instance.get_agents()):
@@ -105,7 +112,8 @@ class IDFramework(MAPFSolver):
                 return True
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
             self.update_merged_paths(merged_problem)
-            conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
+            conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+                                       self._solver_settings.is_edge_conflict())
         print("FALSE")
         return False
 
@@ -194,7 +202,8 @@ class IDFramework(MAPFSolver):
         while counter < (max_n_of_agents + 1):
             if merged_problem is not None:
                 self.update_merged_paths(merged_problem)
-            conflict = check_conflicts(self._paths, self._solver_settings.is_edge_conflict())
+            conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+                                       self._solver_settings.is_edge_conflict())
 
             if conflict is None:
                 break

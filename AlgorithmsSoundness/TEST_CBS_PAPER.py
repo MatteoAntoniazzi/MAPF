@@ -7,7 +7,7 @@ The inadmissible algorithm, hierarchical cooperative A* (HCA*), from (Silver 200
 standard algorithm (S), operator decomposition (OD), and independence detection (ID) were run on the same 10,000
 instances with a random number of agents chosen uniformly between 2 and 60.
 """
-from SearchBasedAlgorithms.ConflictBasedSearch.SolverConflictBasedSearch import SolverConflictBasedSearch
+from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
 from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
 from MAPFSolver.Utilities.Agent import Agent
 from MAPFSolver.Utilities.Map import Map
@@ -60,7 +60,7 @@ for n in range(3, 14):  # Da 3 a 13
         print("PROBLEM: ", problem_instance.get_original_agents_id_list(), " ------------", problem_instance)
 
         solver_settings = SolverSettings(goal_occupation_time=1)
-        solver = IDFramework(SolverConflictBasedSearch(solver_settings), solver_settings)
+        solver = IDFramework(CBSSolver(solver_settings), solver_settings)
 
         paths, output_infos = solver.solve(problem_instance, return_infos=True, verbose=True)
 

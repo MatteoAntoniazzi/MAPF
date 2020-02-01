@@ -4,7 +4,7 @@ Every node s consists of a k-vector of individual path costs, s = [C 1 , C 2 , .
 represents all possible complete solutions in which the cost of the individual path of agent a i is exactly C i.
 """
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDD import MDD
-from Utilities.AStar import AStar
+from MAPFSolver.Utilities.AStar import AStar
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 import itertools
 

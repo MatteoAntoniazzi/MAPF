@@ -75,19 +75,20 @@ class AStar:
                     busy_times = reservation_table.get(state.get_position(), [])
                     cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
 
-                    # If True means that the position is busy due to an agent that occupy his goal forever.
-                    conflict_with_goal = state.get_position() in completed_pos and \
-                                         state.time_step() >= busy_times[len(busy_times)-1]
-                    if state.goal_test():
-                        # Devo controllare che non ci passi nessuno dopo. Cioè che non esista un time step maggiore in quella posizione.
-                        conflict_with_goal = conflict_with_goal or not(any(y < state.time_step() for y in busy_times))
-
-                    if conflict_with_goal:
-                        print("YOOOOOOOOOOOOOOOOOOOOOOO")
-                    # If True means that the position is occupy by another agent that pass from there.
+                    # If the position is already occupied.
                     conflict_with_other_agent = state.time_step() in busy_times
 
-                    if not (conflict_with_goal or conflict_with_other_agent):
+                    if self._solver_settings.stay_in_goal():
+                        # If True means that the position is busy due to an agent that occupy his goal forever.
+                        conflict_with_goal = state.get_position() in completed_pos and \
+                                             state.time_step() >= busy_times[len(busy_times) - 1]
+                        # If True means exists another agent already planned that will pass on this position in future.
+                        block_previous_agents_when_in_goal = state.goal_test() and not (len(busy_times) == 0) and \
+                                                             not (any(y < state.time_step() for y in busy_times))
+                        conflict_with_other_agent = conflict_with_other_agent and conflict_with_goal and \
+                                                    block_previous_agents_when_in_goal
+
+                    if not conflict_with_other_agent:
                         if self._solver_settings.is_edge_conflict():
                             if not (state.time_step()-1 in busy_times and state.time_step() in cur_pos_busy_times):
                                 # not(if the time step before the position was busy and the before position is busy now)

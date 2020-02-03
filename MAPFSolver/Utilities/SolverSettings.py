@@ -26,6 +26,8 @@ class SolverSettings:
         self._goal_occupation_time = goal_occupation_time
         self._is_edge_conflict = is_edge_conflict
 
+        assert self._goal_occupation_time > 0, "Goal occupation time must be greater than zero!"
+
     def initialize_heuristic(self, problem_instance):
         """
         Initialize the heuristic object which offer the compute_heuristic() method.

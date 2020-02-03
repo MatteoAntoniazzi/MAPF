@@ -14,7 +14,7 @@ from Utilities.Reader import Reader
 
 min_n_of_agents = 3
 max_n_of_agents = 5
-buckets_size = 10
+buckets_size = 100
 
 problem_map = generate_random_map(8, 8, 0)
 problem_agents_buckets = generate_random_agent_buckets(problem_map, min_n_of_agents,

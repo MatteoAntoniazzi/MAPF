@@ -1,6 +1,6 @@
 from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
 from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import SolverAStarOD
-from SearchBasedAlgorithms.CooperativeAStar.SolverCooperativeAStar import SolverCooperativeAStar
+from MAPFSolver.SearchBasedAlgorithms.CooperativeAStar.CoopAStarSolver import SolverCooperativeAStar
 from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
 from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch

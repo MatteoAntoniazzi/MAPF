@@ -44,17 +44,18 @@ class AStar:
 
         return []
 
-    def find_path_with_reservation_table(self, problem_map, start_pos, goal_pos, reservation_table):
+    def find_path_with_reservation_table(self, problem_map, start_pos, goal_pos, reservation_table, completed_pos=None):
         """
         It computes the path from his start position to his goal position using the A* algorithm with reservation table.
         It return the path as list of (x, y) positions. Closed lists are used to accelerate the process.
-
-        ?????????????????????????????
-
-        TO MODIFY AND KEEP INTO ACCOUNT STAY_IN_GOAL AND GOAL_OCCUPATION_TIME.
-
-        ?????????????????????????????
-
+        :param problem_map: map of the problem.
+        :param start_pos: starting position of the agent.
+        :param goal_pos: goal position of the agent.
+        :param reservation_table: it's a dictionary that keeps for each position the list of busy time steps.
+        :param completed_pos: is the list of all the goal positions. So, we know the positions where the agent in the
+        goal are placed and those positions will be busy from the last time step in the reservation table forever.
+        This is used only if the option stay in goal is active.
+        :return: the path for the agent, if found any.
         """
         self.initialize_problem(problem_map, start_pos, goal_pos)
 
@@ -74,13 +75,16 @@ class AStar:
                     busy_times = reservation_table.get(state.get_position(), [])
                     cur_pos_busy_times = reservation_table.get(cur_state.get_position(), [])
 
-                    if not (state.time_step() in busy_times or (state.time_step() - 1 in busy_times and
-                                                                state.time_step() in cur_pos_busy_times)):
-                        expanded_nodes_no_conflicts.append(state)
+                    # If True means that the position is busy due to an agent that occupy his goal forever.
+                    conflict_with_goal = state.get_position() in completed_pos and \
+                                         state.time_step() >= busy_times[len(busy_times)-1]
+                    # If True means that the position is occupy by another agent that pass from there.
+                    conflict_with_other_agent = state.time_step() not in busy_times
 
-                    if state.time_step() not in busy_times:
+                    if not (conflict_with_goal and conflict_with_other_agent):
                         if self._solver_settings.is_edge_conflict():
-                            if not (state.time_step() - 1 in busy_times and state.time_step() in cur_pos_busy_times):
+                            if not (state.time_step()-1 in busy_times and state.time_step() in cur_pos_busy_times):
+                                # not(if the time step before the position was busy and the before position is busy now)
                                 expanded_nodes_no_conflicts.append(state)
                         else:
                             expanded_nodes_no_conflicts.append(state)

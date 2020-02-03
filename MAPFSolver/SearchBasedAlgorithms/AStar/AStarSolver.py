@@ -44,7 +44,7 @@ class AStarSolver(MAPFSolver):
                 makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
                                               self._solver_settings.get_goal_occupation_time())
                 output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
-                                                          self._n_of_expanded_nodes, time.time() - start)
+                                                          self._n_of_expanded_nodes, time.time()-start)
                 if verbose:
                     print("PROBLEM SOLVED: ", output_infos)
 

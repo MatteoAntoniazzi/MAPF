@@ -78,10 +78,16 @@ class AStar:
                     # If True means that the position is busy due to an agent that occupy his goal forever.
                     conflict_with_goal = state.get_position() in completed_pos and \
                                          state.time_step() >= busy_times[len(busy_times)-1]
-                    # If True means that the position is occupy by another agent that pass from there.
-                    conflict_with_other_agent = state.time_step() not in busy_times
+                    if state.goal_test():
+                        # Devo controllare che non ci passi nessuno dopo. Cioè che non esista un time step maggiore in quella posizione.
+                        conflict_with_goal = conflict_with_goal or not(any(y < state.time_step() for y in busy_times))
 
-                    if not (conflict_with_goal and conflict_with_other_agent):
+                    if conflict_with_goal:
+                        print("YOOOOOOOOOOOOOOOOOOOOOOO")
+                    # If True means that the position is occupy by another agent that pass from there.
+                    conflict_with_other_agent = state.time_step() in busy_times
+
+                    if not (conflict_with_goal or conflict_with_other_agent):
                         if self._solver_settings.is_edge_conflict():
                             if not (state.time_step()-1 in busy_times and state.time_step() in cur_pos_busy_times):
                                 # not(if the time step before the position was busy and the before position is busy now)

@@ -1,8 +1,7 @@
+from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
 from MAPFSolver.Utilities.AStar import AStar
 import time
-
-from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 
 
 class CoopAStarSolver(MAPFSolver):
@@ -50,6 +49,8 @@ class CoopAStarSolver(MAPFSolver):
                                                            agent.get_goal(), self._reservation_table,
                                                            self._completed_pos)
             paths.append(path)
+
+            print("PATH", path)
 
             for j, pos in enumerate(path):
                 if not self._reservation_table.get(pos):

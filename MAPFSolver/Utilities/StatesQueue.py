@@ -87,6 +87,6 @@ class StatesQueue:
 
     def __str__(self):
         string = ''
-        for s in self._queue[:]:
+        for s in self._queue[:5]:
             string = string + s.__str__()
         return string

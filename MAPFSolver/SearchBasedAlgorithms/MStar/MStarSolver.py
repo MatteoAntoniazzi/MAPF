@@ -51,10 +51,8 @@ class MStarSolver(MAPFSolver):
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
-            print("CUR STATE: ", cur_state.f_value(), cur_state.get_positions_list(), len(self._frontier._queue), end=" and .. ")
-            # [print(s.get_position(), " ", s.g_value(), " ", s.f_value(), end=" ") for s in cur_state.get_single_agent_states()]
-            [print(s.f_value(), end=" ") for s in self._frontier._queue[:15]]
-            print(" ")
+            print("CUR STATE: ", cur_state)
+            print("FRONTIER: ", len(self._frontier._queue), self._frontier)
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_parent()
@@ -93,6 +91,8 @@ class MStarSolver(MAPFSolver):
         """
         ck = vk.get_collisions_set().copy()
         cl = vl.get_collisions_set().copy()
+
+        #print("BACKPROPAGATE: ", vl, " TO ", vk)
 
         if not cl.issubset(ck):
             vk.set_collisions_set(ck.union(cl))

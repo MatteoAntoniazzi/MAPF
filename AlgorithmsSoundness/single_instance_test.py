@@ -11,6 +11,7 @@ from tkinter import *
 
 
 problem_map = generate_random_map(8, 8, 0)
+#problem_agents = [Agent(0, (0, 0), (2, 1)), Agent(1, (3, 0), (1, 1))]
 problem_agents = [Agent(0, (6, 6), (0, 4)), Agent(1, (2, 0), (4, 6)), Agent(2, (3, 6), (4, 3)), Agent(3, (0, 2), (7, 4))]
 
 problem_instance = ProblemInstance(problem_map, problem_agents)

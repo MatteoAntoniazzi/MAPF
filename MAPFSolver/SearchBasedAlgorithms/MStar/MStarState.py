@@ -99,8 +99,6 @@ class MStarState(MultiAgentState):
         for i, single_state in enumerate(self._single_agents_states):
             if not single_state.equal(other.get_single_agent_states()[i]):
                 return False
-        if self._collisions_set == other._collisions_set:
-            return True
         return False
 
     def __str__(self):

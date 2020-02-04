@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.StatesQueue import StatesQueue

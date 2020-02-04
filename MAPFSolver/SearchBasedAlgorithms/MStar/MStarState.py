@@ -102,3 +102,8 @@ class MStarState(MultiAgentState):
         if self._collisions_set == other._collisions_set:
             return True
         return False
+
+    def __str__(self):
+        string = '[F:' + str(self.f_value()) + ' G: ' + str(self.g_value()) + ' TS:' + str(self.time_step()) + ' '
+        string += str(self.get_positions_list()) + ' ' + str(self.get_collisions_set()) + ']'
+        return string

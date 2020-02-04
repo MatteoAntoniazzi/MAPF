@@ -40,7 +40,7 @@ class MultiAgentState(State):
 
         valid_states = []
         for i, multi_state in enumerate(candidate_state_list):
-            if is_valid(multi_state):
+            if self.is_valid(multi_state):
                 valid_states.append(multi_state)
 
         free_conflict_states = []
@@ -76,6 +76,36 @@ class MultiAgentState(State):
                             if next_positions[j] == current_positions[i]:
                                 return True
         return False
+
+    def colliding_robots(self, multi_state):
+        """
+        Return the set of robots which collide in the given multi agent state.
+        Will be checked that:
+        1. no agents occupy the same position in the same time step;
+        2. no agent overlap (switch places).
+        """
+        colliding_robots = set()
+
+        for i, next_state_i in enumerate(multi_state.get_single_agent_states()):
+            for j, next_state_j in enumerate(multi_state.get_single_agent_states()):
+                if i != j and next_state_i.get_position() == next_state_j.get_position() and \
+                        not next_state_i.is_gone() and not next_state_j.is_gone():
+                    colliding_robots.add(i)
+                    colliding_robots.add(j)
+
+        if self._solver_settings.is_edge_conflict():
+            current_positions = self.get_positions_list()
+            next_positions = multi_state.get_positions_list()
+
+            for i, next_pos in enumerate(next_positions):
+                for j, cur_pos in enumerate(current_positions):
+                    if i != j:
+                        if next_pos == cur_pos:
+                            if next_positions[j] == current_positions[i]:
+                                colliding_robots.add(i)
+                                colliding_robots.add(j)
+
+        return colliding_robots
 
     def get_active_positions_list(self):
         """
@@ -187,15 +217,15 @@ class MultiAgentState(State):
         string += ']'
         return string
 
-
-def is_valid(multi_state):
-    """
-    Check that the multi state has valid single agent states.
-    :param multi_state: list of single agent states
-    :return: True if the multi state is valid.
-    """
-    if len(multi_state) == 1:
+    @staticmethod
+    def is_valid(multi_state):
+        """
+        Check that the multi state has valid single agent states.
+        :param multi_state: list of single agent states
+        :return: True if the multi state is valid.
+        """
+        if len(multi_state) == 1:
+            return True
+        for s in multi_state:
+            assert isinstance(s, SingleAgentState)
         return True
-    for s in multi_state:
-        assert isinstance(s, SingleAgentState)
-    return True

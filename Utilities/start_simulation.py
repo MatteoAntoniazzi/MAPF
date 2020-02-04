@@ -4,7 +4,7 @@ from MAPFSolver.SearchBasedAlgorithms.CooperativeAStar.CoopAStarSolver import So
 from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
 from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
 from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
-from SearchBasedAlgorithms.MStar.SolverMStar import SolverMStar
+from MAPFSolver.SearchBasedAlgorithms.MStar.MStarSolver import MStarSolver
 from MAPFSolver.Utilities.ProblemInstance import *
 from MAPFSolver.Utilities.Agent import *
 from MAPFSolver.Utilities.Map import *
@@ -42,7 +42,7 @@ def get_solver(algorithm, solver_settings, independence_detection):
         "A* with Operator Decomposition": SolverAStarOD(solver_settings),
         "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(solver_settings),
         "Conflict Based Search": CBSSolver(solver_settings),
-        "M*": SolverMStar(solver_settings)
+        "M*": MStarSolver(solver_settings)
     }
     if independence_detection:
         return IDFramework(switcher.get(algorithm), solver_settings)

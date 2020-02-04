@@ -89,7 +89,7 @@ class CBSSolver(MAPFSolver):
         Initialize the frontier for the given problem.
         """
         self._frontier = ConstraintTreeNodesQueue()
-        self._n_of_generated_nodes = 0
+        self._n_of_generated_nodes = 1
         self._n_of_expanded_nodes = 0
 
         starter_state = ConstraintTreeNode(problem_instance, self._solver_settings)

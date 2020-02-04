@@ -51,11 +51,7 @@ class SingleAgentState(State):
         :return: the next state following the optimal policy
         """
         if self.goal_test():
-            if self.is_completed():
-                return self   # Time_step remain blocked so once arrived it doesn't block others
-            else:
-                return SingleAgentState(self._map, self._goal, self._position,
-                                        self._solver_settings, parent=self)
+            return self.wait_state()
 
         next_node = self.get_next_optimal_state()
 
@@ -67,11 +63,10 @@ class SingleAgentState(State):
         :return: the next state following the optimal policy
         """
         from MAPFSolver.Utilities.AStar import AStar
-        solver = AStar(SolverSettings())  # Forse serve il goal occupation time generale
+        solver = AStar(self._solver_settings)
         path = solver.find_path(self._map, self._position, self._goal)
         next_pos = path[1]
-        return SingleAgentState(self._map, self._goal, next_pos, self._solver_settings,
-                                parent=self)
+        return SingleAgentState(self._map, self._goal, next_pos, self._solver_settings, parent=self)
 
     def compute_heuristics(self):
         """

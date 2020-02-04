@@ -1,9 +1,7 @@
 from MAPFSolver.Utilities.Agent import Agent
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
-from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
-from MAPFSolver.Utilities.problem_generation import generate_random_map
 
 
 class AStar:

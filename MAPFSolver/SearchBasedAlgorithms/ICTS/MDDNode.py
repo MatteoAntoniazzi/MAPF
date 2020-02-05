@@ -6,8 +6,8 @@ from Utilities.macros import *
 
 
 class MDDNode:
-    def __init__(self, map, position, time_step=0, parent=None):
-        self._map = map
+    def __init__(self, problem_map, position, time_step=0, parent=None):
+        self._map = problem_map
         self._parent = parent
         self._position = position
         self._time_step = time_step

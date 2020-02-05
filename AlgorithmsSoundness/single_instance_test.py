@@ -2,6 +2,7 @@ from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import AStarODSolver
 from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
 from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
 from MAPFSolver.SearchBasedAlgorithms.CooperativeAStar.CoopAStarSolver import CoopAStarSolver
+from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSSolver import ICTSSolver
 from MAPFSolver.SearchBasedAlgorithms.MStar.MStarSolver import MStarSolver
 from MAPFSolver.Utilities.problem_generation import generate_random_map
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
@@ -18,7 +19,7 @@ problem_instance = ProblemInstance(problem_map, problem_agents)
 
 solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=1,
                                  is_edge_conflict=True)
-solver = MStarSolver(solver_settings)
+solver = ICTSSolver(solver_settings)
 
 paths = solver.solve(problem_instance, verbose=True)
 print(paths)

@@ -1,13 +1,15 @@
-"""
-Multi-value decision diagram (MDD) for a single agent. It is represented by a list of paths from the start to the goal.
-"""
-from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDDNode import MDDNode
-from SearchBasedAlgorithms.IncreasingCostTreeSearch.MDDQueue import MDDQueue
+from MAPFSolver.SearchBasedAlgorithms.ICTS.MDDNode import MDDNode
+from MAPFSolver.SearchBasedAlgorithms.ICTS.MDDQueue import MDDQueue
 
 
 class MDD:
-    def __init__(self, map, agent, cost, goal_occupation_time):
-        self._map = map
+    """
+    Multi-value decision diagram (MDD) for a single agent. It is represented by a list of paths from the start to the
+    goal.
+    """
+
+    def __init__(self, problem_map, agent, cost, goal_occupation_time):
+        self._map = problem_map
         self._agent = agent
         self._cost = cost
         self._goal_occupation_time = goal_occupation_time

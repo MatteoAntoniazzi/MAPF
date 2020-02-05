@@ -3,7 +3,7 @@ from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import SolverAStarOD
 from MAPFSolver.SearchBasedAlgorithms.CooperativeAStar.CoopAStarSolver import SolverCooperativeAStar
 from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
 from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
-from SearchBasedAlgorithms.IncreasingCostTreeSearch.SolverIncreasingCostTreeSearch import SolverIncreasingCostTreeSearch
+from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSSolver import SolverIncreasingCostTreeSearch
 from MAPFSolver.SearchBasedAlgorithms.MStar.MStarSolver import MStarSolver
 from MAPFSolver.Utilities.ProblemInstance import *
 from MAPFSolver.Utilities.Agent import *

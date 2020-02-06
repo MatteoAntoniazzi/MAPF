@@ -3,7 +3,7 @@ import pathlib
 
 import numpy as np
 
-from Utilities.macros import *
+from GUI.macros import *
 
 
 def convert_nums(l):

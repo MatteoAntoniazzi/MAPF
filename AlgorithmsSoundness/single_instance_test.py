@@ -10,14 +10,15 @@ from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.Agent import Agent
 from tkinter import *
 
+from GUI.start_simulation import plot_on_gui
 
 problem_map = generate_random_map(8, 8, 0)
 #problem_agents = [Agent(0, (0, 0), (2, 1)), Agent(1, (3, 0), (1, 1))]
-problem_agents = [Agent(0, (6, 6), (0, 4)), Agent(1, (2, 0), (4, 6)), Agent(2, (3, 6), (4, 3)), Agent(3, (0, 2), (7, 4))]
+problem_agents = [Agent(0, (6, 6), (0, 4)), Agent(1, (2, 0), (4, 6)), Agent(2, (3, 6), (4, 3))]
 
 problem_instance = ProblemInstance(problem_map, problem_agents)
 
-solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=1,
+solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=5,
                                  is_edge_conflict=True)
 solver = ICTSSolver(solver_settings)
 
@@ -27,7 +28,7 @@ print(paths)
 root = Tk()
 frame = Frame(root)
 frame.pack()
-problem_instance.plot_on_gui(frame, paths=paths)
+plot_on_gui(problem_instance, frame, paths=paths)
 
 root.mainloop()
 

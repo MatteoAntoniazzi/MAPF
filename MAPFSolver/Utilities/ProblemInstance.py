@@ -1,8 +1,4 @@
 from MAPFSolver.Utilities.Agent import Agent
-from Utilities.Visualize import Visualize
-from Utilities.macros import *
-from colorama import Fore, Back
-from random import choice
 
 
 class ProblemInstance:
@@ -76,20 +72,11 @@ class ProblemInstance:
         """
         return [a.get_id() for a in self._original_agents]
 
-    def plot_on_gui(self, frame, paths=None, output_infos=None):
-        """
-        Plot the result on GUI.
-        :param frame: tkinter frame where display the result.
-        :param paths: resulting paths.
-        :param output_infos: problem solving results.
-        """
-        window = Visualize(self, frame, paths, output_infos)
-        window.initialize_window()
+    def __str__(self):
+        return "MAP: {" + self._map.__str__() + "}. AGENTS: {" + str([a.__str__() for a in self._agents]) + "}"
 
+    """
     def plot_on_terminal(self, paths=None):
-        """
-        Plot the paths on the GUI.
-        """
         grid = [[Fore.BLACK + Back.RESET + '·' for i in range(self._map.get_width())] for j in range(self._map.get_height())]
         for x, y in self._map.get_obstacles_xy():
             grid[y][x] = Fore.LIGHTWHITE_EX + Back.LIGHTWHITE_EX + '#'
@@ -105,6 +92,4 @@ class ProblemInstance:
         for i in range(len(grid)):
             print(*grid[i], Fore.BLUE + Back.RESET + '', sep='')
         print(Fore.RESET + Back.RESET + '')
-
-    def __str__(self):
-        return "MAP: {" + self._map.__str__() + "}. AGENTS: {" + str([a.__str__() for a in self._agents]) + "}"
+    """

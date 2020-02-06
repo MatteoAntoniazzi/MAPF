@@ -1,13 +1,14 @@
 from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
-from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import SolverAStarOD
-from MAPFSolver.SearchBasedAlgorithms.CooperativeAStar.CoopAStarSolver import SolverCooperativeAStar
+from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import AStarODSolver
 from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
+from MAPFSolver.SearchBasedAlgorithms.CooperativeAStar.CoopAStarSolver import CoopAStarSolver
+from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSSolver import ICTSSolver
 from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
-from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSSolver import SolverIncreasingCostTreeSearch
 from MAPFSolver.SearchBasedAlgorithms.MStar.MStarSolver import MStarSolver
 from MAPFSolver.Utilities.ProblemInstance import *
 from MAPFSolver.Utilities.Agent import *
 from MAPFSolver.Utilities.Map import *
+from GUI.Visualize import Visualize
 
 
 def prepare_simulation(reader, frame, algorithm, independence_detection, solver_settings, n_of_agents):
@@ -20,16 +21,28 @@ def prepare_simulation(reader, frame, algorithm, independence_detection, solver_
     :param solver_settings: Settings of the solver (heuristics, goal_occupation_time)
     :param n_of_agents: Number of Agents on the map
     """
-    map = get_map(reader)
-    agents = get_agents(reader, map, n_of_agents)
-    problem_instance = ProblemInstance(map, agents)
+    problem_map = get_map(reader)
+    agents = get_agents(reader, problem_map, n_of_agents)
+    problem_instance = ProblemInstance(problem_map, agents)
 
     solver = get_solver(algorithm, solver_settings, independence_detection)
     print("Solver --> ", solver, "\nSolving...")
     paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
     print("Solved.")
 
-    problem_instance.plot_on_gui(frame, paths, output_infos)
+    plot_on_gui(problem_instance, frame, paths, output_infos)
+
+
+def plot_on_gui(problem_instance, frame, paths=None, output_infos=None):
+    """
+    Plot the result on GUI.
+    :param problem_instance: instance of the problem.
+    :param frame: tkinter frame where display the result.
+    :param paths: resulting paths.
+    :param output_infos: problem solving results.
+    """
+    window = Visualize(problem_instance, frame, paths, output_infos)
+    window.initialize_window()
 
 
 def get_solver(algorithm, solver_settings, independence_detection):
@@ -37,10 +50,10 @@ def get_solver(algorithm, solver_settings, independence_detection):
     Return the Solver object for the specified algorithm and relative settings.
     """
     switcher = {
-        "Cooperative A*": SolverCooperativeAStar(solver_settings),
+        "Cooperative A*": CoopAStarSolver(solver_settings),
         "A*": AStarSolver(solver_settings),
-        "A* with Operator Decomposition": SolverAStarOD(solver_settings),
-        "Increasing Cost Tree Search": SolverIncreasingCostTreeSearch(solver_settings),
+        "A* with Operator Decomposition": AStarODSolver(solver_settings),
+        "Increasing Cost Tree Search": ICTSSolver(solver_settings),
         "Conflict Based Search": CBSSolver(solver_settings),
         "M*": MStarSolver(solver_settings)
     }

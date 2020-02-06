@@ -1,3 +1,3 @@
-from Utilities.StartMenu import StartMenu
+from GUI.StartMenu import StartMenu
 
 menu = StartMenu()

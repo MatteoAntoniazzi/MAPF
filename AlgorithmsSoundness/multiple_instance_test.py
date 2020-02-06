@@ -9,7 +9,7 @@ from MAPFSolver.Utilities.Map import Map
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.problem_generation import *
-from Utilities.Reader import Reader
+from GUI.Reader import Reader
 
 
 min_n_of_agents = 3

@@ -8,11 +8,18 @@ class MDD:
     goal.
     """
 
-    def __init__(self, problem_map, agent, cost, goal_occupation_time):
-        self._map = problem_map
+    def __init__(self, problem_map, agent, cost, solver_settings):
+        """
+        Initialize the Multi-value Decision Diagram.
+        :param problem_map: map of the problem.
+        :param agent: agent involved.
+        :param cost: maximum cost for which computing all the possible paths.
+        :param solver_settings: settings of the solver
+        """
+        self._problem_map = problem_map
         self._agent = agent
         self._cost = cost
-        self._goal_occupation_time = goal_occupation_time
+        self._solver_settings = solver_settings
         self._paths = []
         self._nodes = MDDQueue()
         self.build_mdd()
@@ -21,7 +28,7 @@ class MDD:
         """
         Multi-value decision diagram for the specific agent.
         """
-        root = MDDNode(self._map, self._agent.get_start())
+        root = MDDNode(self._problem_map, self._agent.get_start())
         self._nodes.add(root)
 
         frontier = MDDQueue()
@@ -36,7 +43,7 @@ class MDD:
 
             if cur_node.time_step() == self._cost:
                 if cur_node.position() == self._agent.get_goal():
-                    self._paths = cur_node.get_paths_to_parent(self._goal_occupation_time)
+                    self._paths = cur_node.get_paths_to_parent(self._solver_settings)
 
             expanded_nodes = cur_node.expand()
 
@@ -48,4 +55,7 @@ class MDD:
                     self._nodes.add(node)
 
     def get_paths(self):
+        """
+        Returns all the possible paths of length equal to the cost.
+        """
         return self._paths

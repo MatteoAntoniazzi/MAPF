@@ -1,17 +1,18 @@
-import pathlib
-
-from Utilities.macros import *
+from GUI.macros import *
 from tkinter import *
 import numpy as np
 import PIL.Image
 import PIL.ImageTk
+import pathlib
 import copy
+
 
 
 class Visualize:
     """
     This class takes care of the visualization of the simulation of the MAPF solution.
     """
+
     def __init__(self, problem_instance, frame, paths, output_infos):
         """
         Initialize the frame.
@@ -182,8 +183,8 @@ class Visualize:
         """
         for widget in self._frame.winfo_children():
             widget.destroy()
-        self._problem_instance.plot_on_gui(self._frame, self._paths, self._output_infos)
-        # self.quit_function()
+        from GUI.start_simulation import plot_on_gui
+        plot_on_gui(self._problem_instance, self._frame, self._paths, self._output_infos)
 
     def quit_function(self):
         """

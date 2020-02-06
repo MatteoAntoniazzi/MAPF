@@ -70,7 +70,7 @@ class ICTSNode:
 
     def initialize_node(self, verbose=False):
         """
-        This function initialize the node computing the various MDDS, and verify if a solution exists.
+        This function initialize the node computing the various MDDs, and verify if a solution exists.
         """
         if verbose:
             print("Initializing node: ", self._path_costs_vector)
@@ -82,13 +82,13 @@ class ICTSNode:
         Compute the mdd for each agents.
         """
         if verbose:
-            print("Computing MDDS...", end=' ')
+            print("Computing MDDs...", end=' ')
         mdd_vector = []
         for i, agent in enumerate(self._problem_instance.get_agents()):
             mdd_vector.append(MDD(self._problem_instance.get_map(), agent, self._path_costs_vector[i],
-                                  self._solver_settings.get_goal_occupation_time()))
+                                  self._solver_settings))
         if verbose:
-            print("MDDS computed.")
+            print("MDDs computed.")
         return mdd_vector
 
     def compute_total_mdd(self, verbose=False):

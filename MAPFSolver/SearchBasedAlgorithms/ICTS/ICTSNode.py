@@ -1,3 +1,4 @@
+from MAPFSolver.SearchBasedAlgorithms.ICTS.MultiMDD import MultiMDD
 from MAPFSolver.Utilities.paths_processing import check_conflicts
 from MAPFSolver.Utilities.useful_functions import print_progress_bar
 from MAPFSolver.SearchBasedAlgorithms.ICTS.MDD import MDD
@@ -76,6 +77,7 @@ class ICTSNode:
             print("Initializing node: ", self._path_costs_vector)
         self._mdd_vector = self.compute_mdds(verbose)
         self._total_mdd = self.compute_total_mdd(verbose)
+        self.compute_solution(verbose)
 
     def compute_mdds(self, verbose=False):
         """
@@ -92,6 +94,23 @@ class ICTSNode:
         return mdd_vector
 
     def compute_total_mdd(self, verbose=False):
+        """
+        Compute the total mdd for all the each agents.
+        """
+        if verbose:
+            print("Computing MDDs...", end=' ')
+
+        """
+        
+        ????????????????????????????????????????????
+        
+        """
+
+        total_mdd = 0
+
+        return total_mdd
+
+    def compute_solution(self, verbose=False):
         """
         Compute the combined mdd by iterate over all the possible combinations of paths. Then check if exists a valid
         solution and in that case it returns it.

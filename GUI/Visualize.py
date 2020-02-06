@@ -198,7 +198,8 @@ class Visualize:
         Insert the speed widgets in the frame.
         """
         # Load Images
-        root_path = pathlib.Path(__file__).parent.parent
+        root_path = pathlib.Path(__file__).parent
+
         speed_up_img = self.load_image(root_path / "Images/speed_up.png", (30, 30))
         speed_down_img = self.load_image(root_path / "Images/speed_down.png", (30, 30))
 

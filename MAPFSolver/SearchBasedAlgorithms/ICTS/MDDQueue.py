@@ -45,6 +45,14 @@ class MDDQueue:
         assert isinstance(item, MDDNode)
         self._queue.append(item)
 
+    def add_list(self, item_list):
+        """
+        Add a list of item node  to the queue.
+        :param item_list: list of nodes to add.
+        """
+        for item in item_list:
+            self.add(item)
+
     def pop(self):
         """
         Pop the first element of the Queue and return it.

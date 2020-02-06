@@ -36,7 +36,7 @@ class ICTSSolver(AbstractSolver):
         while not self._frontier.is_empty():
             self._frontier.sort_by_cost()
             cur_state = self._frontier.pop()
-            cur_state.initialize_node(verbose=True)
+            cur_state.initialize_node(verbose=verbose)
 
             if cur_state.is_goal():
                 paths = cur_state.solution()

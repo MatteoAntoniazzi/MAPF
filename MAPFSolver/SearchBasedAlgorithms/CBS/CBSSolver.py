@@ -1,11 +1,11 @@
-from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.SearchBasedAlgorithms.CBS.ConstraintTreeNode import ConstraintTreeNode
 from MAPFSolver.SearchBasedAlgorithms.CBS.ConstraintTreeNodesQueue import ConstraintTreeNodesQueue
-from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
+from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan, check_conflicts_with_type
 import time
 
 
-class CBSSolver(MAPFSolver):
+class CBSSolver(AbstractSolver):
     """
     The key idea of CBS (Conflict based search) is to grow a set of constraints for each of the agents and find paths that are consistent with
     these constraints. If these paths have conflicts, and are thus invalid, the conflicts are resolved by adding new
@@ -72,7 +72,8 @@ class CBSSolver(MAPFSolver):
                       " Vertex constr: ", cur_state.vertex_constraints(),
                       "Edge constr: ", cur_state.edge_constraints())
 
-            conflict = cur_state.check_conflicts()
+            conflict = check_conflicts_with_type(cur_state.solution(), self._solver_settings.stay_in_goal(),
+                                                 self._solver_settings.is_edge_conflict())
             if conflict is None:
                 return cur_state.solution()
 

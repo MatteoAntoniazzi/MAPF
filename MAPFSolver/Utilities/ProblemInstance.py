@@ -1,4 +1,4 @@
-from MAPFSolver.Utilities.Agent import Agent
+from .Agent import Agent
 
 
 class ProblemInstance:

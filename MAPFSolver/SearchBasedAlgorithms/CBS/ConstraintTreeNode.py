@@ -1,5 +1,5 @@
 from MAPFSolver.Utilities.AStar import AStar
-from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan, normalize_paths_lengths
+from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan, check_conflicts_with_type
 
 
 class ConstraintTreeNode:
@@ -83,7 +83,8 @@ class ConstraintTreeNode:
         agent and the other with the conflict constraint added to the second agent involved in the conflict.
         :return: the two possible next states.
         """
-        conflict_type, constraints = self.check_conflicts()
+        conflict_type, constraints = check_conflicts_with_type(self._solution, self._solver_settings.stay_in_goal(),
+                                                               self._solver_settings.is_edge_conflict())
 
         node_a, node_b = None, None
 
@@ -117,37 +118,6 @@ class ConstraintTreeNode:
                                         vertex_constraints=self._vertex_constraints.copy(),
                                         edge_constraints=constraints_b, agent_to_recompute=agent)
         return [node_a, node_b]
-
-    def check_conflicts(self):
-        """
-        Returns a couple (type of constraint, new child constraints) or None if the state has no conflicts:
-        - In case a vertex conflict is found it will returns the two child conflicts:
-        Example: (ai, aj, v, t) -> as [(ai, v, t), (aj, v, t)]
-        - In case an edge conflict is found it will returns the two child conflicts:
-        Example: [(ai, pos_i, pos_f, ts_f), (aj, pos_i, pos_f, ts_f)]
-        """
-        reservation_table = dict()
-        if self._solver_settings.stay_in_goal():
-            paths = normalize_paths_lengths(self._solution)
-        else:
-            paths = self._solution
-
-        for ag_i, path in enumerate(paths):
-            for ts, pos in enumerate(path):
-                if reservation_table.get((pos, ts)) is not None:
-                    return 'vertex_conflict', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]
-                reservation_table[(pos, ts)] = ag_i
-
-        if self._solver_settings.is_edge_conflict():
-            for ag_i, path in enumerate(paths):
-                for ts, pos in enumerate(path):
-                    ag_j = reservation_table.get((pos, ts - 1))  # Agent in the pos position at the previous time step.
-                    if ag_j is not None and ag_j != ag_i:
-                        if len(paths[ag_j]) > ts:  # To be sure that the ag_j will still exists in the next time step.
-                            if paths[ag_j][ts] == path[ts - 1]:
-                                return 'edge_conflict', [(ag_j, paths[ag_j][ts-1], paths[ag_j][ts], ts),
-                                                         (ag_i, path[ts-1], path[ts], ts)]
-        return None
 
     def calculate_cost(self):
         """

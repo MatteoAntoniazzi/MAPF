@@ -1,11 +1,11 @@
-from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSNode import ICTSNode
 from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSQueue import ICTSQueue
 import time
 
 
-class ICTSSolver(MAPFSolver):
+class ICTSSolver(AbstractSolver):
     """
     ICTS (Increasing Cost Tree Search) algorithm is a complete and optimal algorithm. It works in a two level way:
     - The high-level performs a search on a new search tree called increasing cost tree (ICT). Each node in the ICT

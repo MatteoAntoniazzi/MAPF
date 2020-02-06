@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
@@ -8,7 +8,7 @@ from MAPFSolver.SearchBasedAlgorithms.MStar.MStarState import MStarState
 import time
 
 
-class MStarSolver(MAPFSolver):
+class MStarSolver(AbstractSolver):
     """
     M* algorithm, a complete and optimal implementation of sub-dimensional expansion which uses A* as the
     underlying planner. The basic idea of the algorithm is the following:

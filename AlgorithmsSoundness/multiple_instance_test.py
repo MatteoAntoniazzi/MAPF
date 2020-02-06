@@ -1,16 +1,5 @@
-from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
-from tkinter import *
-
-from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import AStarODSolver
 from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
-from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
-from MAPFSolver.Utilities.Agent import Agent
-from MAPFSolver.Utilities.Map import Map
-from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
-from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.problem_generation import *
-from GUI.Reader import Reader
-
 
 min_n_of_agents = 3
 max_n_of_agents = 5

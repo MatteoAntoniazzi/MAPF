@@ -1,5 +1,5 @@
-from MAPFSolver.Heuristics.Heuristic import Heuristic
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
+from .Heuristic import Heuristic
 
 
 class RRAStarHeuristic(Heuristic):

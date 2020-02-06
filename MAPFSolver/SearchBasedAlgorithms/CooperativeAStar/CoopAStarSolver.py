@@ -1,10 +1,10 @@
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
-from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.AStar import AStar
 import time
 
 
-class CoopAStarSolver(MAPFSolver):
+class CoopAStarSolver(AbstractSolver):
     """
     Cooperative A* (CA*) is a an (not optimal!) algorithm for solving the Co-operative Path-finding problem.
     The task is decoupled into a series of single agent searches. The individual searches

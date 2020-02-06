@@ -1,7 +1,7 @@
 import abc
 
 
-class MAPFSolver:
+class AbstractSolver:
     """
     Abstract class for any solver.
     """

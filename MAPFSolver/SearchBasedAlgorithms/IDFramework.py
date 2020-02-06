@@ -1,11 +1,11 @@
-from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
 import time
 
 from MAPFSolver.Utilities.paths_processing import *
 
 
-class IDFramework(MAPFSolver):
+class IDFramework(AbstractSolver):
     """
     ID is an algorithm that is used in conjunction with a complete search algorithm such as A*, OD (Standley 2010), or
     ICTS (Sharon et al. 2011). Since these search algorithms are all exponential in the number of agents, they are

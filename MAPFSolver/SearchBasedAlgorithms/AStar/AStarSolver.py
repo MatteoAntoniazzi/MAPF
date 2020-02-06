@@ -1,16 +1,16 @@
 """
 Classical A* multi agent algorithm. It is complete and optimal.
 """
-from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
-from MAPFSolver.SearchBasedAlgorithms.AStar.MultiAgentState import MultiAgentState
+from .MultiAgentState import MultiAgentState
 import time
 
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 
 
-class AStarSolver(MAPFSolver):
+class AStarSolver(AbstractSolver):
     def __init__(self, solver_settings):
         """
         Initialize the A* solver.

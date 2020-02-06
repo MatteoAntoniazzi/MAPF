@@ -31,6 +31,36 @@ def check_conflicts(paths, stay_in_goal, is_edge_conflict):
     return None
 
 
+def check_conflicts_with_type(paths, stay_in_goal, is_edge_conflict):
+    """
+    Returns a couple (type of constraint, new child constraints) or None if the state has no conflicts:
+    - In case a vertex conflict is found it will returns the two child conflicts:
+    Example: (ai, aj, v, t) -> as [(ai, v, t), (aj, v, t)]
+    - In case an edge conflict is found it will returns the two child conflicts:
+    Example: [(ai, pos_i, pos_f, ts_f), (aj, pos_i, pos_f, ts_f)]
+    """
+    reservation_table = dict()
+    if stay_in_goal:
+        paths = normalize_paths_lengths(paths)
+
+    for ag_i, path in enumerate(paths):
+        for ts, pos in enumerate(path):
+            if reservation_table.get((pos, ts)) is not None:
+                return 'vertex_conflict', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]
+            reservation_table[(pos, ts)] = ag_i
+
+    if is_edge_conflict:
+        for ag_i, path in enumerate(paths):
+            for ts, pos in enumerate(path):
+                ag_j = reservation_table.get((pos, ts - 1))  # Agent in the pos position at the previous time step.
+                if ag_j is not None and ag_j != ag_i:
+                    if len(paths[ag_j]) > ts:  # To be sure that the ag_j will still exists in the next time step.
+                        if paths[ag_j][ts] == path[ts - 1]:
+                            return 'edge_conflict', [(ag_j, paths[ag_j][ts-1], paths[ag_j][ts], ts),
+                                                     (ag_i, path[ts-1], path[ts], ts)]
+    return None
+
+
 def calculate_soc(paths, stay_in_goal, goal_occupation_time):
     """
     Given the list of paths it return the sum of cost value. Time spent in goal is not considered.

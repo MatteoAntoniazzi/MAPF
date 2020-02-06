@@ -1,12 +1,3 @@
-from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
-from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
-from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
-from MAPFSolver.Utilities.Agent import Agent
-from MAPFSolver.Utilities.Map import Map
-import random
-
-from MAPFSolver.Utilities.SolverSettings import SolverSettings
-from MAPFSolver.Utilities.useful_functions import print_progress_bar
 
 
 def generate_random_problem(map_width, map_height, obstacle_probability, n_of_agents):
@@ -20,6 +11,8 @@ def generate_random_problem(map_width, map_height, obstacle_probability, n_of_ag
     :param n_of_agents: number of agents to generate.
     :return: an instance of ProblemInstance
     """
+    from .ProblemInstance import ProblemInstance
+
     problem_map = generate_random_map(map_width, map_height, obstacle_probability)
     problem_agents = generate_random_agents(problem_map, n_of_agents)
 
@@ -33,8 +26,10 @@ def generate_problem_from_map_and_scene(reader, n_of_agents):
     :param n_of_agents:
     :return: an instance of ProblemInstance
     """
-    problem_map = get_map(reader)
-    problem_agents = get_agents(reader, problem_map, n_of_agents)
+    from .ProblemInstance import ProblemInstance
+
+    problem_map = load_map(reader)
+    problem_agents = load_agents(reader, problem_map, n_of_agents)
     return ProblemInstance(problem_map, problem_agents)
 
 
@@ -52,6 +47,12 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
     :param n_of_buckets: number of buckets for each number of agents.
     :return: k list of buckets of agents.
     """
+    from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
+    from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
+    from .SolverSettings import SolverSettings
+    from .useful_functions import print_progress_bar
+    from .ProblemInstance import ProblemInstance
+    from .Agent import Agent
 
     print("Generate agent buckets with coupling mechanism...")
 
@@ -143,6 +144,9 @@ def generate_random_map(map_width, map_height, obstacle_probability):
     :param obstacle_probability: probability for a cell of being an obstacle.
     :return: an instance of Map
     """
+    from .Map import Map
+    import random
+
     occupancy_lst = set()
     free_lst = set()
 
@@ -163,6 +167,9 @@ def generate_random_agents(problem_map, n_of_agents):
     :param n_of_agents: desired number of agents to generate.
     :return: a list of Agent instances.
     """
+    from .Agent import Agent
+    import random
+
     free_lst = get_free_lst(problem_map)
 
     agents = []
@@ -184,10 +191,12 @@ def generate_random_agents(problem_map, n_of_agents):
     return agents
 
 
-def get_map(reader):
+def load_map(reader):
     """
     Return the map object given the number of the chosen map.
     """
+    from .Map import Map
+
     print("Loading map...")
     map_width, map_height, occupancy_list = reader.load_map_file()
     print("Map loaded.")
@@ -195,10 +204,12 @@ def get_map(reader):
     return Map(map_height, map_width, occupancy_list)
 
 
-def get_agents(reader, problem_map, n_of_agents):
+def load_agents(reader, problem_map, n_of_agents):
     """
     Return the Agent list for the specified scene number of the given map and the selected number of agents.
     """
+    from .Agent import Agent
+
     print("Loading scenario file...")
     agents = reader.load_scenario_file(problem_map.get_obstacles_xy(), problem_map.get_width(),
                                        problem_map.get_height(), n_of_agents=n_of_agents)

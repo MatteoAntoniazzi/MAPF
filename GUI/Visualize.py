@@ -1,11 +1,10 @@
 from GUI.macros import *
 from tkinter import *
 import numpy as np
-import PIL.Image
 import PIL.ImageTk
+import PIL.Image
 import pathlib
 import copy
-
 
 
 class Visualize:
@@ -364,7 +363,7 @@ class Visualize:
 
     def load_image(self, url, size):
         """
-        Load an image. It is also stored in the random_images_list otherwise is not visualized on the GUI
+        Load an image. It is also stored in the random_images_list otherwise is not visualized on the GUIdd
         :param url: local path to the image
         :param size: desired image size
         :return: the image resized

@@ -47,40 +47,6 @@ ALGORITHMS_MODES = [
     ("M*", "M*"),
 ]
 
-# Maps/maps/Berlin_1_256.map
-
-MAPS_NAMES_LIST = {
-    0: "Berlin_1_256",
-    1: "Boston_0_256",
-    2: "brc202d",
-    3: "den312d",
-    4: "den520d",
-    5: "empty-8-8",
-    6: "empty-16-16",
-    7: "empty-32-32",
-    8: "empty-48-48",
-    9: "ht_chantry",
-    10: "ht_mansion_n",
-    11: "lak303d",
-    12: "lt_gallowstemplar_n",
-    13: "maze-32-32-2",
-    14: "maze-32-32-4",
-    15: "maze-128-128-2",
-    16: "maze-128-128-10",
-    17: "orz900d",
-    18: "ost003d",
-    19: "Paris_1_256",
-    20: "random-32-32-10",
-    21: "random-32-32-20",
-    22: "random-64-64-10",
-    23: "random-64-64-20",
-    24: "room-32-32-4",
-    25: "room-64-64-8",
-    26: "room-64-64-16",
-    27: "w_woundedcoast",
-    28: "narrow_corridor"
-}
-
 COLORS_LIST =["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF", "#C0C0C0", "#808080", "#800000",
               "#808000", "#008000", "#800080", "#008080", "#000080", "#FF7F50", "#FF8C00", "#9ACD32", "#FFC0CB",
               "#F5DEB3", "#D2691E"]

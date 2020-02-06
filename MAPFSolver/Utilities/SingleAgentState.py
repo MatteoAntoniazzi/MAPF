@@ -1,5 +1,4 @@
-from MAPFSolver.Utilities.SolverSettings import SolverSettings
-from MAPFSolver.Utilities.State import State
+from .State import State
 
 
 class SingleAgentState(State):

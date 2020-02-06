@@ -1,7 +1,7 @@
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
-from GUI.start_simulation import *
+from MAPFSolver.Utilities.Reader import Reader, MAPS_NAMES_LIST
+from GUI.start_simulation import prepare_simulation
 from GUI.macros import *
-from GUI.Reader import Reader
 from tkinter import *
 from PIL import Image, ImageTk
 import platform
@@ -9,12 +9,13 @@ import platform
 
 class StartMenu:
     """
-    This class represent the GUI start menu. On the GUI you can select the desired settings in order to visualize the
+    This class represent the GUIdd start menu. On the GUIdd you can select the desired settings in order to visualize the
     MAPF simulation.
     """
+
     def __init__(self):
         """
-        Initialize the start menu of the GUI
+        Initialize the start menu of the GUIdd
         """
         # Return the Operating System of the machine running it
         self.os = platform.system()
@@ -38,7 +39,7 @@ class StartMenu:
         self.buttons_list = []
         self.reader = Reader()
 
-        # GUI selectable variables
+        # GUIdd selectable variables
         self.selected_algorithm_var = StringVar()
         self.independence_detection_var = BooleanVar()
         self.selected_map_var = IntVar()
@@ -351,7 +352,7 @@ class StartMenu:
 
     def change_scene_instances(self):
         """
-        Shuffle the scen instances (shuffle the agent choice)
+        Shuffle the scene instances (shuffle the agent choice)
         """
         self.reader.change_scene_instances()
 
@@ -426,7 +427,7 @@ class StartMenu:
 
     def load_image(self, url, size):
         """
-        Load an image. It is also stored in the random_images_list otherwise is not visualized on the GUI
+        Load an image. It is also stored in the random_images_list otherwise is not visualized on the GUIdd
         :param url: local path to the image
         :param size: desired image size
         :return: the image resized

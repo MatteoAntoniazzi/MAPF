@@ -1,7 +1,7 @@
-from MAPFSolver.Utilities.Agent import Agent
-from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
-from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
-from MAPFSolver.Utilities.StatesQueue import StatesQueue
+from .ProblemInstance import ProblemInstance
+from .SingleAgentState import SingleAgentState
+from .StatesQueue import StatesQueue
+from .Agent import Agent
 
 
 class AStar:

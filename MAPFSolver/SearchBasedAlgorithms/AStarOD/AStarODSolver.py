@@ -1,4 +1,4 @@
-from MAPFSolver.Utilities.AbstractSolver import MAPFSolver
+from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.SearchBasedAlgorithms.AStarOD.ODState import ODState
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
@@ -7,7 +7,7 @@ import time
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 
 
-class AStarODSolver(MAPFSolver):
+class AStarODSolver(AbstractSolver):
     """
     A* multi agent algorithm with Operator Decomposition.
     Agents are considered one at a time and a state requires n operators to advance to the next time step.

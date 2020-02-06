@@ -1,14 +1,5 @@
-from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
-from MAPFSolver.SearchBasedAlgorithms.AStarOD.AStarODSolver import AStarODSolver
-from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
-from MAPFSolver.SearchBasedAlgorithms.CooperativeAStar.CoopAStarSolver import CoopAStarSolver
-from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSSolver import ICTSSolver
-from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
-from MAPFSolver.SearchBasedAlgorithms.MStar.MStarSolver import MStarSolver
-from MAPFSolver.Utilities.ProblemInstance import *
-from MAPFSolver.Utilities.Agent import *
-from MAPFSolver.Utilities.Map import *
-from GUI.Visualize import Visualize
+from .Visualize import Visualize
+from MAPFSolver import *
 
 
 def prepare_simulation(reader, frame, algorithm, independence_detection, solver_settings, n_of_agents):
@@ -21,8 +12,8 @@ def prepare_simulation(reader, frame, algorithm, independence_detection, solver_
     :param solver_settings: Settings of the solver (heuristics, goal_occupation_time)
     :param n_of_agents: Number of Agents on the map
     """
-    problem_map = get_map(reader)
-    agents = get_agents(reader, problem_map, n_of_agents)
+    problem_map = load_map(reader)
+    agents = load_agents(reader, problem_map, n_of_agents)
     problem_instance = ProblemInstance(problem_map, agents)
 
     solver = get_solver(algorithm, solver_settings, independence_detection)
@@ -33,9 +24,20 @@ def prepare_simulation(reader, frame, algorithm, independence_detection, solver_
     plot_on_gui(problem_instance, frame, paths, output_infos)
 
 
+def plot_paths(problem_instance, paths):
+
+    from tkinter import Tk, Frame
+    root = Tk()
+    frame = Frame(root)
+    frame.pack()
+    plot_on_gui(problem_instance, frame, paths)
+
+    root.mainloop()
+
+
 def plot_on_gui(problem_instance, frame, paths=None, output_infos=None):
     """
-    Plot the result on GUI.
+    Plot the result on GUIdd.
     :param problem_instance: instance of the problem.
     :param frame: tkinter frame where display the result.
     :param paths: resulting paths.
@@ -62,26 +64,4 @@ def get_solver(algorithm, solver_settings, independence_detection):
     else:
         return switcher.get(algorithm)
 
-
-def get_map(reader):
-    """
-    Return the map object given the number of the choosen map.
-    """
-    print("Loading map...")
-    map_width, map_height, occupancy_list = reader.load_map_file()
-    print("Map loaded.")
-
-    return Map(map_height, map_width, occupancy_list)
-
-
-def get_agents(reader, map, n_of_agents):
-    """
-    Return the Agent list for the specified scene number of the given map and the selected number of agents.
-    """
-    print("Loading scenario file...")
-    agents = reader.load_scenario_file(map.get_obstacles_xy(), map.get_width(), map.get_height(),
-                                       n_of_agents=n_of_agents)
-    print("Scenario loaded.")
-
-    return [Agent(i, a[0], a[1]) for i, a in enumerate(agents)]
 

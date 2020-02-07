@@ -1,4 +1,6 @@
-from MAPFSolver.SearchBasedAlgorithms.ICTS.MultiMDD import MultiMDD
+from time import time
+
+from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDD import TotalMDD
 from MAPFSolver.Utilities.paths_processing import check_conflicts
 from MAPFSolver.Utilities.useful_functions import print_progress_bar
 from MAPFSolver.SearchBasedAlgorithms.ICTS.MDD import MDD
@@ -30,7 +32,6 @@ class ICTSNode:
 
         self._solution = None
         self._mdd_vector = None
-        self._total_mdd = None
 
     def expand(self):
         """
@@ -76,7 +77,6 @@ class ICTSNode:
         if verbose:
             print("Initializing node: ", self._path_costs_vector)
         self._mdd_vector = self.compute_mdds(verbose)
-        self._total_mdd = self.compute_total_mdd(verbose)
         self.compute_solution(verbose)
 
     def compute_mdds(self, verbose=False):
@@ -89,31 +89,33 @@ class ICTSNode:
         for i, agent in enumerate(self._problem_instance.get_agents()):
             mdd_vector.append(MDD(self._problem_instance.get_map(), agent, self._path_costs_vector[i],
                                   self._solver_settings))
+
         if verbose:
             print("MDDs computed.")
         return mdd_vector
 
-    def compute_total_mdd(self, verbose=False):
+    def compute_solution(self, verbose=False):
         """
-        Compute the total mdd for all the each agents.
+        Compute the total mdd and check if a solution exists.
         """
         if verbose:
-            print("Computing MDDs...", end=' ')
+            print("Computing TotalMDD...", end=' ')
 
-        """
-        
-        ????????????????????????????????????????????
-        
-        """
+        start = time()
 
-        total_mdd = 0
+        total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector)
+        self._solution = total_mdd.get_paths()
 
-        return total_mdd
+        if verbose:
+            print("Computation time:", time() - start)
 
-    def compute_solution(self, verbose=False):
+        return self._solution
+
+    def compute_solution_2(self, verbose=False):
         """
         Compute the combined mdd by iterate over all the possible combinations of paths. Then check if exists a valid
         solution and in that case it returns it.
+        This version is slower than the one that used the total mdd
         """
         if verbose:
             print("Computing total MDD...", end=' ')
@@ -141,6 +143,7 @@ class ICTSNode:
 
         if verbose:
             print("Solution not found!")
+
         return None
 
     def compute_root_path_costs_vector(self):
@@ -162,7 +165,9 @@ class ICTSNode:
         """
         Returns true if in the node a valid solution is found. Remember to call initialize_node() method before.
         """
-        return self._solution is not None
+        if self._solution:
+            return True
+        return False
 
     def solution(self):
         """

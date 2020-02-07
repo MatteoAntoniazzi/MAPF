@@ -55,7 +55,7 @@ class MStarSolver(AbstractSolver):
             print("FRONTIER: ", len(self._frontier._queue), self._frontier)
 
             if cur_state.is_completed():
-                paths = cur_state.get_paths_to_parent()
+                paths = cur_state.get_paths_to_root()
                 soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
                                     self._solver_settings.get_goal_occupation_time())
                 makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),

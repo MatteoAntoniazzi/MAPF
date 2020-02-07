@@ -4,11 +4,14 @@ class MDDNode:
     Every node s represent a position and a time step. Remember that a node here can have multiple parents.
     """
 
-    def __init__(self, problem_map, position, time_step=0, parent=None):
+    def __init__(self, problem_map, goal, position, time_step=0, parent=None, dummy=False):
         self._problem_map = problem_map
         self._parent = parent
+        self._children = []
+        self._goal = goal
         self._position = position
         self._time_step = time_step
+        self._dummy = dummy
 
     def expand(self):
         """
@@ -20,11 +23,17 @@ class MDDNode:
 
         expanded_nodes_list = []
         for pos in possible_moves:
-            expanded_nodes_list.append(MDDNode(self._problem_map, pos, time_step=self._time_step+1, parent=[self]))
+            expanded_nodes_list.append(MDDNode(self._problem_map, self._goal, pos, time_step=self._time_step+1, parent=[self]))
 
         return expanded_nodes_list
 
-    def get_paths_to_parent(self, solver_settings):
+    def goal_test(self):
+        """
+        Check if it is in the goal position.
+        """
+        return self._goal == self._position
+
+    def get_paths_to_root(self, solver_settings):
         """
         Return a list of all the possible paths from the start to the goal. It builds the paths starting from the goal
         and going up following all the possible parents alternatives.
@@ -70,12 +79,35 @@ class MDDNode:
         else:
             return paths
 
+    def build_children_descendant(self):
+        """
+        Complete the building of the MDD. It adds at each node in the final MDD the children starting from the bottom.
+        """
+        node = self
+
+        while node.parent() is not None and len(node.parent()) == 1:
+            node.parent()[0].add_child(node)
+            node = node.parent()[0]
+
+        if node.parent() is not None:
+            if len(node.parent()) > 1:
+                for parent in node.parent():
+                    parent.add_child(node)
+                    parent.build_children_descendant()
+
     def add_parent(self, parent):
         """
         Add a parent to this node.
         :param parent: parent to add.
         """
         self._parent.append(parent)
+
+    def add_child(self, child):
+        """
+        Add a child to the list of children.
+        :param child: child to add.
+        """
+        self._children.append(child)
 
     def parent(self):
         """
@@ -84,11 +116,31 @@ class MDDNode:
         """
         return self._parent
 
+    def get_children(self):
+        """
+        Returns the list of children of this node.
+        """
+        return self._children
+
     def position(self):
         """
         Returns the position of this node.
         """
         return self._position
+
+    def goal_position(self):
+        """
+        Returns the position of the goal.
+        """
+        return self._goal
+
+    def equal(self, other):
+        """
+        Return True if the state and the given state has the same position and the same time step.
+        :param other: state to compare position.
+        """
+        assert isinstance(other, MDDNode)
+        return self._position == other._position and self.time_step() == other.time_step()
 
     def time_step(self):
         """
@@ -96,3 +148,16 @@ class MDDNode:
         """
         return self._time_step
 
+    def is_dummy(self):
+        """
+        Returns True if this node is a dummy node. (It means that it has been created only for fill the TotalMDDNode)
+        """
+        return self._dummy
+
+    def __str__(self):
+        string = 'Pos:' + str(self._position) + ' TS:' + str(self._time_step)
+        if self._parent is not None:
+            string += ' Parents pos:' + str([p.position() for p in self._parent])
+        if self._children:
+            string += ' Children pos:' + str([p.position() for p in self._children])
+        return  string

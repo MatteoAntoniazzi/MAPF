@@ -1,9 +1,9 @@
-from MAPFSolver.SearchBasedAlgorithms.ICTS.MDDNode import MDDNode
+from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDDNode import TotalMDDNode
 
 
-class MDDQueue:
+class TotalMDDQueue:
     """
-    Structure used as queue for the MDD nodes.
+    Structure used as queue for the Total MDD nodes.
     """
 
     def __init__(self):
@@ -17,7 +17,7 @@ class MDDQueue:
         Return True if the queue already contains the same node.
         :param item: instance of MDDNode.
         """
-        assert isinstance(item, MDDNode)
+        assert isinstance(item, TotalMDDNode)
         for n in self._queue:
             if n.equal(item):
                 return True
@@ -30,9 +30,9 @@ class MDDQueue:
         :param parent: parent node to add to the item.
         :return: True if the operation is done successfully.
         """
-        assert isinstance(item, MDDNode)
+        assert isinstance(item, TotalMDDNode)
         for n in self._queue:
-            if n.position() == item.position() and n.time_step() == item.time_step():
+            if n.equal(item):
                 n.add_parent(parent)
                 return True
         return False
@@ -42,16 +42,8 @@ class MDDQueue:
         Add an item node to the queue.
         :param item: node to add.
         """
-        assert isinstance(item, MDDNode)
+        assert isinstance(item, TotalMDDNode)
         self._queue.append(item)
-
-    def add_list(self, item_list):
-        """
-        Add a list of item node  to the queue.
-        :param item_list: list of nodes to add.
-        """
-        for item in item_list:
-            self.add(item)
 
     def pop(self):
         """

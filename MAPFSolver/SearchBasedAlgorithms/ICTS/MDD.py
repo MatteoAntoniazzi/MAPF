@@ -20,30 +20,33 @@ class MDD:
         self._agent = agent
         self._cost = cost
         self._solver_settings = solver_settings
-        self._paths = []
+        self._root = None
         self._nodes = MDDQueue()
         self.build_mdd()
+
+        self._goal_node = None
 
     def build_mdd(self):
         """
         Multi-value decision diagram for the specific agent.
         """
-        root = MDDNode(self._problem_map, self._agent.get_start())
-        self._nodes.add(root)
+        self._root = MDDNode(self._problem_map, self._agent.get_goal(), self._agent.get_start())
+        self._nodes.add(self._root)
 
         frontier = MDDQueue()
-        frontier.add(root)
+        frontier.add(self._root)
 
         while not frontier.is_empty():
             frontier.sort_by_time_step()
             cur_node = frontier.pop()
 
             if cur_node.time_step() > self._cost:
-                return
+                return True
 
             if cur_node.time_step() == self._cost:
-                if cur_node.position() == self._agent.get_goal():
-                    self._paths = cur_node.get_paths_to_parent(self._solver_settings)
+                if cur_node.goal_test():
+                    self._goal_node = cur_node
+                    cur_node.build_children_descendant()
 
             expanded_nodes = cur_node.expand()
 
@@ -54,8 +57,23 @@ class MDD:
                     frontier.add(node)
                     self._nodes.add(node)
 
+        print("MDD NOT BUILD. Agent:", self._agent)
+        return False
+
     def get_paths(self):
         """
         Returns all the possible paths of length equal to the cost.
         """
-        return self._paths
+        return self._goal_node.get_paths_to_root(self._solver_settings)
+
+    def get_root_node(self):
+        """
+        Return the reference to the root node.
+        """
+        return self._root
+
+    def get_cost(self):
+        """
+        Returns the max cost of this MDD.
+        """
+        return self._cost

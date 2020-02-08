@@ -40,7 +40,6 @@ class ICTSSolver(AbstractSolver):
 
             if cur_state.is_goal():
                 paths = cur_state.solution()
-                print(paths)
                 soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
                                     self._solver_settings.get_goal_occupation_time())
                 makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),

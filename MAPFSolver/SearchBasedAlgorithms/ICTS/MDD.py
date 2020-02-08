@@ -57,7 +57,6 @@ class MDD:
                     frontier.add(node)
                     self._nodes.add(node)
 
-        print("MDD NOT BUILD. Agent:", self._agent)
         return False
 
     def get_paths(self):

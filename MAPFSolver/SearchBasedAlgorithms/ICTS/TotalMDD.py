@@ -56,7 +56,6 @@ class TotalMDD:
                     frontier.add(node)
                     self._nodes.add(node)
 
-        print("Total MDD not build. ")
         return False
 
     def get_paths(self):

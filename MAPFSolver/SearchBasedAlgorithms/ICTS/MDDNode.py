@@ -97,12 +97,6 @@ class MDDNode:
                     parent.add_child(node)
                     parent.build_children_descendant()
 
-    def print_descendant(self):
-        print(self)
-
-        #for child in self._children:
-        #    child.print_descendant()
-
     def add_parent(self, parent):
         """
         Add a parent to this node.

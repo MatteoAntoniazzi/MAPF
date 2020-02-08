@@ -9,7 +9,7 @@ problem_agents = [Agent(0, (6, 6), (0, 4)), Agent(1, (2, 0), (4, 6)), Agent(2, (
 
 problem_instance = ProblemInstance(problem_map, problem_agents)
 
-solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=5,
+solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=False,  goal_occupation_time=2,
                                  is_edge_conflict=True)
 solver = ICTSSolver(solver_settings)
 

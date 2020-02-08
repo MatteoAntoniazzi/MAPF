@@ -12,6 +12,7 @@ class MDDNode:
         self._position = position
         self._time_step = time_step
         self._dummy = dummy
+        self._number_of_dummy_predecessors = self.compute_number_of_dummy_predecessors()
 
     def expand(self):
         """
@@ -23,7 +24,8 @@ class MDDNode:
 
         expanded_nodes_list = []
         for pos in possible_moves:
-            expanded_nodes_list.append(MDDNode(self._problem_map, self._goal, pos, time_step=self._time_step+1, parent=[self]))
+            expanded_nodes_list.append(MDDNode(self._problem_map, self._goal, pos, time_step=self._time_step+1,
+                                               parent=[self]))
 
         return expanded_nodes_list
 
@@ -95,6 +97,12 @@ class MDDNode:
                     parent.add_child(node)
                     parent.build_children_descendant()
 
+    def print_descendant(self):
+        print(self)
+
+        #for child in self._children:
+        #    child.print_descendant()
+
     def add_parent(self, parent):
         """
         Add a parent to this node.
@@ -102,12 +110,16 @@ class MDDNode:
         """
         self._parent.append(parent)
 
-    def add_child(self, child):
+    def add_child(self, new_child):
         """
         Add a child to the list of children.
-        :param child: child to add.
+        :param new_child: child to add.
         """
-        self._children.append(child)
+        for child in self._children:
+            if child.equal(new_child):
+                return False
+
+        self._children.append(new_child)
 
     def parent(self):
         """
@@ -154,10 +166,44 @@ class MDDNode:
         """
         return self._dummy
 
+    def is_blocking(self, solver_settings):
+        """
+        Return True if the node can block other nodes. It means that can be a normal node, or if it is a dummy node we
+        have 2 cases:
+        - stay_in_goal is True: in this case all dummy nodes are blocking.
+        - stay_in_goal is False: in this case we've to look at the goal occupation time.
+            the state is blocking if is dummy and the number of dummy predecessors is < GOAL_OCC_TIME-1
+            example: GOAL_OCC_TIME=3 and the node is dummy and the number of dummy predecessors is 2. This node is not
+                     a blocking node since behind him he has the goal node (1 TS) e due dummy nodes (TS 2). So, in the
+                     goal, he has already been for the GOAL_OCC_TIME needed.
+        :param solver_settings: settings of the solver.
+        """
+        if not self._dummy or solver_settings.stay_in_goal():
+            return True
+        else:
+            return self._number_of_dummy_predecessors < solver_settings.get_goal_occupation_time() - 1
+
+    def get_number_of_dummy_predecessors(self):
+        """
+        Return the number of dummy predecessors.
+        """
+        return self._number_of_dummy_predecessors
+
+    def compute_number_of_dummy_predecessors(self):
+        """
+        Compute and return the number of dummy predecessors of this node.
+        """
+        if self._parent is None:
+            return 0
+        elif self._parent[0].is_dummy():
+            return self._parent[0].get_number_of_dummy_predecessors() + 1
+        else:
+            return 0
+
     def __str__(self):
         string = 'Pos:' + str(self._position) + ' TS:' + str(self._time_step)
         if self._parent is not None:
             string += ' Parents pos:' + str([p.position() for p in self._parent])
         if self._children:
-            string += ' Children pos:' + str([p.position() for p in self._children])
+            string += ' Children pos:' + str([str(p.position()) + " " + str(p.time_step()) for p in self._children])
         return  string

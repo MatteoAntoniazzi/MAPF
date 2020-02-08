@@ -49,13 +49,14 @@ class TotalMDD:
             expanded_nodes = cur_node.expand()
 
             for node in expanded_nodes:
+
                 if self._nodes.contains_node(node):
                     self._nodes.add_parent_to_node(node, cur_node)
                 else:
                     frontier.add(node)
                     self._nodes.add(node)
 
-        print("TOTAL MDD NOT BUILD. ")
+        print("Total MDD not build. ")
         return False
 
     def get_paths(self):

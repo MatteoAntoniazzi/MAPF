@@ -106,6 +106,13 @@ class ICTSNode:
         total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector)
         self._solution = total_mdd.get_paths()
 
+        # Complete solution paths with the goal occupation time if needed.
+        if not self._solver_settings.stay_in_goal():
+            for path in self._solution:
+                goal = path[len(path) - 1]
+                for i in range(self._solver_settings.get_goal_occupation_time() - 1):
+                    path.append(goal)
+
         if verbose:
             print("Computation time:", time() - start)
 

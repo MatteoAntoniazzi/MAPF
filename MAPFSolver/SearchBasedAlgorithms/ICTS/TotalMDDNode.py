@@ -1,5 +1,3 @@
-from time import time
-
 from MAPFSolver.SearchBasedAlgorithms.ICTS.MDDNode import MDDNode
 import itertools
 
@@ -25,17 +23,18 @@ class TotalMDDNode:
             if not single_children_list:
                 # Add a dummy node
                 single_children_list = [MDDNode(self._problem_map, single_mdd_node.goal_position(),
-                                                single_mdd_node.position(), time_step=self._time_step+1, parent=None,
-                                                dummy=True)]
+                                                single_mdd_node.position(), time_step=self._time_step+1,
+                                                parent=[single_mdd_node], dummy=True)]
             candidate_list.append(single_children_list)
 
         candidate_state_list = list(itertools.product(*candidate_list))
 
         free_conflict_states = []
-        for i, multi_state in enumerate(candidate_state_list):
+        for multi_state in candidate_state_list:
             if not self.is_conflict(multi_state):
                 free_conflict_states.append(TotalMDDNode(self._problem_map, self._solver_settings, multi_state,
                                                          time_step=self._time_step+1, parent=[self]))
+
         return free_conflict_states
 
     def is_conflict(self, multi_state):
@@ -49,9 +48,12 @@ class TotalMDDNode:
         next_positions = [mdd_node.position() for mdd_node in multi_state]
 
         next_active_positions = []
-        for mdd_node in multi_state:
-            if not mdd_node.is_dummy():
-                next_active_positions.append(mdd_node.position())
+        if self._solver_settings.stay_in_goal():
+            next_active_positions = next_positions.copy()
+        else:
+            for mdd_node in multi_state:
+                if mdd_node.is_blocking(self._solver_settings):
+                    next_active_positions.append(mdd_node.position())
 
         if len(next_active_positions) != len(set(next_active_positions)):
             return True
@@ -126,11 +128,12 @@ class TotalMDDNode:
         :param other: state to compare position.
         """
         assert isinstance(other, TotalMDDNode)
-        for i, mdd_node in enumerate(self._list_of_mdd_nodes):
-            if other.time_step() != self.time_step():
+        if other.time_step() == self.time_step():
+            for i, mdd_node in enumerate(self._list_of_mdd_nodes):
                 if not mdd_node.equal(other.get_list_of_mdd_nodes()[i]):
                     return False
-        return True
+            return True
+        return False
 
     def __str__(self):
         return 'Node:' + str([mdd_node.position() for mdd_node in self._list_of_mdd_nodes]) + \

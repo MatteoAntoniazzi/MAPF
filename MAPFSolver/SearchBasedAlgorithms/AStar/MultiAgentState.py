@@ -165,7 +165,7 @@ class MultiAgentState(State):
         if self._solver_settings.get_objective_function() == "Makespan":
             self._g = max([single_state.g_value() for single_state in self._single_agents_states])
 
-    def get_paths_to_parent(self):
+    def get_paths_to_root(self):
         """
         Compute and return the list of paths for each agent.
         """

@@ -1,3 +1,5 @@
+import pathlib
+
 from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.Reader import Reader, MAPS_NAMES_LIST
 from GUI.start_simulation import prepare_simulation
@@ -37,6 +39,9 @@ class StartMenu:
         self.map_images_list = []
         self.random_images_list = []
         self.buttons_list = []
+        self.goal_occupation_time_down_button = None
+        self.goal_occupation_time_up_button = None
+        self.stay_in_goal_button = None
         self.reader = Reader()
 
         # GUIdd selectable variables
@@ -51,6 +56,7 @@ class StartMenu:
         self.selected_scene_number = IntVar()
         self.selected_change_scene_instances_button_text = StringVar()
         self.edge_conflicts_var = BooleanVar()
+        self.stay_in_goal_var = BooleanVar()
 
         self.initialize_variables()
 
@@ -103,6 +109,7 @@ class StartMenu:
         self.selected_scene_number.set(1)
         self.selected_change_scene_instances_button_text.set("NEXT SCENE")
         self.edge_conflicts_var.set(True)
+        self.stay_in_goal_var.set(True)
 
     def choose_map_frame_initialization(self):
         """
@@ -225,10 +232,10 @@ class StartMenu:
         lbl_title.pack(anchor=W, pady=self.pady_titles)
 
         # Edge Conflicts Checkbutton
-        id_button = Checkbutton(self.algorithm_settings_frame, text="Edge Conflicts",
-                                variable=self.edge_conflicts_var, onvalue=True, offvalue=False)
-        self.buttons_list.append(id_button)
-        id_button.pack(anchor=W)
+        edge_button = Checkbutton(self.algorithm_settings_frame, text="Edge Conflicts",
+                                  variable=self.edge_conflicts_var, onvalue=True, offvalue=False)
+        self.buttons_list.append(edge_button)
+        edge_button.pack(anchor=W)
 
         # Prepare Button
         prepare_button = Button(self.algorithm_settings_frame, text="PREPARE", command=self.prepare_simulation_function)
@@ -240,14 +247,17 @@ class StartMenu:
         Initialize the Permanence in Goal Canvas
         """
         # Load button images
-        arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
-        arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
+        root_path = pathlib.Path(__file__).parent
+
+        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (30, 30))
+        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (30, 30))
 
         # Goal Occupation Time Down Button
-        goal_occupation_time_down_button = Button(canvas, image=arrow_down_img,
-                                                  command=self.goal_occupation_time_down_button)
-        goal_occupation_time_down_button.pack(side=LEFT, padx=(10, 15))
-        self.buttons_list.append(goal_occupation_time_down_button)
+        self.goal_occupation_time_down_button = Button(canvas, image=arrow_down_img,
+                                                       command=self.goal_occupation_time_down_button_function)
+        self.goal_occupation_time_down_button.pack(side=LEFT, padx=(10, 15))
+        self.buttons_list.append(self.goal_occupation_time_down_button)
+        self.goal_occupation_time_down_button.configure(state=DISABLED)
 
         # Goal Occupation Time Text
         goal_occupation_time_txt = Label(canvas, textvariable=self.selected_goal_occupation_time,
@@ -255,20 +265,41 @@ class StartMenu:
         goal_occupation_time_txt.pack(side=LEFT, padx=0)
 
         # Goal Occupation Time Up Button
-        goal_occupation_time_up_button = Button(canvas, image=arrow_up_img,
-                                                command=self.goal_occupation_time_up_button)
-        goal_occupation_time_up_button.pack(side=LEFT, padx=(15, 0))
-        self.buttons_list.append(goal_occupation_time_up_button)
+        self.goal_occupation_time_up_button = Button(canvas, image=arrow_up_img,
+                                                     command=self.goal_occupation_time_up_button_function)
+        self.goal_occupation_time_up_button.pack(side=LEFT, padx=(15, 0))
+        self.buttons_list.append(self.goal_occupation_time_up_button)
+        self.goal_occupation_time_up_button.configure(state=DISABLED)
+
+        # Stay in goal Checkbutton
+        self.stay_in_goal_button = Checkbutton(canvas, text="Never Disappear",
+                                               variable=self.stay_in_goal_var, onvalue=True, offvalue=False,
+                                               command=self.stay_in_goal_button_function)
+        self.stay_in_goal_button.pack(side=LEFT, padx=(15, 0))
+        self.buttons_list.append(self.stay_in_goal_button)
+
+    def stay_in_goal_button_function(self):
+        """
+        Enable/Disable permanence in goal selection button when stay in goal is True.
+        """
+        if self.stay_in_goal_var.get():
+            self.goal_occupation_time_down_button.configure(state=DISABLED)
+            self.goal_occupation_time_up_button.configure(state=DISABLED)
+        else:
+            self.goal_occupation_time_down_button.configure(state=NORMAL)
+            self.goal_occupation_time_up_button.configure(state=NORMAL)
 
     def initialize_scene_selection_canvas(self, canvas):
         """
         Initialize the Scene Selection Canvas
         """
         # Load button images
-        arrow_right_img = self.load_image("Images/arrow_right.png", (30, 30))
-        arrow_left_img = self.load_image("Images/arrow_left.png", (30, 30))
-        arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
-        arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
+        root_path = pathlib.Path(__file__).parent
+
+        arrow_right_img = self.load_image(root_path / "Images/arrow_right.png", (30, 30))
+        arrow_left_img = self.load_image(root_path / "Images/arrow_left.png", (30, 30))
+        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (30, 30))
+        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (30, 30))
 
         # Change Scene Button
         scene_down_button = Button(canvas, image=arrow_left_img, command=self.change_scene_button)
@@ -305,8 +336,10 @@ class StartMenu:
         Initialize the Number of Agents Canvas
         """
         # Load button images
-        arrow_up_img = self.load_image("Images/arrow_up.png", (30, 30))
-        arrow_down_img = self.load_image("Images/arrow_down.png", (30, 30))
+        root_path = pathlib.Path(__file__).parent
+
+        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (30, 30))
+        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (30, 30))
 
         # Number of Agents Down Button
         n_of_agents_down_button = Button(canvas, image=arrow_down_img, command=self.n_of_agents_down_button)
@@ -338,7 +371,8 @@ class StartMenu:
 
         # Create an instance of the class SolverSettings
         solver_settings = SolverSettings(self.selected_heuristic_var.get(), self.selected_objective_function_var.get(),
-                                         self.selected_goal_occupation_time.get(), self.edge_conflicts_var.get())
+                                         self.stay_in_goal_var.get(), self.selected_goal_occupation_time.get(),
+                                         self.edge_conflicts_var.get())
 
         # Prepare to show the simulation on the given frame
         prepare_simulation(self.reader, self.simulation_frame, self.selected_algorithm_var.get(),
@@ -356,14 +390,14 @@ class StartMenu:
         """
         self.reader.change_scene_instances()
 
-    def goal_occupation_time_down_button(self):
+    def goal_occupation_time_down_button_function(self):
         """
         Button function to decrement the goal occupation time
         """
         if self.selected_goal_occupation_time.get() > 1:
             self.selected_goal_occupation_time.set(self.selected_goal_occupation_time.get()-1)
 
-    def goal_occupation_time_up_button(self):
+    def goal_occupation_time_up_button_function(self):
         """
         Button function to increment the goal occupation time
         """
@@ -417,13 +451,16 @@ class StartMenu:
         """
         for radio_button in self.buttons_list:
             radio_button.configure(state=NORMAL)
+        if self.stay_in_goal_var.get():
+            self.goal_occupation_time_down_button.configure(state=DISABLED)
+            self.goal_occupation_time_up_button.configure(state=DISABLED)
 
     def disable_settings_buttons(self):
         """
         Disable all the Buttons
         """
-        for radio_button in self.buttons_list:
-            radio_button.configure(state=DISABLED)
+        for button in self.buttons_list:
+            button.configure(state=DISABLED)
 
     def load_image(self, url, size):
         """

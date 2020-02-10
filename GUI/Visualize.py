@@ -12,15 +12,17 @@ class Visualize:
     This class takes care of the visualization of the simulation of the MAPF solution.
     """
 
-    def __init__(self, problem_instance, frame, paths, output_infos):
+    def __init__(self, problem_instance, solver_settings, frame, paths, output_infos):
         """
         Initialize the frame.
         :param problem_instance:
+        :param solver_settings:
         :param frame:
         :param paths:
         :param output_infos:
         """
         self._problem_instance = problem_instance
+        self._solver_settings = solver_settings
         self._frame = frame
         self._paths = paths
         self._output_infos = output_infos
@@ -183,7 +185,7 @@ class Visualize:
         for widget in self._frame.winfo_children():
             widget.destroy()
         from GUI.start_simulation import plot_on_gui
-        plot_on_gui(self._problem_instance, self._frame, self._paths, self._output_infos)
+        plot_on_gui(self._problem_instance, self._solver_settings, self._frame, self._paths, self._output_infos)
 
     def quit_function(self):
         """
@@ -333,7 +335,7 @@ class Visualize:
                         self.y_moves[i] = float((next_position[1] - current_position[1]) * self.dynamic_cell_h) / N_OF_STEPS
                         self.map_canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
                         self.steps_count[i] = 1
-                if not self.path_to_visit[i]:
+                if not self._solver_settings.stay_in_goal() and not self.path_to_visit[i]:
                     self.map_canvas.delete(self.agents_ovals[i])
 
             if not [i for i in self.path_to_visit if i]:  # For checking that all the arrays are empty

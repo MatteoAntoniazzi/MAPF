@@ -69,7 +69,7 @@ class Reader:
         """
         assert(self._map_number is not None), "Map Number Not Set"
 
-        root_path = pathlib.Path(__file__).parent.parent
+        root_path = pathlib.Path(__file__).parent.parent.parent
         map_path = str(root_path / "Maps/maps/" / MAPS_NAMES_LIST.get(self._map_number)) + ".map"
         print(map_path)
         if not os.path.isfile(map_path):
@@ -204,7 +204,7 @@ def convert_nums(lst):
 
 def get_scene_file_path(map_number, scene_type, scene_number):
     map_name = MAPS_NAMES_LIST.get(map_number)
-    root_path = pathlib.Path(__file__).parent.parent
+    root_path = pathlib.Path(__file__).parent.parent.parent
     scene_file_path = str(root_path / "Maps/scenes-") + scene_type + "/" + map_name + "-" + scene_type + "-" + str(
         scene_number) + ".scen"
     print(scene_file_path)

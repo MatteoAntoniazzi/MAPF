@@ -21,29 +21,30 @@ def prepare_simulation(reader, frame, algorithm, independence_detection, solver_
     paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
     print("Solved.")
 
-    plot_on_gui(problem_instance, frame, paths, output_infos)
+    plot_on_gui(problem_instance, solver_settings, frame, paths, output_infos)
 
 
-def plot_paths(problem_instance, paths):
+def plot_paths(problem_instance, solver_settings, paths):
 
     from tkinter import Tk, Frame
     root = Tk()
     frame = Frame(root)
     frame.pack()
-    plot_on_gui(problem_instance, frame, paths)
+    plot_on_gui(problem_instance, solver_settings, frame, paths)
 
     root.mainloop()
 
 
-def plot_on_gui(problem_instance, frame, paths=None, output_infos=None):
+def plot_on_gui(problem_instance, solver_settings, frame, paths=None, output_infos=None):
     """
     Plot the result on GUIdd.
     :param problem_instance: instance of the problem.
+    :param solver_settings: settings of the solver.
     :param frame: tkinter frame where display the result.
     :param paths: resulting paths.
     :param output_infos: problem solving results.
     """
-    window = Visualize(problem_instance, frame, paths, output_infos)
+    window = Visualize(problem_instance, solver_settings, frame, paths, output_infos)
     window.initialize_window()
 
 

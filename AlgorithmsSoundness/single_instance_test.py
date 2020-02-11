@@ -16,7 +16,7 @@ solver = AStarODSolver(solver_settings)
 paths = solver.solve(problem_instance, verbose=True)
 print(paths)
 
-plot_paths(problem_instance, paths)
+plot_paths(problem_instance, solver_settings, paths)
 
 
 '''

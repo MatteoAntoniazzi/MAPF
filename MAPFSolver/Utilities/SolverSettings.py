@@ -7,7 +7,7 @@ class SolverSettings:
     initialization.
     """
 
-    def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_in_goal=False,  goal_occupation_time=1,
+    def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_in_goal=True,  goal_occupation_time=1,
                  is_edge_conflict=True):
         """
         Initialization of the variables representing the solver settings.

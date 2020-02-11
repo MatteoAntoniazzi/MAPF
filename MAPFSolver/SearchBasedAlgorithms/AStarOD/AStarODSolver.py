@@ -55,8 +55,7 @@ class AStarODSolver(AbstractSolver):
                     return paths, output_infos
                 return paths
 
-            if \
-                    not self._closed_list.contains_state(cur_state):
+            if not cur_state.is_a_standard_state() or not self._closed_list.contains_state(cur_state):
                 if cur_state.is_a_standard_state():
                     self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)

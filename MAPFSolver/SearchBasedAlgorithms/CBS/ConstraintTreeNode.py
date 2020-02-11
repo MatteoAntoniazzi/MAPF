@@ -43,6 +43,8 @@ class ConstraintTreeNode:
 
         self._total_cost = self.calculate_cost()
 
+        self.conflict = None
+
     def low_level_search(self):
         """
         Low level search. For every agent it searches a possible valid path using A* which doesn't violate the set of
@@ -50,6 +52,7 @@ class ConstraintTreeNode:
         """
         solution = []
         for agent in self._problem_instance.get_agents():
+            print(agent)
             path = self.single_agent_low_level_search(agent)
             solution.append(path)
         return solution
@@ -72,6 +75,7 @@ class ConstraintTreeNode:
                 agent_edge_constraints.append((pos_i, pos_f, ts))
 
         solver = AStar(self._solver_settings)
+
         path = solver.find_path_with_constraints(self._problem_instance.get_map(), agent.get_start(),
                                                  agent.get_goal(), agent_vertex_constraints,
                                                  agent_edge_constraints)
@@ -83,8 +87,11 @@ class ConstraintTreeNode:
         agent and the other with the conflict constraint added to the second agent involved in the conflict.
         :return: the two possible next states.
         """
-        conflict_type, constraints = check_conflicts_with_type(self._solution, self._solver_settings.stay_in_goal(),
-                                                               self._solver_settings.is_edge_conflict())
+        if self.conflict is None:
+            conflict_type, constraints = check_conflicts_with_type(self._solution, self._solver_settings.stay_in_goal(),
+                                                                   self._solver_settings.is_edge_conflict())
+        else:
+            conflict_type, constraints = self.conflict
 
         node_a, node_b = None, None
 
@@ -148,6 +155,17 @@ class ConstraintTreeNode:
         Return the list of the edge constraints of the node.
         """
         return self._edge_constraints
+
+    def is_valid(self):
+        """
+        Returns True if the solution of the node is valid i.e.the set of paths for all agents have no conflicts
+        """
+        self.conflict = check_conflicts_with_type(self._solution, self._solver_settings.stay_in_goal(),
+                                             self._solver_settings.is_edge_conflict())
+        if self.conflict is None:
+            return True
+        else:
+            return False
 
     def solution(self):
         """

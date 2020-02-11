@@ -32,6 +32,7 @@ class CBSSolver(AbstractSolver):
         :return: list of paths, and if return_infos is True some output information.
         """
         start = time.time()
+
         self.initialize_problem(problem_instance)
 
         paths = self.high_level_search(verbose=verbose)
@@ -72,9 +73,7 @@ class CBSSolver(AbstractSolver):
                       " Vertex constr: ", cur_state.vertex_constraints(),
                       "Edge constr: ", cur_state.edge_constraints())
 
-            conflict = check_conflicts_with_type(cur_state.solution(), self._solver_settings.stay_in_goal(),
-                                                 self._solver_settings.is_edge_conflict())
-            if conflict is None:
+            if cur_state.is_valid():
                 return cur_state.solution()
 
             # Expand the Constraint Tree
@@ -94,4 +93,5 @@ class CBSSolver(AbstractSolver):
         self._n_of_expanded_nodes = 0
 
         starter_state = ConstraintTreeNode(problem_instance, self._solver_settings)
+
         self._frontier.add(starter_state)

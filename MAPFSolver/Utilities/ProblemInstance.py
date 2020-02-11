@@ -24,8 +24,21 @@ class ProblemInstance:
         for i, a in enumerate(self._original_agents):
             self._agents.append(Agent(i, a.get_start(), a.get_goal()))
 
+        assert not self.agents_outside_boundaries(), "An Agent is located outside the map."
         assert self.agents_not_overlap_obstacles(), "Agent initial or goal position overlaps an obstacle."
         assert not self._duplicate_goals_or_starts(), "Agent initial or goal positions duplicates."
+
+    def agents_outside_boundaries(self):
+        """
+        Check that no agent is outside the boundaries of the map.
+        """
+        for a in self._agents:
+            xs, ys = a.get_start()
+            xg, yg = a.get_goal()
+            if xs >= self._map.get_width() or xs < 0 or xg >= self._map.get_width() or xg < 0 or \
+                    ys >= self._map.get_height() or ys < 0 or yg >= self._map.get_height() or yg < 0:
+                return True
+        return False
 
     def agents_not_overlap_obstacles(self):
         """

@@ -5,7 +5,7 @@ max_n_of_agents = 5
 buckets_size = 10
 
 problem_map = generate_random_map(8, 8, 0)
-problem_agents_buckets = generate_agent_buckets_with_coupling_mechanism(problem_map, True, min_n_of_agents,
+problem_agents_buckets = generate_random_agent_buckets(problem_map, min_n_of_agents,
                                                                         max_n_of_agents, buckets_size)
 
 print("----------------------------------------------------------------------------------------------------")
@@ -22,9 +22,9 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
         solver_settings = SolverSettings(heuristic="Manhattan", objective_function="SOC", stay_in_goal=True,
                                          goal_occupation_time=1, is_edge_conflict=True)
         # solver = IDFramework(AStarODSolver(solver_settings), solver_settings)
-        solver = ICTSSolver(solver_settings)
+        solver = CBSSolver(solver_settings)
 
-        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
+        paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
 
         total_nodes += output_infos["generated_nodes"]
         total_time += output_infos["computation_time"]

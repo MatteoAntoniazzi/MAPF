@@ -109,17 +109,13 @@ class AStar:
         :param edge_constraints: list of edge constraints.
         :return: solution path.
         """
-        print("a")
         self.initialize_problem(problem_map, start_pos, goal_pos)
         if edge_constraints is None:
             edge_constraints = []
 
-        print("b")
-
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
-            print(cur_state)
 
             if cur_state.is_completed():
                 return cur_state.get_path_to_root()

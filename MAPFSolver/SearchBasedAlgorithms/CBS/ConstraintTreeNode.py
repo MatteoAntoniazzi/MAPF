@@ -52,7 +52,6 @@ class ConstraintTreeNode:
         """
         solution = []
         for agent in self._problem_instance.get_agents():
-            print(agent)
             path = self.single_agent_low_level_search(agent)
             solution.append(path)
         return solution

@@ -83,7 +83,7 @@ class AStar:
                         # If True means exists another agent already planned that will pass on this position in future.
                         block_previous_agents_when_in_goal = state.goal_test() and not (len(busy_times) == 0) and \
                                                              not (any(y < state.time_step() for y in busy_times))
-                        conflict_with_other_agent = conflict_with_other_agent and conflict_with_goal and \
+                        conflict_with_other_agent = conflict_with_other_agent or conflict_with_goal or \
                                                     block_previous_agents_when_in_goal
 
                     if not conflict_with_other_agent:

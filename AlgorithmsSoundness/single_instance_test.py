@@ -13,7 +13,7 @@ problem_instance = ProblemInstance(problem_map, problem_agents)
 
 solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=1,
                                  is_edge_conflict=True)
-solver = CBSSolver(solver_settings)
+solver = CoopAStarSolver(solver_settings)
 
 paths = solver.solve(problem_instance, verbose=True)
 print(paths)

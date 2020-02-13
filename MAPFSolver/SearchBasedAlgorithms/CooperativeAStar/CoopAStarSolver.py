@@ -42,7 +42,7 @@ class CoopAStarSolver(AbstractSolver):
 
         for i, agent in enumerate(problem_instance.get_agents()):
             if verbose:
-                print("Agent n:", i+1, "of", len(problem_instance.get_agents()))
+                print("Agent n:", i, "of", len(problem_instance.get_agents()))
 
             solver = AStar(self._solver_settings)
             path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(),

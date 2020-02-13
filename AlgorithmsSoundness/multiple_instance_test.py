@@ -12,6 +12,7 @@ print("-------------------------------------------------------------------------
 
 for k in range(max_n_of_agents - min_n_of_agents + 1):
     total_nodes = 0
+    total_exp_nodes = 0
     total_time = 0
     total_cost = 0
 
@@ -22,11 +23,12 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
         solver_settings = SolverSettings(heuristic="Manhattan", objective_function="SOC", stay_in_goal=True,
                                          goal_occupation_time=1, is_edge_conflict=True)
         # solver = IDFramework(AStarODSolver(solver_settings), solver_settings)
-        solver = CBSSolver(solver_settings)
+        solver = MStarSolver(solver_settings)
 
-        paths, output_infos = solver.solve(problem_instance, verbose=True, return_infos=True)
+        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 
         total_nodes += output_infos["generated_nodes"]
+        total_exp_nodes += output_infos["expanded_nodes"]
         total_time += output_infos["computation_time"]
         total_cost += output_infos["sum_of_costs"]
 
@@ -35,6 +37,7 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
     print("----------------------------------------------------------------------------------------------------")
     print("Number of agents:", k+min_n_of_agents)
     print("Number of nodes: ", total_nodes / buckets_size)
+    print("Number of exp nodes: ", total_exp_nodes / buckets_size)
     print("Time:            ", total_time / buckets_size)
     print("Cost:            ", total_cost / buckets_size)
     print("----------------------------------------------------------------------------------------------------")

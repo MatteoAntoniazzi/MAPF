@@ -129,7 +129,15 @@ class AStar:
                     if (state.get_position(), state.time_step()) not in vertex_constraints:
                         if (state.predecessor().get_position(), state.get_position(), state.time_step()) not in \
                                 edge_constraints or edge_constraints is None:
-                            expanded_nodes_no_conflicts.append(state)
+                            if self._solver_settings.stay_in_goal() and state.goal_test():
+                                temp_bool = True
+                                for pos, ts in vertex_constraints:
+                                    if pos == state.get_position() and ts > state.time_step():
+                                        temp_bool = False
+                                if temp_bool:
+                                    expanded_nodes_no_conflicts.append(state)
+                            else:
+                                expanded_nodes_no_conflicts.append(state)
                 self._frontier.add_list_of_states(expanded_nodes_no_conflicts)
 
         return []

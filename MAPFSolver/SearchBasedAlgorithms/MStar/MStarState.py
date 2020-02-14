@@ -89,6 +89,44 @@ class MStarState(MultiAgentState):
         """
         return self._collisions_set
 
+    def equal_position(self, other):
+        """
+        Return True if the multi agent state and the given multi agent state has the same positions for all the single
+        agent states.
+        :param other: state to compare positions.
+        """
+        assert isinstance(other, MStarState)
+        for i, single_state in enumerate(self._single_agents_states):
+            if not single_state.equal_position(other.get_single_agent_states()[i]):
+                return False
+        return True
+
+    def equal_position_and_time_step(self, other):
+        """
+        Return True if the multi agent state and the given multi agent state has the same positions for all the single
+        agent states.
+        :param other: state to compare positions.
+        """
+        assert isinstance(other, MStarState)
+        for i, single_state in enumerate(self._single_agents_states):
+            if not single_state.equal(other.get_single_agent_states()[i]):
+                return False
+        return True
+
+    def equal(self, other):
+        """
+        Return True if the multi agent state and the given multi agent state has the same positions and the same time
+        steps for all the single agent states.
+        :param other: state to compare position.
+        """
+        assert isinstance(other, MStarState)
+        if not self._collisions_set == other._collisions_set:
+            return False
+        for i, single_state in enumerate(self._single_agents_states):
+            if not single_state.equal(other.get_single_agent_states()[i]):
+                return False
+        return True
+
     def __str__(self):
         string = '[F:' + str(self.f_value()) + ' G: ' + str(self.g_value()) + ' TS:' + str(self.time_step()) + ' '
         string += str(self.get_positions_list()) + ' ' + str(self.get_collisions_set()) + ']'

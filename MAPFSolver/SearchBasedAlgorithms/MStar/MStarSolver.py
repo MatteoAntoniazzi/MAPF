@@ -1,3 +1,4 @@
+from MAPFSolver.SearchBasedAlgorithms.MStar.MStarStatesQueue import MStarStatesQueue
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
@@ -29,6 +30,7 @@ class MStarSolver(AbstractSolver):
         """
         super().__init__(solver_settings)
         self._frontier = None
+        self._closed_list = None
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
 
@@ -43,14 +45,9 @@ class MStarSolver(AbstractSolver):
 
         self.initialize_problem(problem_instance)
 
-        print("start")
-
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
-
-            print("CUR STATE: ", cur_state)
-            print("FRONTIER: ", len(self._frontier._queue), self._frontier)
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_root()
@@ -67,14 +64,19 @@ class MStarSolver(AbstractSolver):
                     return paths, output_infos
                 return paths
 
+            self._closed_list.add(cur_state)
             expanded_nodes = cur_state.expand(verbose=verbose)
             self._n_of_generated_nodes += len(expanded_nodes)
             self._n_of_expanded_nodes += 1
 
             for node in expanded_nodes:
-                self.back_propagate(cur_state, node)
-                if len(node.get_collisions_set()) == 0:
-                    self._frontier.add(node)
+                if self._closed_list.contains_position_and_time_step(node):
+                    n = self._closed_list.get_node(node)
+                else:
+                    n = node
+                self.back_propagate(cur_state, n)
+                if len(n.get_collisions_set()) == 0:
+                    self._frontier.add(n)
 
         if return_infos:
             return [], None
@@ -89,8 +91,6 @@ class MStarSolver(AbstractSolver):
         """
         ck = vk.get_collisions_set().copy()
         cl = vl.get_collisions_set().copy()
-
-        #print("BACKPROPAGATE: ", vl, " TO ", vk)
 
         if not cl.issubset(ck):
             vk.set_collisions_set(ck.union(cl))
@@ -107,6 +107,7 @@ class MStarSolver(AbstractSolver):
         """
         self._solver_settings.initialize_heuristic(problem_instance)
         self._frontier = StatesQueue()
+        self._closed_list = MStarStatesQueue()
         self._n_of_generated_nodes = 1
         self._n_of_expanded_nodes = 0
 

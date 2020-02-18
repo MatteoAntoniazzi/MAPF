@@ -26,10 +26,16 @@ class AStarODSolver(AbstractSolver):
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
 
-    def solve(self, problem_instance, verbose=False, print_output=True, return_infos=False):
+    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
         Solve the MAPF problem using the A* algorithm with Operator Decomposition returning the paths as lists of list
         of (x, y) positions.
+        :param problem_instance: problem instance to solve
+        :param verbose: if True will be printed some computation infos on terminal.
+        :param return_infos: if True returns in addition to the paths a struct with the output information.
+        :param time_out: max time for computing the solution. If the time is over it returns an empty solution.
+        The time is expressed in seconds.
+        :return: list of paths, and if return_infos is True some output information.
         """
         start = time.time()
 
@@ -38,6 +44,10 @@ class AStarODSolver(AbstractSolver):
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
+
+            if time_out is not None:
+                if time.time() - start > time_out:
+                    break
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_root()

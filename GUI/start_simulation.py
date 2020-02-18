@@ -25,7 +25,8 @@ def prepare_simulation(reader, frame, algorithm, independence_detection, solver_
 
 
 def plot_paths(problem_instance, solver_settings, paths):
-
+    assert paths, "paths are empties!" \
+                  ""
     from tkinter import Tk, Frame
     root = Tk()
     frame = Frame(root)

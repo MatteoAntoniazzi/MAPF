@@ -23,34 +23,39 @@ class CBSSolver(AbstractSolver):
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
 
-    def solve(self, problem_instance, verbose=False, return_infos=False):
+    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
         Solve the MAPF problem using the CBS algorithm returning the paths as lists of list of (x, y) positions.
         :param problem_instance: problem instance to solve
         :param verbose: if True will be printed some computation infos on terminal.
         :param return_infos: if True returns in addition to the paths a struct with the output information.
+        :param time_out: max time for computing the solution. If the time is over it returns an empty solution.
+        The time is expressed in seconds.
         :return: list of paths, and if return_infos is True some output information.
         """
         start = time.time()
 
         self.initialize_problem(problem_instance)
 
-        paths = self.high_level_search(verbose=verbose)
-        soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
-                            self._solver_settings.get_goal_occupation_time())
-        makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
-                                      self._solver_settings.get_goal_occupation_time())
-        output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
+        paths = self.high_level_search(verbose=verbose, time_out=time_out)
+        output_infos = None
+
+        if paths:
+            soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
+                                self._solver_settings.get_goal_occupation_time())
+            makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
+                                          self._solver_settings.get_goal_occupation_time())
+            output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
                                                   self._n_of_expanded_nodes, time.time() - start)
 
-        if verbose:
-            print("PROBLEM SOLVED: ", output_infos)
+            if verbose:
+                print("PROBLEM SOLVED: ", output_infos)
 
         if return_infos:
             return paths, output_infos
         return paths
 
-    def high_level_search(self, verbose=False):
+    def high_level_search(self, verbose=False, time_out=None):
         """
         At the high-level, CBS searches a constraint tree (CT). A CT is a binary tree. Each node N in the CT contains
         the following fields of data:
@@ -63,9 +68,15 @@ class CBSSolver(AbstractSolver):
         Node N in the CT is a goal node when N.solution is valid, i.e., the set of paths for all agents have no
         conflicts.
         """
+        start = time.time()
+
         while not self._frontier.is_empty():
             self._frontier.sort_by_cost()
             cur_state = self._frontier.pop()
+
+            if time_out is not None:
+                if time.time() - start > time_out:
+                    break
 
             if verbose:
                 print("Expanding state ... Tot constr:",

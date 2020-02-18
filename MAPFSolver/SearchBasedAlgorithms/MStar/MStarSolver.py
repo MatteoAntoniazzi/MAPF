@@ -34,7 +34,7 @@ class MStarSolver(AbstractSolver):
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
 
-    def solve(self, problem_instance, verbose=False, return_infos=False):
+    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
         Solve the MAPF problem using the M* algorithm returning the paths as lists of list of (x, y) positions.
         It start following the optimal policy and each time a conflict occur it updates the collision set and back
@@ -48,6 +48,10 @@ class MStarSolver(AbstractSolver):
         while not self._frontier.is_empty():
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
+
+            if time_out is not None:
+                if time.time() - start > time_out:
+                    break
 
             if cur_state.is_completed():
                 paths = cur_state.get_paths_to_root()

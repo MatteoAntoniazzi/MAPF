@@ -19,6 +19,7 @@ class MultiAgentState(State):
         super().__init__(parent=parent)
         self._single_agents_states = single_agents_states
         self._solver_settings = solver_settings
+        self.set_time_step(max([state.time_step() for state in single_agents_states]))
         self.compute_cost()
         self.compute_heuristics()
 

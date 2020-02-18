@@ -29,7 +29,7 @@ class CoopAStarSolver(AbstractSolver):
         self._reservation_table = None
         self._completed_pos = None
 
-    def solve(self, problem_instance, verbose=False, return_infos=False):
+    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
         Solve the MAPF problem using the Cooperative A* algorithm returning the paths as lists of list of (x, y)
         positions.
@@ -41,6 +41,13 @@ class CoopAStarSolver(AbstractSolver):
         paths = []
 
         for i, agent in enumerate(problem_instance.get_agents()):
+
+            if time_out is not None:
+                if time.time() - start > time_out:
+                    if return_infos:
+                        return [], None
+                    return []
+
             if verbose:
                 print("Agent n:", i, "of", len(problem_instance.get_agents()))
 

@@ -1,3 +1,5 @@
+import time
+
 from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDDNode import TotalMDDNode
 from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDDQueue import TotalMDDQueue
 
@@ -8,11 +10,13 @@ class TotalMDD:
     It also consider only the feasible nodes, by checking the presence of conflicts.
     """
 
-    def __init__(self, problem_map, solver_settings, list_of_mdd):
+    def __init__(self, problem_map, solver_settings, list_of_mdd, time_out):
         self._problem_map = problem_map
         self._solver_settings = solver_settings
         self._list_of_mdd = list_of_mdd
         self._cost = max([mdd.get_cost() for mdd in self._list_of_mdd])
+
+        self._time_out = time_out
 
         self._paths = []
         self._nodes = TotalMDDQueue()
@@ -22,6 +26,7 @@ class TotalMDD:
         """
         Build the total multi-value decision diagram.
         """
+        start = time.time()
 
         # list of initial mdd_nodes, (the first element of the list of nodes)
         list_of_root_mdd_nodes = []
@@ -37,6 +42,10 @@ class TotalMDD:
         while not frontier.is_empty():
             frontier.sort_by_time_step()
             cur_node = frontier.pop()
+
+            if self._time_out is not None:
+                if time.time() - start > self._time_out:
+                    break
 
             if cur_node.time_step() > self._cost:
                 print("ERRORE! NON PUO' SUPERARE IL COSTO!!")

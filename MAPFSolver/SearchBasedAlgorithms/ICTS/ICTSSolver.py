@@ -25,7 +25,7 @@ class ICTSSolver(AbstractSolver):
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
 
-    def solve(self, problem_instance, verbose=False, return_infos=False):
+    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
         Solve the MAPF problem using the ICTS algorithm returning the paths as lists of list of (x, y) positions.
         """
@@ -36,7 +36,12 @@ class ICTSSolver(AbstractSolver):
         while not self._frontier.is_empty():
             self._frontier.sort_by_cost()
             cur_state = self._frontier.pop()
-            cur_state.initialize_node(verbose=verbose)
+
+            if time_out is not None:
+                if time.time() - start > time_out:
+                    break
+
+            cur_state.initialize_node(verbose=verbose, time_out=time_out-(time.time() - start))
 
             if cur_state.is_goal():
                 paths = cur_state.solution()

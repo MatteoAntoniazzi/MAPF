@@ -37,7 +37,7 @@ class IDFramework(AbstractSolver):
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
 
-    def solve(self, problem_instance, verbose=False, return_infos=False):
+    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
         Solve the MAPF problem using the solver given in the initialization with Independence detection, returning the
         path as lists of list of (x, y) positions.
@@ -53,6 +53,13 @@ class IDFramework(AbstractSolver):
         conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
                                    self._solver_settings.is_edge_conflict())
         while conflict is not None:
+
+            if time_out is not None:
+                if time.time() - start > time_out:
+                    if return_infos:
+                        return [], None
+                    return []
+
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
             self.update_merged_paths(merged_problem)
             conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),

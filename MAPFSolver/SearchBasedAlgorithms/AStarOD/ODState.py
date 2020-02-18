@@ -11,18 +11,18 @@ class ODState(MultiAgentState):
     a subset of agents has moved.
     """
 
-    def __init__(self, single_agent_states, solver_settings, parent=None, to_move=0, pre_state=None):
+    def __init__(self, single_agents_states, solver_settings, parent=None, to_move=0, pre_state=None):
         """
         Initialize an OD multi agent state.
-        :param single_agent_states: list of the single agent states.
+        :param single_agents_states: list of the single agent states.
         :param solver_settings: settings of the solver.
         :param parent: parent state.
         :param to_move: indicate the id of the agent that has to move during this expansion.
         :param pre_state: it indicates the previous standard state.
         """
-        super().__init__(single_agent_states, solver_settings, parent=parent)
-        self.set_time_step(single_agent_states[to_move].time_step())
+        super().__init__(single_agents_states, solver_settings, parent=parent)
         self._pre_state = self if pre_state is None else pre_state
+        self.set_time_step(max([state.time_step() for state in single_agents_states]))
         self._to_move = to_move
 
     def expand(self, verbose=False):

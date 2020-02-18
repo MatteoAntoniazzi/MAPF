@@ -70,14 +70,14 @@ class ICTSNode:
 
         return candidate_list
 
-    def initialize_node(self, verbose=False):
+    def initialize_node(self, verbose=False, time_out=None):
         """
         This function initialize the node computing the various MDDs, and verify if a solution exists.
         """
         if verbose:
             print("Initializing node: ", self._path_costs_vector)
         self._mdd_vector = self.compute_mdds(verbose)
-        self.compute_solution(verbose)
+        self.compute_solution(verbose, time_out)
 
     def compute_mdds(self, verbose=False):
         """
@@ -94,7 +94,7 @@ class ICTSNode:
             print("MDDs computed.")
         return mdd_vector
 
-    def compute_solution(self, verbose=False):
+    def compute_solution(self, verbose=False, time_out=None):
         """
         Compute the total mdd and check if a solution exists.
         """
@@ -103,7 +103,7 @@ class ICTSNode:
 
         start = time()
 
-        total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector)
+        total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector, time_out)
         self._solution = total_mdd.get_paths()
 
         # Complete solution paths with the goal occupation time if needed.

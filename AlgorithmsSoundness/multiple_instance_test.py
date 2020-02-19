@@ -20,6 +20,7 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
     print_progress_bar(0, buckets_size, prefix=prefix_str, suffix='Complete', length=50)
     for b in range(buckets_size):
         problem_instance = ProblemInstance(problem_map, problem_agents_buckets[k][b])
+        print(problem_instance)
         solver_settings = SolverSettings(heuristic="Manhattan", objective_function="SOC", stay_in_goal=True,
                                          goal_occupation_time=1, is_edge_conflict=True)
         # solver = IDFramework(AStarODSolver(solver_settings), solver_settings)

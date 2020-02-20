@@ -51,7 +51,9 @@ class ProblemInstance:
 
     def _duplicate_goals_or_starts(self):
         """
-        Check that no agent goal or start position overlaps another agent goal or start position.
+        Check that no agent goal/start position overlaps another agent goal/start position.
+        It is possible to have a start position on another goal position.
+        So, I just need to check that I have no duplicates in the start positions and in the goal positions.
         """
         for i in range(len(self._agents)):
             for j in range(i+1, len(self._agents)):

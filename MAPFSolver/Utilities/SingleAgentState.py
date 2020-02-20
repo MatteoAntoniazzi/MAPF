@@ -169,18 +169,18 @@ class SingleAgentState(State):
         path = []
         node = self
 
-        if self._solver_settings.stay_in_goal():
-            while node.predecessor().goal_test():
-                node = node.predecessor()
-
-        else:
+        if not self._solver_settings.stay_in_goal():  # Aggiungo alla lista il goal per goal_occ_time volte
             counter = self._solver_settings.get_goal_occupation_time()
             while node.goal_test() and counter > 0:
                 path.append(node._position)
                 node = node.predecessor()
                 counter -= 1
-            while node.goal_test():
+
+        while node.predecessor() is not None: # Elimino gli extra che non mi servono.
+            if node.predecessor().goal_test():
                 node = node.predecessor()
+            else:
+                break
 
         while node.predecessor() is not None:
             path.append(node._position)

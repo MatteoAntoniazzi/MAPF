@@ -39,6 +39,7 @@ class RRAStarHeuristic(Heuristic):
             self._closed_lists[goal_pos].add(cur_state)
 
             if cur_state.get_position() == goal_node:
+                self._open_lists[goal_pos].add(cur_state)
                 return True
 
             expanded_nodes = cur_state.expand()

@@ -19,6 +19,18 @@ class StatesQueue:
                 return True
         return False
 
+    def contains_state_same_positions(self, item):
+        """
+        Return True if the queue already contains the same state. That is if exists already a state with the same
+        positions and same time steps. Is different from the previous since it considers equals two states that has the
+        same list of positions but different time steps.
+        :param item: instance of State.
+        """
+        for state in self._queue:
+            if state.equal_position(item):
+                return True
+        return False
+
     def contains_position(self, position):
         """
         Return True if the queue already contains a state with the same position.

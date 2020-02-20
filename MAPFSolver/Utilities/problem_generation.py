@@ -71,7 +71,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
 
         while len(single_buckets_of_ids) < desired_range_length:
 
-            problem_agents = generate_random_agents(problem_map, 10)  # sistemare
+            problem_agents = generate_random_agents(problem_map, n_of_free_cells-1)  # Da sistemare....
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
             solver_settings = SolverSettings(stay_in_goal=True, is_edge_conflict=is_edge_conflicts)
@@ -174,20 +174,20 @@ def generate_random_agents(problem_map, n_of_agents):
 
     free_lst = get_free_lst(problem_map)
 
+    free_start_lst = free_lst.copy()
+    free_goal_lst = free_lst.copy()
+
     agents = []
-    agents_starts = []
-    agents_goals = []
+
     for i in range(n_of_agents):
-        while True:
-            random_start = random.sample(free_lst, 1)[0]
-            if random_start not in agents_starts and random_start not in agents_goals:
-                agents_starts.append(random_start)
-                break
-        while True:
-            random_goal = random.sample(free_lst, 1)[0]
-            if random_goal not in agents_starts and random_goal not in agents_goals:
-                agents_goals.append(random_goal)
-                break
+        assert free_start_lst and free_goal_lst, "No more free spaces for placing the agents..."
+
+        random_start = random.sample(free_start_lst, 1)[0]
+        free_start_lst.remove(random_start)
+
+        random_goal = random.sample(free_goal_lst, 1)[0]
+        free_goal_lst.remove(random_goal)
+
         agents.append(Agent(i, random_start, random_goal))
 
     return agents

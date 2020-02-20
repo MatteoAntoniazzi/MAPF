@@ -70,7 +70,8 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
         temp_min = min_n_of_agents
 
         while len(single_buckets_of_ids) < desired_range_length:
-            problem_agents = generate_random_agents(problem_map, int(max_n_of_agents * 2))
+
+            problem_agents = generate_random_agents(problem_map, 10)  # sistemare
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
             solver_settings = SolverSettings(stay_in_goal=True, is_edge_conflict=is_edge_conflicts)
@@ -78,6 +79,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
             id_framework = IDFramework(a_star_solver, solver_settings)
             returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,
                                                                                          max_n_of_agents)
+
             if returning_buckets_of_ids:
                 single_buckets_of_ids.extend(returning_buckets_of_ids)
 

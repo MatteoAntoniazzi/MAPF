@@ -60,12 +60,25 @@ class AStarSolver(AbstractSolver):
                     return paths, output_infos
                 return paths
 
-            if not self._closed_list.contains_state(cur_state):
+            '''if not self._closed_list.contains_state(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
                 self._n_of_generated_nodes += len(expanded_nodes)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes)
+                self._frontier.add_list_of_states(expanded_nodes)'''
+
+            self._closed_list.add(cur_state)
+            expanded_nodes = cur_state.expand(verbose=verbose)
+
+            expanded_nodes_not_in_closed_list = []
+
+            for node in expanded_nodes:
+                if not self._closed_list.contains_state(node):
+                    expanded_nodes_not_in_closed_list.append(node)
+
+            self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
+            self._n_of_expanded_nodes += 1
+            self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)
 
         if return_infos:
             return [], None

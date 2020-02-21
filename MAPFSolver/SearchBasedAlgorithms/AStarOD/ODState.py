@@ -47,16 +47,66 @@ class ODState(MultiAgentState):
             s = ODState(single_agent_states, self._solver_settings, parent=self, to_move=self.next_to_move(),
                         pre_state=next_pre_state)
 
-            if s.is_a_standard_state():
-                if not s.is_conflict(s._pre_state):
-                    candidate_list.append(s)
-            else:
+            if not s.is_conflict_only_on_moved_agents():
                 candidate_list.append(s)
 
         if verbose:
             print("DONE! Number of expanded states:", len(candidate_list))
 
         return candidate_list
+
+    def is_conflict_only_on_moved_agents(self):
+        """
+        Return True if a conflict occur in the given multi agent state. This checks only the agents that has already
+        moved, in order to guarantee to find the optimal solution.
+        Will be checked that:
+        1. no agents occupy the same position in the same time step;
+        2. no agent overlap (switch places).
+        """
+        pre_state = self._pre_state
+
+        # Cast the two states in order to consider only the agents already moved.
+        pre_positions = pre_state.get_first_x_positions_list(self._to_move)
+        next_positions = self.get_first_x_positions_list(self._to_move)
+        next_active_positions = self.get_first_x_active_positions_list(self._to_move)
+
+        if len(next_active_positions) != len(set(next_active_positions)):
+            return True
+
+        if self._solver_settings.is_edge_conflict():
+            for i, next_pos in enumerate(next_positions):
+                for j, cur_pos in enumerate(pre_positions):
+                    if i != j:
+                        if next_pos == cur_pos:
+                            if next_positions[j] == pre_positions[i]:
+                                return True
+        return False
+
+    def get_first_x_positions_list(self, x):
+        """
+        Return the list of the positions of the single agent states considering the first x single agent states.
+        """
+        if x == 0:
+            return [state.get_position() for state in self._single_agents_states]
+        else:
+            return [state.get_position() for state in self._single_agents_states[:x]]
+
+    def get_first_x_active_positions_list(self, x):
+        """
+        Return the list of the positions of the single agent states considering the first x single agent states.
+        Considering only the ones really occupied.
+        """
+        pos_list = []
+        if x == 0:
+            for state in self._single_agents_states:
+                if not state.is_gone():
+                    pos_list.append(state.get_position())
+        else:
+            for state in self._single_agents_states[:x]:
+                if not state.is_gone():
+                    pos_list.append(state.get_position())
+
+        return pos_list
 
     def next_to_move(self):
         """

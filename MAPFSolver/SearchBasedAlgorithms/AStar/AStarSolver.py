@@ -60,7 +60,36 @@ class AStarSolver(AbstractSolver):
                     return paths, output_infos
                 return paths
 
+            """
+            NORMAL
+            """
             if not self._closed_list.contains_state_same_positions(cur_state):
+                self._closed_list.add(cur_state)
+                expanded_nodes = cur_state.expand(verbose=verbose)
+                self._n_of_generated_nodes += len(expanded_nodes)
+                self._n_of_expanded_nodes += 1
+                self._frontier.add_list_of_states(expanded_nodes)
+
+            """
+            CASE 2
+            """
+            """self._closed_list.add(cur_state)
+            expanded_nodes = cur_state.expand(verbose=verbose)
+
+            expanded_nodes_not_in_closed_list = []
+
+            for node in expanded_nodes:
+                if not self._closed_list.contains_state_same_positions(node):
+                    expanded_nodes_not_in_closed_list.append(node)
+
+            self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
+            self._n_of_expanded_nodes += 1
+            self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
+
+            """
+            CASE 3
+            """
+            """if not self._closed_list.contains_state_same_positions(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
 
@@ -72,8 +101,11 @@ class AStarSolver(AbstractSolver):
 
                 self._n_of_generated_nodes += len(expanded_nodes_not_in_frontier)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_frontier)
+                self._frontier.add_list_of_states(expanded_nodes_not_in_frontier)"""
 
+            """
+            CASE 4
+            """
             """self._closed_list.add(cur_state)
             expanded_nodes = cur_state.expand(verbose=verbose)
 

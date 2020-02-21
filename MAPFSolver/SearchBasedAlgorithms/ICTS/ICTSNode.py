@@ -212,3 +212,6 @@ class ICTSNode:
         if conflicts is None:
             return True
         return False
+
+    def __str__(self):
+        return "{ NODE:" + str(self._path_costs_vector) + " }"

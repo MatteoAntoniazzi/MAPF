@@ -37,6 +37,8 @@ class ICTSSolver(AbstractSolver):
             self._frontier.sort_by_cost()
             cur_state = self._frontier.pop()
 
+            print(cur_state)
+
             if time_out is not None:
                 if time.time() - start > time_out:
                     break
@@ -59,12 +61,63 @@ class ICTSSolver(AbstractSolver):
                     return paths, output_infos
                 return paths
 
-            if not self._closed_list.contains_node(cur_state):
+            """
+            NORMAL
+            """
+            """if not self._closed_list.contains_node(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand()
                 self._n_of_generated_nodes += len(expanded_nodes)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_nodes(expanded_nodes)
+                self._frontier.add_list_of_nodes(expanded_nodes)"""
+
+            """
+            CASE 2
+            """
+            """self._closed_list.add(cur_state)
+            expanded_nodes = cur_state.expand()
+
+            expanded_nodes_not_in_closed_list = []
+            for node in expanded_nodes:
+                if not self._closed_list.contains_node(node):
+                    expanded_nodes_not_in_closed_list.append(node)
+
+            self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
+            self._n_of_expanded_nodes += 1
+            self._frontier.add_list_of_nodes(expanded_nodes_not_in_closed_list)"""
+
+            """
+            CASE 3
+            """
+            """if not self._closed_list.contains_node(cur_state):
+                self._closed_list.add(cur_state)
+                expanded_nodes = cur_state.expand()
+
+                expanded_nodes_not_in_frontier = []
+
+                for node in expanded_nodes:
+                    if not self._frontier.contains_node(node):
+                    
+                        expanded_nodes_not_in_frontier.append(node)
+
+                self._n_of_generated_nodes += len(expanded_nodes_not_in_frontier)
+                self._n_of_expanded_nodes += 1
+                self._frontier.add_list_of_nodes(expanded_nodes_not_in_frontier)"""
+
+            """
+            CASE 4
+            """
+            """self._closed_list.add(cur_state)
+            expanded_nodes = cur_state.expand()
+
+            expanded_nodes_not_in_closed_list = []
+            for node in expanded_nodes:
+                if not self._closed_list.contains_node(node) and not self._frontier.contains_node(node):
+                    expanded_nodes_not_in_closed_list.append(node)
+
+            self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
+            self._n_of_expanded_nodes += 1
+            self._frontier.add_list_of_nodes(expanded_nodes_not_in_closed_list)"""
 
         if return_infos:
             return [], None

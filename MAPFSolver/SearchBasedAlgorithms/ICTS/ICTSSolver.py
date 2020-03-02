@@ -37,8 +37,6 @@ class ICTSSolver(AbstractSolver):
             self._frontier.sort_by_cost()
             cur_state = self._frontier.pop()
 
-            print(cur_state)
-
             if time_out is not None:
                 if time.time() - start > time_out:
                     break
@@ -64,12 +62,12 @@ class ICTSSolver(AbstractSolver):
             """
             NORMAL
             """
-            """if not self._closed_list.contains_node(cur_state):
+            if not self._closed_list.contains_node(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand()
                 self._n_of_generated_nodes += len(expanded_nodes)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_nodes(expanded_nodes)"""
+                self._frontier.add_list_of_nodes(expanded_nodes)
 
             """
             CASE 2

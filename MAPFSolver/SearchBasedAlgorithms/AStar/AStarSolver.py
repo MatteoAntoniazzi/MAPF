@@ -120,8 +120,11 @@ class AStarSolver(AbstractSolver):
             self._n_of_expanded_nodes += 1
             self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
 
+
         if return_infos:
-            return [], None
+            output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                      self._n_of_expanded_nodes, time.time() - start)
+            return [], output_infos
         return []
 
     def initialize_problem(self, problem_instance):

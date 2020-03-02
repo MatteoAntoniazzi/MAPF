@@ -57,13 +57,22 @@ class IDFramework(AbstractSolver):
             if time_out is not None:
                 if time.time() - start > time_out:
                     if return_infos:
-                        return [], None
+                        output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                                  self._n_of_expanded_nodes, time.time() - start)
+                        return [], output_infos
                     return []
 
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
-            self.update_merged_paths(merged_problem)
-            conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
-                                       self._solver_settings.is_edge_conflict())
+
+            if self.update_merged_paths(merged_problem, time_out - (time.time() - start)):
+                conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+                                           self._solver_settings.is_edge_conflict())
+            else:
+                if return_infos:
+                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                              self._n_of_expanded_nodes, time.time() - start)
+                    return [], output_infos
+                return []
 
         paths = self._paths
         soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
@@ -176,16 +185,20 @@ class IDFramework(AbstractSolver):
 
         return True
 
-    def update_merged_paths(self, merged_problem):
+    def update_merged_paths(self, merged_problem, time_out=None):
         """
         Recompute the paths of the merged problem.
         """
-        paths, output_infos = self._solver.solve(merged_problem, return_infos=True)
+        paths, output_infos = self._solver.solve(merged_problem, return_infos=True, time_out=time_out)
+        if not paths:
+            return False
         self._n_of_generated_nodes += output_infos["generated_nodes"]
         self._n_of_expanded_nodes += output_infos["expanded_nodes"]
 
         for i, agent_id in enumerate(merged_problem.get_original_agents_id_list()):
             self._paths[agent_id] = paths[i]
+
+        return True
 
     def get_some_conflicting_ids_for_buckets(self, problem_instance, min_n_of_agents, max_n_of_agents):
         """
@@ -226,6 +239,9 @@ class IDFramework(AbstractSolver):
                 counter += 1
 
         return list_of_buckets
+
+    def get_dimension_of_biggest_subset(self):
+        return self._biggest_subset
 
     def __str__(self):
         return self._solver.__str__() + " with ID Framework."

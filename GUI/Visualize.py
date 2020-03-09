@@ -335,7 +335,7 @@ class Visualize:
                         self.y_moves[i] = float((next_position[1] - current_position[1]) * self.dynamic_cell_h) / N_OF_STEPS
                         self.map_canvas.move(self.agents_ovals[i], self.x_moves[i], self.y_moves[i])
                         self.steps_count[i] = 1
-                if not self._solver_settings.stay_in_goal() and not self.path_to_visit[i]:
+                if not self._solver_settings.stay_at_goal() and not self.path_to_visit[i]:
                     self.map_canvas.delete(self.agents_ovals[i])
 
             if not [i for i in self.path_to_visit if i]:  # For checking that all the arrays are empty

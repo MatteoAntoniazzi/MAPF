@@ -1,7 +1,7 @@
 from .Heuristic import Heuristic
 
 
-class ManhattanHeuristic(Heuristic):
+class ManhattanDistanceHeuristic(Heuristic):
     """
     Standard heuristic for a square grid is the Manhattan distance.
     In Manhattan distance the distance between two points measured along axes at right angles.

@@ -107,7 +107,7 @@ class ICTSNode:
         self._solution = total_mdd.get_paths()
 
         # Complete solution paths with the goal occupation time if needed.
-        if not self._solver_settings.stay_in_goal():
+        if not self._solver_settings.stay_at_goal():
             for path in self._solution:
                 goal = path[len(path) - 1]
                 for i in range(self._solver_settings.get_goal_occupation_time() - 1):
@@ -161,7 +161,7 @@ class ICTSNode:
         solver = AStar(self._solver_settings)
         for agent in self._problem_instance.get_agents():
             path = solver.find_path(self._problem_instance.get_map(), agent.get_start(), agent.get_goal())
-            if self._solver_settings.stay_in_goal():
+            if self._solver_settings.stay_at_goal():
                 cost = len(path) - 1
             else:
                 cost = len(path) - self._solver_settings.get_goal_occupation_time()
@@ -207,7 +207,7 @@ class ICTSNode:
             1. no agents occupy the same position in the same time step;
             2. no agent overlap (switch places).
         """
-        conflicts = check_conflicts(solution, self._solver_settings.stay_in_goal(),
+        conflicts = check_conflicts(solution, self._solver_settings.stay_at_goal(),
                                     self._solver_settings.is_edge_conflict())
         if conflicts is None:
             return True

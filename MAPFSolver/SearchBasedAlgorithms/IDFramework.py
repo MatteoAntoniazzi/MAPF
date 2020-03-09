@@ -50,7 +50,7 @@ class IDFramework(AbstractSolver):
         if not self.initialize_paths(problem_instance):
             return False
 
-        conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+        conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                    self._solver_settings.is_edge_conflict())
         while conflict is not None:
 
@@ -65,7 +65,7 @@ class IDFramework(AbstractSolver):
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
 
             if self.update_merged_paths(merged_problem, time_out - (time.time() - start)):
-                conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+                conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                            self._solver_settings.is_edge_conflict())
             else:
                 if return_infos:
@@ -75,9 +75,9 @@ class IDFramework(AbstractSolver):
                 return []
 
         paths = self._paths
-        soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
+        soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
                             self._solver_settings.get_goal_occupation_time())
-        makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
+        makespan = calculate_makespan(paths, self._solver_settings.stay_at_goal(),
                                       self._solver_settings.get_goal_occupation_time())
         output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
                                                   self._n_of_expanded_nodes, time.time() - start)
@@ -119,7 +119,7 @@ class IDFramework(AbstractSolver):
             return False
 
         # Check collisions
-        conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+        conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                    self._solver_settings.is_edge_conflict())
         while conflict is not None:
             print("BIG:", self._biggest_subset)
@@ -128,7 +128,7 @@ class IDFramework(AbstractSolver):
                 return True
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
             self.update_merged_paths(merged_problem)
-            conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+            conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                        self._solver_settings.is_edge_conflict())
         print("FALSE")
         return False
@@ -222,7 +222,7 @@ class IDFramework(AbstractSolver):
         while counter < (max_n_of_agents + 1):
             if merged_problem is not None:
                 self.update_merged_paths(merged_problem)
-            conflict = check_conflicts(self._paths, self._solver_settings.stay_in_goal(),
+            conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                        self._solver_settings.is_edge_conflict())
 
             if conflict is None:

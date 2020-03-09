@@ -2,7 +2,7 @@ from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from .Heuristic import Heuristic
 
 
-class RRAStarHeuristic(Heuristic):
+class AbstractDistanceHeuristicWithRRAStar(Heuristic):
     """
     The RRA* algorithm executes a modified A* search in a reverse direction. The search starts at the agent’s goal G,
     and heads towards the agent’s initial position O. Instead of terminating at O, the search continues until a
@@ -26,10 +26,10 @@ class RRAStarHeuristic(Heuristic):
         self._closed_lists = dict()
         self.initialize_table()
 
-    def resume_rra_star(self, goal_node, goal_pos):
+    def resume_rra_star(self, position, goal_pos):
         """
         Resume RRA*: it resumes the search in order to reach the goal node.
-        :param goal_node: position to reach.
+        :param position: position to reach.
         :param goal_pos: position of the goal of the agent.
         :return:
         """
@@ -38,7 +38,7 @@ class RRAStarHeuristic(Heuristic):
             cur_state = self._open_lists[goal_pos].pop()
             self._closed_lists[goal_pos].add(cur_state)
 
-            if cur_state.get_position() == goal_node:
+            if cur_state.get_position() == position:
                 self._open_lists[goal_pos].add(cur_state)
                 return True
 

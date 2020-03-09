@@ -39,26 +39,26 @@ MAPS_NAMES_LIST = {
 
 class Reader:
     """
-    This class takes care of the loading of map and agents from the corresponding map files and scene files.
-    In order to load a certain file the methods set_map(), set_scene_type() and set_scene_file_number() must be called
+    This class takes care of the loading of map and agents from the corresponding map files and scenario files.
+    In order to load a certain file the methods set_map(), set_scenario_type() and set_scenario_file_number() must be called
     before calling the corresponding load_map_file() or load_scenario_file().
     """
 
-    def __init__(self, map_number=0, scene_type="even", scene_file_number=1):
+    def __init__(self, map_number=0, scenario_type="even", scenario_file_number=1):
         """
         Initialize a reader object.
         :param map_number: map number to load.
-        :param scene_type: scene type to load.
-        :param scene_file_number: scene file number to load.
+        :param scenario_type: scenario type to load.
+        :param scenario_file_number: scenario file number to load.
         """
         self._map_number = map_number
-        self._scene_type = scene_type
-        self._scene_file_number = scene_file_number
+        self._scenario_type = scenario_type
+        self._scenario_file_number = scenario_file_number
 
-        self._reload_instances = True  # If False it loads scene instances already loaded
-        self._change_scene_instances = False
+        self._reload_instances = True  # If False it loads scenario instances already loaded
+        self._change_scenario_instances = False
 
-        self._scene_instances = None
+        self._scenario_instances = None
 
     def load_map_file(self, occupied_char='@', valid_chars={'@', '.', 'T'}):
         """
@@ -93,70 +93,70 @@ class Reader:
     def load_scenario_file(self, occupancy_lst, map_width, map_height, n_of_agents=10):
         """
         Load a set of agents from scenario file. This method keep into account those class variables:
-        - self._map_number: in order to find the corresponding scene file.
-        - self._scene_type: the scene files can be Even or Random.
-        - self._scene_file_number: number of the scene file to pick.
+        - self._map_number: in order to find the corresponding scenario file.
+        - self._scenario_type: the scenario files can be Even or Random.
+        - self._scenario_file_number: number of the scenario file to pick.
         - self._reload_instances: this is False if I want to use the already loaded instances. If I've changed map or
-                                  scene this will be True since the instances need to be reloaded. This variable is
+                                  scenario this will be True since the instances need to be reloaded. This variable is
                                   useful in order to keep into memory the last instances that could have been loaded
                                   randomly.
-        - self._change_scene_instances: is True if I want to select another bucket of agents from the scene file (if
-                                        Even) or another random bucket from the scene file(if Random).
+        - self._change_scenario_instances: is True if I want to select another bucket of agents from the scenario file
+                                           (if Even) or another random bucket from the scenario file(if Random).
         :param occupancy_lst: list of the obstacles.
         :param map_width: width of the map.
         :param map_height: height of the map.
         :param n_of_agents: number of agents to return.
         :return: array of start and destination couples. (Agents starts and goals)
         """
-        scene_file_path = get_scene_file_path(self._map_number, self._scene_type, self._scene_file_number)
+        scenario_file_path = get_scenario_file_path(self._map_number, self._scenario_type, self._scenario_file_number)
 
         if self._reload_instances:
-            self.load_instances(scene_file_path, map_width, map_height)
+            self.load_instances(scenario_file_path, map_width, map_height)
             self._reload_instances = False
 
-        if self._change_scene_instances:
-            if self._scene_type == "even":
-                values = [x[0] for x in self._scene_instances]
-                next_bucket_number = self._scene_instances[len(self._scene_instances)-1][0]
+        if self._change_scenario_instances:
+            if self._scenario_type == "even":
+                values = [x[0] for x in self._scenario_instances]
+                next_bucket_number = self._scenario_instances[len(self._scenario_instances) - 1][0]
                 idx = values.index(next_bucket_number)
-                self._scene_instances = self._scene_instances[idx:] + self._scene_instances[:idx-1]
+                self._scenario_instances = self._scenario_instances[idx:] + self._scenario_instances[:idx - 1]
 
-            elif self._scene_type == "random":
-                np.random.shuffle(self._scene_instances)
+            elif self._scenario_type == "random":
+                np.random.shuffle(self._scenario_instances)
 
-            self._change_scene_instances = False
+            self._change_scenario_instances = False
 
-        instances = [((i[4], i[5]), (i[6], i[7])) for i in self._scene_instances]
+        instances = [((i[4], i[5]), (i[6], i[7])) for i in self._scenario_instances]
         for start, goal in instances:
             assert(start not in occupancy_lst), "Overlapping error"
             assert(goal not in occupancy_lst), "Overlapping error"
         return instances[:n_of_agents]
 
-    def change_scene_instances(self):
+    def change_scenario_instances(self):
         """
-        Call this method every time I want to change the agent selected in the scene file. It will set the corresponding
+        Call this method every time I want to change the agent selected in the scenario file. It will set the corresponding
         variable to True in order to load a different bucket when the scenario file is loaded.
         """
-        self._change_scene_instances = True
+        self._change_scenario_instances = True
 
-    def load_instances(self, scene_file_path, map_width, map_height):
+    def load_instances(self, scenario_file_path, map_width, map_height):
         """
-        Load the instances from the scene file.
-        :param scene_file_path: path of the scene file to load.
+        Load the instances from the scenario file.
+        :param scenario_file_path: path of the scenario file to load.
         :param map_width: width of the map.
         :param map_height: height of the map.
         """
-        if not os.path.isfile(scene_file_path):
+        if not os.path.isfile(scenario_file_path):
             print("Scenario file not found!")
             exit(-1)
-        ls = open(scene_file_path, 'r').readlines()
+        ls = open(scenario_file_path, 'r').readlines()
         if "version 1" not in ls[0]:
             print(".scen version type does not match!")
             exit(-1)
-        self._scene_instances = [convert_nums(l.split('\t')) for l in ls[1:]]
-        self._scene_instances.sort(key=lambda e: e[0])
+        self._scenario_instances = [convert_nums(l.split('\t')) for l in ls[1:]]
+        self._scenario_instances.sort(key=lambda e: e[0])
 
-        for i in self._scene_instances:
+        for i in self._scenario_instances:
             assert (i[2] == map_width)
             assert (i[3] == map_height)
 
@@ -168,20 +168,20 @@ class Reader:
         self._map_number = map_number
         self._reload_instances = True
 
-    def set_scene_type(self, scene_type):
+    def set_scenario_type(self, scenario_type):
         """
-        Set the scene type to load.
-        :param scene_type:
+        Set the scenario type to load.
+        :param scenario_type:
         """
-        self._scene_type = scene_type
+        self._scenario_type = scenario_type
         self._reload_instances = True
 
-    def set_scene_file_number(self, scene_file_number):
+    def set_scenario_file_number(self, scenario_file_number):
         """
-        Set the scene file number to load.
-        :param scene_file_number: scene file number to set.
+        Set the scenario file number to load.
+        :param scenario_file_number: scenario file number to set.
         """
-        self._scene_file_number = scene_file_number
+        self._scenario_file_number = scenario_file_number
         self._reload_instances = True
 
 
@@ -202,13 +202,20 @@ def convert_nums(lst):
     return lst
 
 
-def get_scene_file_path(map_number, scene_type, scene_number):
+def get_scenario_file_path(map_number, scenario_type, scenario_number):
+    """
+    Given the number of the map, the type and the number of the scenario, it returns the path of the .scen file.
+    :param map_number: number of the chosen map.
+    :param scenario_type: type of the chosen scenario.
+    :param scenario_number: number if the chosen scenario.
+    :return: path of the scenario file.
+    """
     map_name = MAPS_NAMES_LIST.get(map_number)
     root_path = pathlib.Path(__file__).parent.parent.parent
-    scene_file_path = str(root_path / "Maps/scenes-") + scene_type + "/" + map_name + "-" + scene_type + "-" + str(
-        scene_number) + ".scen"
-    print(scene_file_path)
-    return scene_file_path
+    scenario_file_path = str(root_path / "Maps/scenarios-") + scenario_type + "/" + map_name + "-" + scenario_type + "-" + str(
+        scenario_number) + ".scen"
+    print(scenario_file_path)
+    return scenario_file_path
 
     # def setup_args(self):
     #     parser = argparse.ArgumentParser()

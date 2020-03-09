@@ -30,7 +30,7 @@ class AStar:
             if cur_state.goal_test():
                 path = cur_state.get_path_to_root()
                 goal = cur_state.get_position()
-                if not self._solver_settings.stay_in_goal():
+                if not self._solver_settings.stay_at_goal():
                     for i in range(self._solver_settings.get_goal_occupation_time()-1):
                         path.append(goal)
                 return path
@@ -76,7 +76,7 @@ class AStar:
                     # If the position is already occupied.
                     conflict_with_other_agent = state.time_step() in busy_times
 
-                    if self._solver_settings.stay_in_goal():
+                    if self._solver_settings.stay_at_goal():
                         # If True means that the position is busy due to an agent that occupy his goal forever.
                         conflict_with_goal = state.get_position() in completed_pos and \
                                              state.time_step() >= busy_times[len(busy_times) - 1]
@@ -129,7 +129,7 @@ class AStar:
                     if (state.get_position(), state.time_step()) not in vertex_constraints:
                         if (state.predecessor().get_position(), state.get_position(), state.time_step()) not in \
                                 edge_constraints or edge_constraints is None:
-                            if self._solver_settings.stay_in_goal() and state.goal_test():
+                            if self._solver_settings.stay_at_goal() and state.goal_test():
                                 temp_bool = True
                                 for pos, ts in vertex_constraints:
                                     if pos == state.get_position() and ts > state.time_step():

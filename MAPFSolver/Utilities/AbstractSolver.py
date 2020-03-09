@@ -19,6 +19,7 @@ class AbstractSolver:
         :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
         :param time_out: max time for computing the solution. If the time is over it returns an empty solution.
         The time is expressed in milliseconds.
+        :return the solution as list of paths, and, if return_infos is True, some output information.
         """
 
     @staticmethod

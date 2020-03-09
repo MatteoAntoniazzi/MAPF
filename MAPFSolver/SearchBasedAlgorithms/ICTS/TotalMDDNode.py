@@ -48,7 +48,7 @@ class TotalMDDNode:
         next_positions = [mdd_node.position() for mdd_node in multi_state]
 
         next_active_positions = []
-        if self._solver_settings.stay_in_goal():
+        if self._solver_settings.stay_at_goal():
             next_active_positions = next_positions.copy()
         else:
             for mdd_node in multi_state:

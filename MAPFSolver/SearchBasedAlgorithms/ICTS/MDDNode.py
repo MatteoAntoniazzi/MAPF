@@ -19,7 +19,7 @@ class MDDNode:
         Expand the current state. It computes all the possible moves from that position.
         :return: the list of possible next states.
         """
-        possible_moves = self._problem_map.get_neighbours_xy(self._position)
+        possible_moves = self._problem_map.get_neighbours(self._position)
         possible_moves.insert(0, self._position)   # Wait move
 
         expanded_nodes_list = []
@@ -45,7 +45,7 @@ class MDDNode:
         for path in paths:
             path.reverse()
 
-            if not solver_settings.stay_in_goal():
+            if not solver_settings.stay_at_goal():
                 goal = path[len(path)-1]
                 for i in range(solver_settings.get_goal_occupation_time()-1):
                     path.append(goal)
@@ -172,7 +172,7 @@ class MDDNode:
                      goal, he has already been for the GOAL_OCC_TIME needed.
         :param solver_settings: settings of the solver.
         """
-        if not self._dummy or solver_settings.stay_in_goal():
+        if not self._dummy or solver_settings.stay_at_goal():
             return True
         else:
             return self._number_of_dummy_predecessors < solver_settings.get_goal_occupation_time() - 1

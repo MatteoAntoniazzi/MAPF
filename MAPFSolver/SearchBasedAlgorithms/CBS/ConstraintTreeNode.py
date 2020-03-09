@@ -87,7 +87,7 @@ class ConstraintTreeNode:
         :return: the two possible next states.
         """
         if self.conflict is None:
-            conflict_type, constraints = check_conflicts_with_type(self._solution, self._solver_settings.stay_in_goal(),
+            conflict_type, constraints = check_conflicts_with_type(self._solution, self._solver_settings.stay_at_goal(),
                                                                    self._solver_settings.is_edge_conflict())
         else:
             conflict_type, constraints = self.conflict
@@ -132,10 +132,10 @@ class ConstraintTreeNode:
         :return:
         """
         if self._solver_settings.get_objective_function() == "SOC":
-            return calculate_soc(self._solution, self._solver_settings.stay_in_goal(),
+            return calculate_soc(self._solution, self._solver_settings.stay_at_goal(),
                                  self._solver_settings.get_goal_occupation_time())
         if self._solver_settings.get_objective_function() == "Makespan":
-            return calculate_makespan(self._solution, self._solver_settings.stay_in_goal(),
+            return calculate_makespan(self._solution, self._solver_settings.stay_at_goal(),
                                       self._solver_settings.get_goal_occupation_time())
 
     def total_cost(self):
@@ -160,8 +160,8 @@ class ConstraintTreeNode:
         """
         Returns True if the solution of the node is valid i.e.the set of paths for all agents have no conflicts
         """
-        self.conflict = check_conflicts_with_type(self._solution, self._solver_settings.stay_in_goal(),
-                                             self._solver_settings.is_edge_conflict())
+        self.conflict = check_conflicts_with_type(self._solution, self._solver_settings.stay_at_goal(),
+                                                  self._solver_settings.is_edge_conflict())
         if self.conflict is None:
             return True
         else:

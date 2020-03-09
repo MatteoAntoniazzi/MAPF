@@ -1,5 +1,3 @@
-
-
 def generate_random_problem(map_width, map_height, obstacle_probability, n_of_agents):
     """
     Generate a random problem instance where map is width x height, and for each cell the probability of being an
@@ -74,7 +72,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
             problem_agents = generate_random_agents(problem_map, n_of_free_cells-1)  # Da sistemare....
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
-            solver_settings = SolverSettings(stay_in_goal=True, is_edge_conflict=is_edge_conflicts)
+            solver_settings = SolverSettings(stay_at_goal=True, edge_conflict=is_edge_conflicts)
             a_star_solver = AStarSolver(solver_settings)
             id_framework = IDFramework(a_star_solver, solver_settings)
             returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,
@@ -193,9 +191,93 @@ def generate_random_agents(problem_map, n_of_agents):
     return agents
 
 
+def load_map_from_file(file_path):
+    """
+    Load the map infos from a .map file.
+    :param file_path: path of the file to load.
+    :return: a Map object.
+    """
+    import os
+    from .Map import Map
+
+    occupied_char = '@'
+    valid_chars = {'@', '.', 'T'}
+
+    if not os.path.isfile(file_path):
+        print("Map file not found!")
+        exit(-1)
+    map_ls = open(file_path, 'r').readlines()
+    height = int(map_ls[1].replace("height ", ""))
+    width = int(map_ls[2].replace("width ", ""))
+    map_ls = map_ls[4:]
+    map_ls = [l.replace('\n', '') for l in map_ls]
+    occupancy_lst = set()
+    assert (len(map_ls) == height)
+    for y, l in enumerate(map_ls):
+        assert (len(l) == width)
+        for x, c in enumerate(l):
+            assert (c in valid_chars)
+            if c == occupied_char:
+                occupancy_lst.add((x, y))
+
+    return Map(height, width, occupancy_lst)
+
+
+def load_scenario(scene_file_path, map_width, map_height, occupancy_lst, n_of_agents=10):
+    """
+    Load the instances from the scene file. It Returns a list of n agents.
+    :param scene_file_path: path of the scene file to load.
+    :param map_width: width of the map.
+    :param map_height: height of the map.
+    :param occupancy_lst: list of the obstacles in the map.
+    :param n_of_agents: number of agents to return.
+    """
+    import os
+    from .Agent import Agent
+
+    if not os.path.isfile(scene_file_path):
+        print("Scenario file not found!")
+        exit(-1)
+    ls = open(scene_file_path, 'r').readlines()
+    if "version 1" not in ls[0]:
+        print(".scen version type does not match!")
+        exit(-1)
+    scene_instances = [convert_nums(l.split('\t')) for l in ls[1:]]
+    scene_instances.sort(key=lambda e: e[0])
+
+    for i in scene_instances:
+        assert (i[2] == map_width)
+        assert (i[3] == map_height)
+
+    instances = [((i[4], i[5]), (i[6], i[7])) for i in scene_instances]
+    for start, goal in instances:
+        assert(start not in occupancy_lst), "Overlapping error"
+        assert(goal not in occupancy_lst), "Overlapping error"
+    return [Agent(i, a[0], a[1]) for i, a in enumerate(instances[:n_of_agents])]
+
+
+def convert_nums(lst):
+    """
+    Convert list of strings into nums.
+    :param lst: string to convert.
+    :return: list of int or float.
+    """
+    for i in range(len(lst)):
+        try:
+            lst[i] = int(lst[i])
+        except ValueError:
+            try:
+                lst[i] = float(lst[i])
+            except ValueError:
+                ""
+    return lst
+
+
 def load_map(reader):
     """
     Return the map object given the number of the chosen map.
+    :param reader: Reader object.
+    :return: a Map object.
     """
     from .Map import Map
 

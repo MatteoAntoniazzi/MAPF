@@ -11,5 +11,5 @@ class Heuristic(object):
     @abc.abstractmethod
     def compute_heuristic(self, position, goal):
         """
-        Compute the value of the heuristic in that position
+        Compute the value of the heuristic in that position from that goal.
         """

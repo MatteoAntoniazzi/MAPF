@@ -64,12 +64,12 @@ class CoopAStarSolver(AbstractSolver):
                     self._reservation_table[pos] = []
                 self._reservation_table[pos].append(j)
 
-            if self._solver_settings.stay_in_goal():
+            if self._solver_settings.stay_at_goal():
                 self._completed_pos.append(path[len(path)-1])
 
-        soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
+        soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
                             self._solver_settings.get_goal_occupation_time())
-        makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
+        makespan = calculate_makespan(paths, self._solver_settings.stay_at_goal(),
                                       self._solver_settings.get_goal_occupation_time())
         output_infos = self.generate_output_infos(soc, makespan, 0, 0, time.time() - start)
 

@@ -41,9 +41,9 @@ class CBSSolver(AbstractSolver):
         output_infos = None
 
         if paths:
-            soc = calculate_soc(paths, self._solver_settings.stay_in_goal(),
+            soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
                                 self._solver_settings.get_goal_occupation_time())
-            makespan = calculate_makespan(paths, self._solver_settings.stay_in_goal(),
+            makespan = calculate_makespan(paths, self._solver_settings.stay_at_goal(),
                                           self._solver_settings.get_goal_occupation_time())
             output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
                                                   self._n_of_expanded_nodes, time.time() - start)

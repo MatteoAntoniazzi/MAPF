@@ -388,7 +388,7 @@ class StartMenu:
         """
         Shuffle the scene instances (shuffle the agent choice)
         """
-        self.reader.change_scene_instances()
+        self.reader.change_scenario_instances()
 
     def goal_occupation_time_down_button_function(self):
         """
@@ -410,11 +410,11 @@ class StartMenu:
         if self.selected_scene_type.get() == "Even":
             self.selected_scene_type.set("Random")
             self.selected_change_scene_instances_button_text.set("NEXT RANDOM SCENE")
-            self.reader.set_scene_type("random")
+            self.reader.set_scenario_type("random")
         else:
             self.selected_scene_type.set("Even")
             self.selected_change_scene_instances_button_text.set("NEXT SCENE")
-            self.reader.set_scene_type("even")
+            self.reader.set_scenario_type("even")
 
     def scene_file_number_down_button(self):
         """
@@ -422,7 +422,7 @@ class StartMenu:
         """
         if self.selected_scene_number.get() > 1:
             self.selected_scene_number.set(self.selected_scene_number.get()-1)
-            self.reader.set_scene_file_number(self.selected_scene_number.get())
+            self.reader.set_scenario_file_number(self.selected_scene_number.get())
 
     def scene_file_number_up_button(self):
         """
@@ -430,7 +430,7 @@ class StartMenu:
          """
         if self.selected_scene_number.get() < 25:
             self.selected_scene_number.set(self.selected_scene_number.get()+1)
-            self.reader.set_scene_file_number(self.selected_scene_number.get())
+            self.reader.set_scenario_file_number(self.selected_scene_number.get())
 
     def n_of_agents_down_button(self):
         """

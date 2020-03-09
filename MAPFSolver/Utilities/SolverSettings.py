@@ -7,24 +7,24 @@ class SolverSettings:
     initialization.
     """
 
-    def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_in_goal=True,  goal_occupation_time=1,
-                 is_edge_conflict=True):
+    def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_at_goal=True, goal_occupation_time=1,
+                 edge_conflict=True):
         """
         Initialization of the variables representing the solver settings.
-        :param heuristic: heuristic used. ("Manhattan" or "RRA")
+        :param heuristic: heuristic used. ("Manhattan" or "Abstract Distance with RRA*")
         :param objective_function: objective function that the solver will minimize. ("SOC" or "Makespan")
-        :param stay_in_goal: True if the agents never disappear once reach the goal.
-        :param goal_occupation_time: if disappear_at_goal is True, this variable tells how many time step the agents
+        :param stay_at_goal: True if the agents never disappear once reach the goal.
+        :param goal_occupation_time: if stay_at_goal is False, this variable tells how many time step the agents
         will stay in the goal before disappearing.
-        :param is_edge_conflict: if True, also the edge conflicts will be considered in addition to the vertex
+        :param edge_conflict: if True, also the edge conflicts will be considered in addition to the vertex
         conflicts.
         """
         self._heuristic_str = heuristic
         self._heuristic_obj = None
         self._objective_function = objective_function
-        self._stay_in_goal = stay_in_goal
+        self._stay_at_goal = stay_at_goal
         self._goal_occupation_time = goal_occupation_time
-        self._is_edge_conflict = is_edge_conflict
+        self._edge_conflict = edge_conflict
 
         assert self._goal_occupation_time > 0, "Goal occupation time must be greater than zero!"
 
@@ -54,11 +54,11 @@ class SolverSettings:
         """
         return self._objective_function
 
-    def stay_in_goal(self):
+    def stay_at_goal(self):
         """
         Return True if the agents never disappear once reached the goal.
         """
-        return self._stay_in_goal
+        return self._stay_at_goal
 
     def get_goal_occupation_time(self):
         """
@@ -77,7 +77,7 @@ class SolverSettings:
         """
         Return True if the edge conflicts are considered in addition to the vertex conflicts.
         """
-        return self._is_edge_conflict
+        return self._edge_conflict
 
     def __str__(self):
         return "Heuristics: " + self._heuristic_str + ".\tObjective function: " + str(self._objective_function) + \

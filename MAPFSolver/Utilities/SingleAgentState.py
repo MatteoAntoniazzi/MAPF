@@ -25,12 +25,10 @@ class SingleAgentState(State):
         Expand the current state. It computes the possible neighbour positions and creates a state for each new possible
         position. We can see that even if an agent has reached his goal the expansion is still possible. He will be able
         to move from the goal with an increase of the cost or stay in the goal without increase the cost.
-        If the state is a goal state or not we allow in both cases all the possible node expansions. So, even if the
-        agent is in the goal state we allow him to be expanded and maybe return to a non goal state.
         :return: the list of possible next states.
         """
         expanded_nodes_list = [self.wait_state()]
-        possible_moves = self._map.get_neighbours_xy(self._position)
+        possible_moves = self._map.get_neighbours(self._position)
         for i in possible_moves:
             expanded_nodes_list.append(SingleAgentState(self._map, self._goal, i, self._solver_settings, parent=self))
         return expanded_nodes_list
@@ -90,7 +88,7 @@ class SingleAgentState(State):
                 list_of_states.append(state)
 
             self._g = 0
-            if self._solver_settings.stay_in_goal():
+            if self._solver_settings.stay_at_goal():
                 for i, s in enumerate(list_of_states):
                     if not s.goal_test():
                         if i == 0:
@@ -123,7 +121,7 @@ class SingleAgentState(State):
         This function not means that the agent is already gone. It just tells if it has been completed or be in the
         time step of completion.
         """
-        if self._solver_settings.stay_in_goal():
+        if self._solver_settings.stay_at_goal():
             return self.goal_test()
         else:
             state = self
@@ -140,7 +138,7 @@ class SingleAgentState(State):
         Is different from is_completed because an agent can be completed but he disappear the next time_step.
         Se, we have to check that he's already spent the needed time in the goal before this state.
         """
-        if self._solver_settings.stay_in_goal():
+        if self._solver_settings.stay_at_goal():
             return False
         else:
             state = self
@@ -169,7 +167,7 @@ class SingleAgentState(State):
         path = []
         node = self
 
-        if not self._solver_settings.stay_in_goal():  # Aggiungo alla lista il goal per goal_occ_time volte
+        if not self._solver_settings.stay_at_goal():  # Aggiungo alla lista il goal per goal_occ_time volte
             counter = self._solver_settings.get_goal_occupation_time()
             while node.goal_test() and counter > 0:
                 path.append(node._position)

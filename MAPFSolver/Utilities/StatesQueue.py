@@ -28,8 +28,8 @@ class StatesQueue:
         """
         for state in self._queue:
             if state.equal_position(item):
-                return True
-        return False
+                return state
+        return None
 
     def contains_position(self, position):
         """
@@ -85,7 +85,7 @@ class StatesQueue:
         :return: True if the state has been updated, False if the state was not present in the queue.
         """
         for s in self._queue:
-            if s.get_position() == state.get_position():
+            if s.equal_position(state):
                 self._queue.remove(s)
                 self.add(state)
                 return True

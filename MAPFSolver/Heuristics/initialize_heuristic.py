@@ -3,6 +3,6 @@ def initialize_heuristics(heuristics_name, problem_instance):
         from .ManhattanDistanceHeuristic import ManhattanDistanceHeuristic
         return ManhattanDistanceHeuristic(problem_instance)
 
-    if heuristics_name == "RRA":
+    if heuristics_name == "AbstractDistance":
         from .AbstractDistanceHeuristicWithRRAStar import AbstractDistanceHeuristicWithRRAStar
         return AbstractDistanceHeuristicWithRRAStar(problem_instance)

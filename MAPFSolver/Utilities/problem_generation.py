@@ -72,7 +72,8 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
             problem_agents = generate_random_agents(problem_map, n_of_free_cells-1)  # Da sistemare....
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
-            solver_settings = SolverSettings(stay_at_goal=True, edge_conflict=is_edge_conflicts)
+            solver_settings = SolverSettings(heuristic="AbstractDistance", stay_at_goal=True,
+                                             edge_conflict=is_edge_conflicts)
             a_star_solver = AStarSolver(solver_settings)
             id_framework = IDFramework(a_star_solver, solver_settings)
             returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,

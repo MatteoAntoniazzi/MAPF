@@ -63,12 +63,12 @@ class AStarSolver(AbstractSolver):
             """
             NORMAL
             """
-            if not self._closed_list.contains_state_same_positions(cur_state):
+            """if not self._closed_list.contains_state_same_positions(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
                 self._n_of_generated_nodes += len(expanded_nodes)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes)
+                self._frontier.add_list_of_states(expanded_nodes)"""
 
             """
             CASE 2
@@ -89,19 +89,26 @@ class AStarSolver(AbstractSolver):
             """
             CASE 3
             """
-            """if not self._closed_list.contains_state_same_positions(cur_state):
+            closed_state = self._closed_list.contains_state_same_positions(cur_state)
+
+            if closed_state is None:
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
 
                 expanded_nodes_not_in_frontier = []
 
                 for node in expanded_nodes:
-                    if not self._frontier.contains_state_same_positions(node):
+                    frontier_state = self._frontier.contains_state_same_positions(node)
+                    if frontier_state is None:
                         expanded_nodes_not_in_frontier.append(node)
+                    else:
+                        # Check that the g-value is minor than the one present in the frontier
+                        if node.g_value() < frontier_state.g_value():
+                            self._frontier.update(node)
 
                 self._n_of_generated_nodes += len(expanded_nodes_not_in_frontier)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_frontier)"""
+                self._frontier.add_list_of_states(expanded_nodes_not_in_frontier)
 
             """
             CASE 4
@@ -112,9 +119,14 @@ class AStarSolver(AbstractSolver):
             expanded_nodes_not_in_closed_list = []
 
             for node in expanded_nodes:
-                if not self._closed_list.contains_state_same_positions(node) and \
-                        not self._frontier.contains_state_same_positions(node):
-                    expanded_nodes_not_in_closed_list.append(node)
+                if not self._closed_list.contains_state_same_positions(node):
+                    frontier_state = self._frontier.contains_state_same_positions(node)
+                    if frontier_state is None:
+                        expanded_nodes_not_in_closed_list.append(node)
+                    else:
+                        # Check that the g-value is minor than the one present in the frontier
+                        if node.g_value() < frontier_state.g_value():
+                            self._frontier.update(node)
 
             self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
             self._n_of_expanded_nodes += 1

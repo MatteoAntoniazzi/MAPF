@@ -6,20 +6,9 @@ import time
 
 class CoopAStarSolver(AbstractSolver):
     """
-    Cooperative A* (CA*) is a an (not optimal!) algorithm for solving the Co-operative Path-finding problem.
-    The task is decoupled into a series of single agent searches. The individual searches
-    are performed in three dimensional space-time, and take account of the planned routes of other agents.
-    A wait move is included in the agent’s action set, to enable it to remain stationary.
-    After each agent’s route is calculated, the states along the route are marked into a reservation table.
-    Entries in the reservation table are considered impassable and are avoided during searches by subsequent agents.
-    The reservation table represents the agents’ shared knowledge about each other’s planned routes.
-    It is a sparse data structure marking off regions of space-time.
-    A simple implementation, used here, is to treat the reservation table as a 3-dimensional grid (two spatial dimensions
-    and one time dimension). Each cell of the grid that is intersected by the agent’s planned route is marked as impassable
-    for precisely the duration of the intersection, thus preventing any other agent from planning a colliding route. Only a
-    small proportion of grid locations will be touched, and so the grid can be efficiently implemented as a hash table,
-    hashing on a randomly distributed function of the (x, y, t) key.
+    Cooperative A* solver. If used with the AbstractDistance heuristics, it is the Hierarchical Cooperative A*.
     """
+
     def __init__(self, solver_settings):
         """
         Initialize the Cooperative A* solver.
@@ -31,22 +20,25 @@ class CoopAStarSolver(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
-        Solve the MAPF problem using the Cooperative A* algorithm returning the paths as lists of list of (x, y)
-        positions.
+        Solve the given MAPF problem using the Cooperative A* algorithm and, if exists, it returns a solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :param time_out: max time for computing the solution. If the time is over it returns an empty solution.
+        The time is expressed in milliseconds.
+        :return the solution as list of paths, and, if return_infos is True, some output information.
         """
         start = time.time()
 
         self._reservation_table = dict()
         self._completed_pos = []
-        paths = []
 
+        paths = []
         for i, agent in enumerate(problem_instance.get_agents()):
 
             if time_out is not None:
                 if time.time() - start > time_out:
-                    if return_infos:
-                        return [], None
-                    return []
+                    return [] if not return_infos else ([], None)
 
             if verbose:
                 print("Agent n:", i, "of", len(problem_instance.get_agents()))
@@ -55,17 +47,17 @@ class CoopAStarSolver(AbstractSolver):
             path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(),
                                                            agent.get_goal(), self._reservation_table,
                                                            self._completed_pos)
-            paths.append(path)
+            if not path:
+                return [] if not return_infos else ([], None)
 
-            print("PATH", path)
+            paths.append(path)
 
             for j, pos in enumerate(path):
                 if not self._reservation_table.get(pos):
                     self._reservation_table[pos] = []
                 self._reservation_table[pos].append(j)
-
             if self._solver_settings.stay_at_goal():
-                self._completed_pos.append(path[len(path)-1])
+                self._completed_pos.append(path[-1])
 
         soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
                             self._solver_settings.get_goal_occupation_time())
@@ -76,9 +68,7 @@ class CoopAStarSolver(AbstractSolver):
         if verbose:
             print("PROBLEM SOLVED: ", output_infos)
 
-        if return_infos:
-            return paths, output_infos
-        return paths
+        return paths if not return_infos else (paths, output_infos)
 
     def __str__(self):
         return "Cooperative A* Solver using " + self._solver_settings.get_heuristic_str()\

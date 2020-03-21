@@ -15,9 +15,9 @@ problem_instance = ProblemInstance(problem_map, problem_agents)
 
 #problem_instance = generate_problem_m_star_slides()
 
-solver_settings = SolverSettings(heuristic="RRA", objective_function="SOC", stay_at_goal=True, goal_occupation_time=1,
+solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True, goal_occupation_time=1,
                                  edge_conflict=True)
-solver = ICTSSolver(solver_settings)
+solver = CoopAStarSolver(solver_settings)
 
 paths = solver.solve(problem_instance, verbose=True, time_out=None)
 print(paths)

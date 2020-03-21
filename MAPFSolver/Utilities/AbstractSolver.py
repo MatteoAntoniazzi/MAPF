@@ -13,7 +13,7 @@ class AbstractSolver:
     @abc.abstractmethod
     def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
         """
-        Compute the paths.
+        Solve the given MAPF problem and, if exists, it returns a solution.
         :param problem_instance: instance of the problem to solve.
         :param verbose: if True, infos will be printed on terminal.
         :param return_infos: if True in addition to the paths will be returned also a structure with output infos.

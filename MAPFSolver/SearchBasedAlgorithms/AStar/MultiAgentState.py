@@ -154,8 +154,8 @@ class MultiAgentState(State):
     def compute_cost(self):
         """
         Compute the cost of the current state. (g-value)
-        If the heuristic is Sum Of Cost it computes the sum over all single state path costs.
-        If the heuristic is Makespan it computes the maximum value over all single path costs.
+        If the objective function is Sum Of Cost it computes the sum over all single state path costs.
+        If the objective function is Makespan it computes the maximum value over all single path costs.
         """
         self._g = 0
         if self.is_root():

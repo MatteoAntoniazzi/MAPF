@@ -5,23 +5,20 @@ class ODState(MultiAgentState):
     """
     This class represent the single state (node) object for the A* algorithm with Operator Decomposition (OD).
     The state is a multi agent state, so it stores all the single agent states of each agent, and in addition it
-    contains up to one move assignment for every agent. It keeps track of the next agent to move and of the previous
-    standard state.
+    contains up to one move assignment for every agent. It keeps track of the next agent to move.
     The standard states are the ones where every agent has moved, while the intermediate states are the ones where only
     a subset of agents has moved.
     """
 
-    def __init__(self, single_agents_states, solver_settings, parent=None, to_move=0, pre_state=None):
+    def __init__(self, single_agents_states, solver_settings, parent=None, to_move=0):
         """
         Initialize an OD multi agent state.
         :param single_agents_states: list of the single agent states.
         :param solver_settings: settings of the solver.
         :param parent: parent state.
         :param to_move: indicate the id of the agent that has to move during this expansion.
-        :param pre_state: it indicates the previous standard state.
         """
         super().__init__(single_agents_states, solver_settings, parent=parent)
-        self._pre_state = self if pre_state is None else pre_state
         self.set_time_step(max([state.time_step() for state in single_agents_states]))
         self._to_move = to_move
 
@@ -34,8 +31,6 @@ class ODState(MultiAgentState):
         if verbose:
             print("Expansion in progress...", end=' ')
 
-        next_pre_state = self if self.next_to_move() == 1 else self._pre_state
-
         state_to_expand = self._single_agents_states[self._to_move]
         expanded_states_list = state_to_expand.expand()
 
@@ -44,8 +39,7 @@ class ODState(MultiAgentState):
             single_agent_states = [state for state in self._single_agents_states]
             single_agent_states[self._to_move] = state
 
-            s = ODState(single_agent_states, self._solver_settings, parent=self, to_move=self.next_to_move(),
-                        pre_state=next_pre_state)
+            s = ODState(single_agent_states, self._solver_settings, parent=self, to_move=self.next_to_move())
 
             if not s.is_conflict_only_on_moved_agents():
                 candidate_list.append(s)
@@ -63,7 +57,7 @@ class ODState(MultiAgentState):
         1. no agents occupy the same position in the same time step;
         2. no agent overlap (switch places).
         """
-        pre_state = self._pre_state
+        pre_state = self.get_previous_standard_state()
 
         # Cast the two states in order to consider only the agents already moved.
         pre_positions = pre_state.get_first_x_positions_list(self._to_move)
@@ -142,6 +136,19 @@ class ODState(MultiAgentState):
         Return True if it is a standard state.
         """
         return self._to_move == 0
+
+    def get_previous_standard_state(self):
+        """
+        Return the previous standard state. It is useful to check edge conflicts.
+        """
+        if self.is_root():
+            return self
+        state = self._parent
+        while not state.is_root():
+            if state.is_a_standard_state():
+                return state
+            state = state.parent()
+        return state
 
 """
 Function to accelerate the process.

@@ -17,9 +17,9 @@ class State(object):
         self._time_step = parent.time_step()+1 if parent is not None else 0
         self._parent = parent
 
-    def predecessor(self):
+    def parent(self):
         """
-        Return the predecessor state.
+        Return the parent state.
         """
         return self._parent
 

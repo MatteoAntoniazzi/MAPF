@@ -48,7 +48,7 @@ class AbstractDistanceHeuristicWithRRAStar(Heuristic):
                         not self._closed_lists[goal_pos].contains_position(state.get_position()):
                     self._open_lists[goal_pos].add(state)
                 if self._open_lists[goal_pos].contains_position(state.get_position()):
-                    if state.f_value() < self._open_lists[goal_pos].get_state_by_position(state.get_position()).f_value():
+                    if state.f_value() < self._open_lists[goal_pos].contains_position(state.get_position()).f_value():
                         self._open_lists[goal_pos].update(state)
         return False
 
@@ -57,9 +57,9 @@ class AbstractDistanceHeuristicWithRRAStar(Heuristic):
         Compute the value of the heuristic in that position to the goal position.
         """
         if self._closed_lists[goal].contains_position(position):
-            return self._closed_lists[goal].get_state_by_position(position).g_value()
+            return self._closed_lists[goal].contains_position(position).g_value()
         if self.resume_rra_star(position, goal):
-            return self._closed_lists[goal].get_state_by_position(position).g_value()
+            return self._closed_lists[goal].contains_position(position).g_value()
         return None
 
     def initialize_table(self):

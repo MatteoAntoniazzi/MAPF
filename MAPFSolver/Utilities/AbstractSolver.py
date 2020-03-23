@@ -8,6 +8,10 @@ class AbstractSolver:
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, solver_settings):
+        """
+        Initialize the solver.
+        :param solver_settings: settings used by the solver.
+        """
         self._solver_settings = solver_settings
 
     @abc.abstractmethod

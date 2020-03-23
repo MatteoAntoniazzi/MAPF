@@ -6,9 +6,14 @@ from .Agent import Agent
 
 class AStar:
     """
-    This class represents a single agent A* solver.
+    This class represents a single-agent A* solver.
     """
+
     def __init__(self, solver_settings):
+        """
+        Initialize the single-agent A* solver.
+        :param solver_settings: settings used by the solver.
+        """
         self._solver_settings = solver_settings
         self._heuristics = None
         self._frontier = None
@@ -18,8 +23,12 @@ class AStar:
     def find_path(self, problem_map, start_pos, goal_pos):
         """
         It computes the path from his start position to his goal position using the A* algorithm.
-        It return the path as list of (x, y) positions. If stay in goal is True it will return the goal position once,
+        It return the path as list of (x, y) positions. If stay at goal is True it will return the goal position once,
         otherwise it will return the goal position as many times as the value of goal occupation time.
+        :param problem_map: map of the problem.
+        :param start_pos: starting position.
+        :param goal_pos: goal position.
+        :return: path from the start position to the goal position.
         """
         self.initialize_problem(problem_map, start_pos, goal_pos)
 
@@ -50,9 +59,9 @@ class AStar:
         :param start_pos: starting position of the agent.
         :param goal_pos: goal position of the agent.
         :param reservation_table: it's a dictionary that keeps for each position the list of busy time steps.
-        :param completed_pos: is the list of all the goal positions. So, we know the positions where the agent in the
-        goal are placed and those positions will be busy from the last time step in the reservation table forever.
-        This is used only if the option stay in goal is active.
+        :param completed_pos: is the list of goals of the agents already computed. This in order to remind that the
+        agents already computed will occupy their goal position from the last time step on. This is used only if the
+        option stay at goal is active.
         :return: the path for the agent, if found any.
         """
         self.initialize_problem(problem_map, start_pos, goal_pos)
@@ -127,7 +136,7 @@ class AStar:
                 expanded_nodes_no_conflicts = []
                 for state in expanded_nodes:
                     if (state.get_position(), state.time_step()) not in vertex_constraints:
-                        if (state.predecessor().get_position(), state.get_position(), state.time_step()) not in \
+                        if (state.parent().get_position(), state.get_position(), state.time_step()) not in \
                                 edge_constraints or edge_constraints is None:
                             if self._solver_settings.stay_at_goal() and state.goal_test():
                                 temp_bool = True

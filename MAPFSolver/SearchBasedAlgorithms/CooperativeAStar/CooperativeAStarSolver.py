@@ -4,7 +4,7 @@ from MAPFSolver.Utilities.AStar import AStar
 import time
 
 
-class CoopAStarSolver(AbstractSolver):
+class CooperativeAStarSolver(AbstractSolver):
     """
     Cooperative A* solver. If used with the AbstractDistance heuristics, it is the Hierarchical Cooperative A*.
     """
@@ -71,5 +71,4 @@ class CoopAStarSolver(AbstractSolver):
         return paths if not return_infos else (paths, output_infos)
 
     def __str__(self):
-        return "Cooperative A* Solver using " + self._solver_settings.get_heuristic_str()\
-               + " heuristics"
+        return "Cooperative A* Solver using " + self._solver_settings.get_heuristic_str() + " heuristics"

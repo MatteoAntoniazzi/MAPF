@@ -25,8 +25,7 @@ def prepare_simulation(reader, frame, algorithm, independence_detection, solver_
 
 
 def plot_paths(problem_instance, solver_settings, paths):
-    assert paths, "paths are empties!" \
-                  ""
+    assert paths, "paths are empties!"
     from tkinter import Tk, Frame
     root = Tk()
     frame = Frame(root)
@@ -54,7 +53,7 @@ def get_solver(algorithm, solver_settings, independence_detection):
     Return the Solver object for the specified algorithm and relative settings.
     """
     switcher = {
-        "Cooperative A*": CoopAStarSolver(solver_settings),
+        "Cooperative A*": CooperativeAStarSolver(solver_settings),
         "A*": AStarSolver(solver_settings),
         "A* with Operator Decomposition": AStarODSolver(solver_settings),
         "Increasing Cost Tree Search": ICTSSolver(solver_settings),

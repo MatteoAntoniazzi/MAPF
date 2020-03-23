@@ -1,46 +1,16 @@
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
+
+
 class StatesQueue:
     """
-    Structure used as queue of states.
+    Structure used as queue of states. Can be used for both the single-agent state and the multi-agent state.
     """
+
     def __init__(self):
         """
         Initialize a new queue.
         """
         self._queue = []
-
-    def contains_state(self, item):
-        """
-        Return True if the queue already contains the same state. That is if exists already a state with the same
-        positions and same time steps.
-        :param item: instance of State.
-        """
-        for state in self._queue:
-            if state.equal(item):
-                return True
-        return False
-
-    def contains_state_same_positions(self, item):
-        """
-        Return True if the queue already contains the same state. That is if exists already a state with the same
-        positions and same time steps. Is different from the previous since it considers equals two states that has the
-        same list of positions but different time steps.
-        :param item: instance of State.
-        """
-        for state in self._queue:
-            if state.equal_position(item):
-                return state
-        return None
-
-    def contains_position(self, position):
-        """
-        Return True if the queue already contains a state with the same position.
-        (Only if the queue contains SingleAgentState instances)
-        :param position: (x,y) position.
-        """
-        for s in self._queue:
-            if s.get_position() == position:
-                return True
-        return False
 
     def add(self, item):
         """
@@ -68,19 +38,35 @@ class StatesQueue:
         """
         return len(self._queue) == 0
 
-    def get_state_by_position(self, position):
+    def contains_state(self, item):
         """
-        Return the state, if exists, that has the same given position.
+        Return True if the queue already contains the exact same state. That is if exists already a state with the same
+        position(s) and same time step(s).
+        :param item: instance of State.
+        :return: True if the queue contains the same state.
         """
-        for s in self._queue:
-            if s.get_position() == position:
-                return s
+        for state in self._queue:
+            if state.equal(item):
+                return True
+        return False
+
+    def contains_state_same_positions(self, item):
+        """
+        If the queue already contains a state with the same position(s) then returns it. Otherwise it returns None.
+        It is different from the previous since it considers equals two states that has the same list of positions but
+        different time steps.
+        :param item: instance of State.
+        :return: the first equal state if present, otherwise None.
+        """
+        for state in self._queue:
+            if state.equal_position(item):
+                return state
         return None
 
     def update(self, state):
         """
-        Check if exists a state in the queue with same position of the given one. In that case he removes that state and
-        append the given one.
+        Check if exists a state in the queue with same position(s) of the given one. In that case he updates that state
+        with the given one.
         :param state: new state.
         :return: True if the state has been updated, False if the state was not present in the queue.
         """
@@ -91,9 +77,23 @@ class StatesQueue:
                 return True
         return False
 
+    def contains_position(self, position):
+        """
+        If the queue already contains a state with the same given position then returns it. Otherwise it returns None.
+        (Only if the queue contains SingleAgentState instances)
+        :param position: (x,y) position.
+        :return: the first equal state if present, otherwise None.
+        """
+        if self._queue:
+            assert isinstance(self._queue[0], SingleAgentState), "It can be called only in the single-agent case."
+            for s in self._queue:
+                if s.get_position() == position:
+                    return s
+        return None
+
     def sort_by_f_value(self):
         """
-        Sort the queue by the f-value. Sorting also on the h-value as second index it speed up the process.
+        Sort the queue by the f-value. Sorting also on the h-value as second index in order to speed up the process.
         """
         self._queue.sort(key=lambda x: (x.f_value(), x.h_value()), reverse=False)
 

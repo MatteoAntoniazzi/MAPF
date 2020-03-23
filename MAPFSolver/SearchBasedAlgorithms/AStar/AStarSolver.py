@@ -1,16 +1,16 @@
-"""
-Classical A* multi agent algorithm. It is complete and optimal.
-"""
+from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
+from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
-from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from .MultiAgentState import MultiAgentState
 import time
 
-from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
-
 
 class AStarSolver(AbstractSolver):
+    """
+    Classical A* multi agent algorithm. It is complete and optimal.
+    """
+
     def __init__(self, solver_settings):
         """
         Initialize the A* solver.
@@ -60,78 +60,98 @@ class AStarSolver(AbstractSolver):
                     return paths, output_infos
                 return paths
 
-            """
-            NORMAL
-            """
-            """if not self._closed_list.contains_state_same_positions(cur_state):
-                self._closed_list.add(cur_state)
+            if not self._solver_settings.stay_at_goal():
+                # In case agents disappear at goals we cannot delete duplicates since can happen that an agent wait that
+                # another agent disappear in order to pass from that position. And this waiting is important in this
+                # case since some agents is spending its required time in the goal.
+                bool_test = False
+                for single_agent_state in cur_state.get_single_agent_states():
+                    if single_agent_state.goal_test() and not single_agent_state.is_gone():
+                        bool_test = True
+
+                if not self._closed_list.contains_state_same_positions(cur_state) or \
+                        (bool_test and not self._closed_list.contains_state(cur_state)):
+                    self._closed_list.add(cur_state)
+                    expanded_nodes = cur_state.expand(verbose=verbose)
+                    self._n_of_generated_nodes += len(expanded_nodes)
+                    self._n_of_expanded_nodes += 1
+                    self._frontier.add_list_of_states(expanded_nodes)
+
+            else:
+                """
+                NORMAL: dovrebbe esere giusto cosi senza bisogno di fare il controllo che il g non sia minore di qullo
+                gia' presente nella closed list. Infatti se ho gia' espanso quello stato con quelle deteminate posizioni
+                erano sicuramente con g minore o uguale dato che la f era la minore e h non sovrastima mai il valore 
+                effettivo.
+                """
+                if not self._closed_list.contains_state_same_positions(cur_state):
+                    self._closed_list.add(cur_state)
+                    expanded_nodes = cur_state.expand(verbose=verbose)
+                    self._n_of_generated_nodes += len(expanded_nodes)
+                    self._n_of_expanded_nodes += 1
+                    self._frontier.add_list_of_states(expanded_nodes)
+
+                """
+                CASE 2
+                """
+                """self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
-                self._n_of_generated_nodes += len(expanded_nodes)
-                self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes)"""
-
-            """
-            CASE 2
-            """
-            """self._closed_list.add(cur_state)
-            expanded_nodes = cur_state.expand(verbose=verbose)
-
-            expanded_nodes_not_in_closed_list = []
-
-            for node in expanded_nodes:
-                if not self._closed_list.contains_state_same_positions(node):
-                    expanded_nodes_not_in_closed_list.append(node)
-
-            self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
-            self._n_of_expanded_nodes += 1
-            self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
-
-            """
-            CASE 3
-            """
-            closed_state = self._closed_list.contains_state_same_positions(cur_state)
-
-            if closed_state is None:
-                self._closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand(verbose=verbose)
-
-                expanded_nodes_not_in_frontier = []
-
+    
+                expanded_nodes_not_in_closed_list = []
+    
                 for node in expanded_nodes:
-                    frontier_state = self._frontier.contains_state_same_positions(node)
-                    if frontier_state is None:
-                        expanded_nodes_not_in_frontier.append(node)
-                    else:
-                        # Check that the g-value is minor than the one present in the frontier
-                        if node.g_value() < frontier_state.g_value():
-                            self._frontier.update(node)
-
-                self._n_of_generated_nodes += len(expanded_nodes_not_in_frontier)
-                self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_frontier)
-
-            """
-            CASE 4
-            """
-            """self._closed_list.add(cur_state)
-            expanded_nodes = cur_state.expand(verbose=verbose)
-
-            expanded_nodes_not_in_closed_list = []
-
-            for node in expanded_nodes:
-                if not self._closed_list.contains_state_same_positions(node):
-                    frontier_state = self._frontier.contains_state_same_positions(node)
-                    if frontier_state is None:
+                    if not self._closed_list.contains_state_same_positions(node):
                         expanded_nodes_not_in_closed_list.append(node)
-                    else:
-                        # Check that the g-value is minor than the one present in the frontier
-                        if node.g_value() < frontier_state.g_value():
-                            self._frontier.update(node)
+    
+                self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
+                self._n_of_expanded_nodes += 1
+                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
 
-            self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
-            self._n_of_expanded_nodes += 1
-            self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
+                """
+                CASE 3
+                """
+                """closed_state = self._closed_list.contains_state_same_positions(cur_state)
+    
+                if closed_state is None:
+                    self._closed_list.add(cur_state)
+                    expanded_nodes = cur_state.expand(verbose=verbose)
+    
+                    expanded_nodes_not_in_frontier = []
+    
+                    for node in expanded_nodes:
+                        frontier_state = self._frontier.contains_state_same_positions(node)
+                        if frontier_state is None:
+                            expanded_nodes_not_in_frontier.append(node)
+                        else:
+                            # Check that the g-value is minor than the one present in the frontier
+                            if node.g_value() < frontier_state.g_value():
+                                self._frontier.update(node)
+    
+                    self._n_of_generated_nodes += len(expanded_nodes_not_in_frontier)
+                    self._n_of_expanded_nodes += 1
+                    self._frontier.add_list_of_states(expanded_nodes_not_in_frontier)"""
 
+                """
+                CASE 4
+                """
+                """self._closed_list.add(cur_state)
+                expanded_nodes = cur_state.expand(verbose=verbose)
+    
+                expanded_nodes_not_in_closed_list = []
+    
+                for node in expanded_nodes:
+                    if not self._closed_list.contains_state_same_positions(node):
+                        frontier_state = self._frontier.contains_state_same_positions(node)
+                        if frontier_state is None:
+                            expanded_nodes_not_in_closed_list.append(node)
+                        else:
+                            # Check that the g-value is minor than the one present in the frontier
+                            if node.g_value() < frontier_state.g_value():
+                                self._frontier.update(node)
+    
+                self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
+                self._n_of_expanded_nodes += 1
+                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
 
         if return_infos:
             output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,

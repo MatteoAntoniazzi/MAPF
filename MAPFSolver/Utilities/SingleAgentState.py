@@ -2,10 +2,14 @@ from .State import State
 
 
 class SingleAgentState(State):
+    """
+    Class representing a single agent state. It stores the agent position at a specific time step. As superclass of
+    State it has a g-value, an h-value, and the sum f-value, and the time step of the state.
+    """
+
     def __init__(self, problem_map, goal, position, solver_settings, parent=None):
         """
-        Class representing a single agent state. It stores the agent position at a specific time step. As superclass of
-        State it has a g-value, an h-value, and the sum f-value, and the time step of the state.
+        Initialize a single-agent state.
         :param problem_map: problem map.
         :param goal: goal position of the agent involved.
         :param position: position of the agent in the current state.
@@ -75,8 +79,7 @@ class SingleAgentState(State):
         """
         Compute the cost of the current state. (g-value)
         For the case in which the agent need to stay in the goal for a goal occupation time, the time spent in the goal
-        is not count in the cost. If the agent stays more than the goal occupation time needed the difference time is
-        instead counted.
+        is not count in the cost.
         """
         if self.is_root():
             self._g = 0
@@ -84,26 +87,17 @@ class SingleAgentState(State):
             list_of_states = [self]
             state = self
             while not state.is_root():
-                state = state.predecessor()
+                state = state.parent()
                 list_of_states.append(state)
 
             self._g = 0
-            if self._solver_settings.stay_at_goal():
-                for i, s in enumerate(list_of_states):
-                    if not s.goal_test():
-                        if i == 0:
-                            self._g = len(list_of_states) - 1
-                        else:
-                            self._g = len(list_of_states) - i
-                        break
-            else:
-                for i, s in enumerate(list_of_states):
-                    if not s.goal_test():
-                        if i == 0:
-                            self._g = len(list_of_states) - 1
-                        else:
-                            self._g = len(list_of_states) - i
-                        break
+            for i, s in enumerate(list_of_states):
+                if not s.goal_test():
+                    if i == 0:
+                        self._g = len(list_of_states) - 1
+                    else:
+                        self._g = len(list_of_states) - i
+                    break
 
     def goal_test(self):
         """
@@ -128,7 +122,9 @@ class SingleAgentState(State):
             for i in range(self._solver_settings.get_goal_occupation_time()):
                 if not state.goal_test():
                     return False
-                state = state.predecessor()
+                state = state.parent()
+                if not state:
+                    return False
             return True
 
     def is_gone(self):
@@ -145,7 +141,9 @@ class SingleAgentState(State):
             for i in range(self._solver_settings.get_goal_occupation_time()+1):
                 if not state.goal_test():
                     return False
-                state = state.predecessor()
+                state = state.parent()
+                if not state:
+                    return False
             return True
 
     def get_position(self):
@@ -171,18 +169,18 @@ class SingleAgentState(State):
             counter = self._solver_settings.get_goal_occupation_time()
             while node.goal_test() and counter > 0:
                 path.append(node._position)
-                node = node.predecessor()
+                node = node.parent()
                 counter -= 1
 
-        while node.predecessor() is not None: # Elimino gli extra che non mi servono.
-            if node.predecessor().goal_test():
-                node = node.predecessor()
+        while node.parent() is not None: # Elimino gli extra che non mi servono.
+            if node.parent().goal_test():
+                node = node.parent()
             else:
                 break
 
-        while node.predecessor() is not None:
+        while node.parent() is not None:
             path.append(node._position)
-            node = node.predecessor()
+            node = node.parent()
         path.append(node._position)
         path.reverse()
         return path

@@ -3,11 +3,9 @@ from MAPFSolver.SearchBasedAlgorithms.AStar.MultiAgentState import MultiAgentSta
 
 class ODState(MultiAgentState):
     """
-    This class represent the single state (node) object for the A* algorithm with Operator Decomposition (OD).
-    The state is a multi agent state, so it stores all the single agent states of each agent, and in addition it
-    contains up to one move assignment for every agent. It keeps track of the next agent to move.
-    The standard states are the ones where every agent has moved, while the intermediate states are the ones where only
-    a subset of agents has moved.
+    This class represent a state for the A* algorithm with Operator Decomposition (OD).
+    The state is a multi agent state, so it stores all the single agent states of each agent, and in addition it keeps
+    track of the next agent to move.
     """
 
     def __init__(self, single_agents_states, solver_settings, parent=None, to_move=0):
@@ -102,15 +100,6 @@ class ODState(MultiAgentState):
 
         return pos_list
 
-    def next_to_move(self):
-        """
-        Return the next agent to move.
-        """
-        if self._to_move >= len(self._single_agents_states) - 1:
-            return 0
-        else:
-            return self._to_move + 1
-
     def goal_test(self):
         """
         Return True if all agents have arrived to the goal position. Remember that it not consider the occupation time,
@@ -134,6 +123,8 @@ class ODState(MultiAgentState):
     def is_a_standard_state(self):
         """
         Return True if it is a standard state.
+        The standard states are the ones where every agent has moved, while the intermediate states are the ones where
+        only a subset of agents has moved.
         """
         return self._to_move == 0
 
@@ -150,23 +141,11 @@ class ODState(MultiAgentState):
             state = state.parent()
         return state
 
-"""
-Function to accelerate the process.
-It checks if I have some single state that is already completed so I avoid to expand it.
-
-    def skip_completed_states(self):
-        if self._to_move == 0:
-            while self._to_expand.is_completed():
-                self._to_move += 1
-                self._pre_state = self
-                self._to_expand = self.get_single_agent_states()[self._to_move]
-
-        if self._to_move > 0:
-            while self._to_expand.is_completed():
-                if self.next_to_move() == 0:
-                    return
-                else:
-                    self._to_move += 1
-                    self._to_expand = self.get_single_agent_states()[self._to_move]
-
-"""
+    def next_to_move(self):
+        """
+        Return the next agent to move.
+        """
+        if self._to_move >= len(self._single_agents_states) - 1:
+            return 0
+        else:
+            return self._to_move + 1

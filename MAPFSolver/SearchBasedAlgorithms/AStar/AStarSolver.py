@@ -56,9 +56,7 @@ class AStarSolver(AbstractSolver):
                 if verbose:
                     print("PROBLEM SOLVED: ", output_infos)
 
-                if return_infos:
-                    return paths, output_infos
-                return paths
+                return paths if not return_infos else (paths, output_infos)
 
             if not self._solver_settings.stay_at_goal():
                 # In case agents disappear at goals we cannot delete duplicates since can happen that an agent wait that
@@ -153,11 +151,10 @@ class AStarSolver(AbstractSolver):
                 self._n_of_expanded_nodes += 1
                 self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
 
-        if return_infos:
-            output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                      self._n_of_expanded_nodes, time.time() - start)
-            return [], output_infos
-        return []
+        output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                  self._n_of_expanded_nodes, time.time() - start)
+
+        return [] if not return_infos else ([], output_infos)
 
     def initialize_problem(self, problem_instance):
         """

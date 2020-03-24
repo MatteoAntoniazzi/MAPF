@@ -7,18 +7,7 @@ from MAPFSolver.Utilities.paths_processing import *
 
 class IDFramework(AbstractSolver):
     """
-    ID is an algorithm that is used in conjunction with a complete search algorithm such as A*, OD (Standley 2010), or
-    ICTS (Sharon et al. 2011). Since these search algorithms are all exponential in the number of agents, they are
-    effective only for small numbers of agents.
-    In order to solve larger problems, ID partitions the agents into several smaller travel groups in such a way that
-    the optimal paths found for each independent travel group do not conflict with the paths of other travel groups.
-    Therefore, the paths for all travel groups constitute a solution to the entire problem.
-    In simple words it works like this:
-    1. Solve optimally each agent separately
-    2. While some agents conflict
-        2.1. Try to avoid conflict, with the same cost (NOT IMPLEMENTED HERE)
-        2.2. Merge conflicting agents to one group
-        2.3. Solve optimally new group
+    Independence detection (ID) framework.
     """
 
     def __init__(self, solver, solver_settings):
@@ -47,7 +36,7 @@ class IDFramework(AbstractSolver):
         """
         start = time.time()
 
-        if not self.initialize_paths(problem_instance):
+        if not self.initialize_paths(problem_instance, time_out - (time.time() - start)):
             return False
 
         conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
@@ -55,12 +44,11 @@ class IDFramework(AbstractSolver):
         while conflict is not None:
 
             if time_out is not None:
-                if time.time() - start > time_out:
-                    if return_infos:
-                        output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                                  self._n_of_expanded_nodes, time.time() - start)
-                        return [], output_infos
-                    return []
+                if (time.time() - start) > time_out:
+                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                              self._n_of_expanded_nodes, time.time() - start)
+
+                    return [] if not return_infos else ([], output_infos)
 
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
 
@@ -68,11 +56,10 @@ class IDFramework(AbstractSolver):
                 conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                            self._solver_settings.is_edge_conflict())
             else:
-                if return_infos:
-                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                              self._n_of_expanded_nodes, time.time() - start)
-                    return [], output_infos
-                return []
+                output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                          self._n_of_expanded_nodes, time.time() - start)
+
+                return [] if not return_infos else ([], output_infos)
 
         paths = self._paths
         soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
@@ -85,27 +72,29 @@ class IDFramework(AbstractSolver):
         if verbose:
             print("PROBLEM SOLVED: ", output_infos)
 
-        if return_infos:
-            return self._paths, output_infos
-        return self._paths
+        return self._paths if not return_infos else (self._paths, output_infos)
 
-    def initialize_paths(self, problem_instance):
+    def initialize_paths(self, problem_instance, time_out=None):
         """
         Initialize the groups with singleton groups. The list problem will contains the single agent problem for each
         agent. Solve the problems in this way and return the paths (with possible conflicts).
+        :param problem_instance: instance of the problem to solve.
+        :param time_out: maximum amount of time for solving the problems.
+        :return:
         """
+        start = time.time()
+
         for agent in problem_instance.get_original_agents():
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            paths, output_infos = self._solver.solve(problem, return_infos=True)
+            paths, output_infos = self._solver.solve(problem, return_infos=True, time_out=time_out-(time.time() - start))
             self._n_of_generated_nodes += output_infos["generated_nodes"]
             self._n_of_expanded_nodes += output_infos["expanded_nodes"]
+            self._paths.extend(paths)
 
             if not paths:
                 return False
-
-            self._paths.extend(paths)
 
         return True
 
@@ -115,22 +104,18 @@ class IDFramework(AbstractSolver):
         When agents are all in the same independent group found by ID.
         """
         if not self.initialize_paths(problem_instance):
-            print("FFalse")
             return False
 
         # Check collisions
         conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                    self._solver_settings.is_edge_conflict())
         while conflict is not None:
-            print("BIG:", self._biggest_subset)
             if self._biggest_subset == len(problem_instance.get_agents()):
-                print("TRUE")
                 return True
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
             self.update_merged_paths(merged_problem)
             conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                        self._solver_settings.is_edge_conflict())
-        print("FALSE")
         return False
 
     def merge_group(self, conflicting_agents, problem_instance, verbose=False):

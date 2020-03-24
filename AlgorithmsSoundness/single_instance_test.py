@@ -17,7 +17,7 @@ problem_instance = ProblemInstance(problem_map, problem_agents)
 
 solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=False,
                                  goal_occupation_time=3, edge_conflict=True)
-solver = AStarODSolver(solver_settings)
+solver = ICTSSolver(solver_settings)
 
 paths = solver.solve(problem_instance, verbose=True, time_out=None)
 print(paths)

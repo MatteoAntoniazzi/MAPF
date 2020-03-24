@@ -1,7 +1,7 @@
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
-from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSNode import ICTSNode
-from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSQueue import ICTSQueue
+from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTNode import ICTNode
+from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTQueue import ICTQueue
 import time
 
 
@@ -125,12 +125,12 @@ class ICTSSolver(AbstractSolver):
         """
         Initialize the frontier and the closed list for the given problem.
         """
-        self._frontier = ICTSQueue()
-        self._closed_list = ICTSQueue()
+        self._frontier = ICTQueue()
+        self._closed_list = ICTQueue()
         self._n_of_generated_nodes = 1
         self._n_of_expanded_nodes = 0
 
-        starter_state = ICTSNode(problem_instance, self._solver_settings)
+        starter_state = ICTNode(problem_instance, self._solver_settings)
 
         self._frontier.add(starter_state)
 

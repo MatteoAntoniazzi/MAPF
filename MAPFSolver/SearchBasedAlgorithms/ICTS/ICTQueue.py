@@ -1,7 +1,7 @@
-from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTSNode import ICTSNode
+from MAPFSolver.SearchBasedAlgorithms.ICTS.ICTNode import ICTNode
 
 
-class ICTSQueue:
+class ICTQueue:
     """
     Structure used as queue for the Increasing Cost Tree Nodes.
     """
@@ -17,7 +17,7 @@ class ICTSQueue:
         Return True if the queue already contains the same node.
         :param item: instance of ICTSNode.
         """
-        assert isinstance(item, ICTSNode)
+        assert isinstance(item, ICTNode)
         for node in self._queue:
             if item.path_costs_vector() == node.path_costs_vector():
                 return True
@@ -28,7 +28,7 @@ class ICTSQueue:
         Add an item node to the queue.
         :param item: node to add.
         """
-        assert isinstance(item, ICTSNode)
+        assert isinstance(item, ICTNode)
         self._queue.append(item)
 
     def add_list_of_nodes(self, node_list):

@@ -8,7 +8,7 @@ from MAPFSolver.Utilities.AStar import AStar
 import itertools
 
 
-class ICTSNode:
+class ICTNode:
     """
     This class represent a node of the Increasing Cost Tree.
     Every node s consists of a k-vector of individual path costs, s = [C 1 , C 2 , . . . C k ] one cost per agent. Node
@@ -19,19 +19,27 @@ class ICTSNode:
         self._problem_instance = problem_instance
         self._solver_settings = solver_settings
         self._parent = parent
+        self._path_costs_vector = path_costs_vector
 
         if parent is None:
-            self._path_costs_vector = self.compute_root_path_costs_vector()
-            # Makespan minimization attempt
-            if self._solver_settings.get_objective_function() == "Makespan":
-                max_value = max(self._path_costs_vector)
-                for i, agent in enumerate(self._problem_instance.get_agents()):
-                    self._path_costs_vector[i] = max_value
-        else:
-            self._path_costs_vector = path_costs_vector
+            self.initialize_root()
 
         self._solution = None
         self._mdd_vector = None
+
+    def initialize_root(self):
+        """
+        Initialize the root node. The output of this function will be different based on the objective function we are
+        using.
+        """
+        if self._solver_settings.get_objective_function() == "SOC":
+            self._path_costs_vector = self.compute_optimal_costs_vector()
+
+        if self._solver_settings.get_objective_function() == "Makespan":
+            optimal_costs_vector = self.compute_optimal_costs_vector()
+            max_value = max(optimal_costs_vector)
+            for i, agent in enumerate(self._problem_instance.get_agents()):
+                self._path_costs_vector[i] = max_value
 
     def expand(self):
         """
@@ -53,20 +61,15 @@ class ICTSNode:
             for i, agent in enumerate(self._problem_instance.get_agents()):
                 path_costs = self._path_costs_vector.copy()
                 path_costs[i] += 1
-                candidate_list.append(ICTSNode(self._problem_instance, self._solver_settings,
-                                               path_costs_vector=path_costs, parent=self))
+                candidate_list.append(ICTNode(self._problem_instance, self._solver_settings,
+                                              path_costs_vector=path_costs, parent=self))
 
-        # Adesso faccio così (10, 10, 10) espando --> (11, 11, 11) però non so se è il metodo migliore.
-        # Se parte con (8, 9, 10) lo trasformo subito in (10, 10, 10)
         if self._solver_settings.get_objective_function() == "Makespan":
             path_costs = self._path_costs_vector.copy()
-            print(self._path_costs_vector)
             for i, agent in enumerate(self._problem_instance.get_agents()):
                 path_costs[i] += 1
-            print("INCREEEEEEEEEEMMMMMMMMMMMEEEEEEEEENTTTTTOOOOOOOOOOOOOOOOOO")
-            print(self._path_costs_vector)
-            candidate_list.append(ICTSNode(self._problem_instance, self._solver_settings,
-                                           path_costs_vector=path_costs, parent=self))
+            candidate_list.append(ICTNode(self._problem_instance, self._solver_settings, path_costs_vector=path_costs,
+                                          parent=self))
 
         return candidate_list
 
@@ -153,9 +156,9 @@ class ICTSNode:
 
         return None
 
-    def compute_root_path_costs_vector(self):
+    def compute_optimal_costs_vector(self):
         """
-        Returns the the costs vector of the first node. It will have all the optimal costs for each agent.
+        Returns the the optimal costs vector. It will have all the optimal costs for each agent.
         """
         path_costs_vector = []
         solver = AStar(self._solver_settings)

@@ -49,6 +49,15 @@ def check_conflicts_with_type(paths, stay_in_goal, is_edge_conflict):
                 return 'vertex_conflict', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]
             reservation_table[(pos, ts)] = ag_i
 
+    """max_t = max([len(path)-1 for path in paths])
+
+    for ts in range(max_t):
+        for ag_i, path in enumerate(paths):
+            pos = path[ts]
+            if reservation_table.get((pos, ts)) is not None:
+                return 'vertex_conflict', [(reservation_table[(pos, ts)], pos, ts), (ag_i, pos, ts)]
+            reservation_table[(pos, ts)] = ag_i"""
+
     if is_edge_conflict:
         for ag_i, path in enumerate(paths):
             for ts, pos in enumerate(path):

@@ -94,7 +94,6 @@ class ConstraintTreeNode:
 
         node_a, node_b = None, None
 
-
         if conflict_type == 'vertex_conflict':
             agent, pos, ts = constraints[0]
             constraints_a = self._vertex_constraints.copy()

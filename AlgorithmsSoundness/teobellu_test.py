@@ -1,13 +1,19 @@
+import pathlib
+
 from MAPFSolver import *
 
-min_n_of_agents = 3
-max_n_of_agents = 5
-buckets_size = 20
+min_n_of_agents = 12
+max_n_of_agents = 12
+buckets_size = 500
 
 
-problem_map = generate_random_map(8, 8, 0)
-problem_agents_buckets = generate_agent_buckets_with_coupling_mechanism(problem_map, True, min_n_of_agents,
-                                                                        max_n_of_agents, buckets_size)
+root_path = pathlib.Path(__file__).parent.parent.parent
+map_path = str(root_path / "MAPF/Maps/test_maps/" / "teobellu.map")
+print(map_path)
+
+problem_map = load_map_from_file(map_path)
+
+problem_agents_buckets = generate_random_agent_buckets(problem_map, min_n_of_agents, max_n_of_agents, buckets_size)
 
 print("----------------------------------------------------------------------------------------------------")
 for k in range(max_n_of_agents - min_n_of_agents + 1):
@@ -22,15 +28,15 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
     print_progress_bar(0, buckets_size, prefix=prefix_str, suffix='Complete', length=50)
     for b in range(buckets_size):
         problem_instance = ProblemInstance(problem_map, problem_agents_buckets[k][b])
-        solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
-                                         goal_occupation_time=1, edge_conflict=True)
+        solver_settings = SolverSettings(heuristic="Manhattan", objective_function="SOC", stay_at_goal=True,
+                                         goal_occupation_time=1, edge_conflict=False)
 
         #print(problem_instance)
 
         #solver = IDFramework(ICTSSolver(solver_settings), solver_settings)
         solver = CBSSolver(solver_settings)
 
-        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True, time_out=30)
+        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True, time_out=20)
 
         if paths:
 
@@ -42,8 +48,6 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
             total_exp_nodes += output_infos["expanded_nodes"]
             total_time += output_infos["computation_time"]
             total_cost += output_infos["sum_of_costs"]
-
-            print(output_infos["generated_nodes"])
 
             #k_primo += biggest_subsest
 

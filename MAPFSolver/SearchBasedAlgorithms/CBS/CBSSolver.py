@@ -50,10 +50,12 @@ class CBSSolver(AbstractSolver):
 
             if verbose:
                 print("PROBLEM SOLVED: ", output_infos)
+        else:
+            output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                      self._n_of_expanded_nodes, time.time() - start)
+            return [] if not return_infos else ([], output_infos)
 
-        if return_infos:
-            return paths, output_infos
-        return paths
+        return paths if not return_infos else (paths, output_infos)
 
     def high_level_search(self, verbose=False, time_out=None):
         """

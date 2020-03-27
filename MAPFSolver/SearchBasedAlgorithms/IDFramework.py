@@ -88,7 +88,10 @@ class IDFramework(AbstractSolver):
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            paths, output_infos = self._solver.solve(problem, return_infos=True, time_out=time_out-(time.time() - start))
+            if time_out:
+                paths, output_infos = self._solver.solve(problem, return_infos=True, time_out=time_out-(time.time() - start))
+            else:
+                paths, output_infos = self._solver.solve(problem, return_infos=True)
             self._n_of_generated_nodes += output_infos["generated_nodes"]
             self._n_of_expanded_nodes += output_infos["expanded_nodes"]
             self._paths.extend(paths)
@@ -185,7 +188,7 @@ class IDFramework(AbstractSolver):
 
         return True
 
-    def get_some_conflicting_ids_for_buckets(self, problem_instance, min_n_of_agents, max_n_of_agents):
+    def get_some_conflicting_ids_for_buckets(self, problem_instance, min_n_of_agents, max_n_of_agents, time_out):
         """
         This function generate buckets from a min to a max with the ids of the conflicting agents.
         This function returns the buckets from the min to at most the max unless a problem bigger than the max is found.
@@ -197,16 +200,20 @@ class IDFramework(AbstractSolver):
         :param max_n_of_agents: maximum value of number of agent for which we want a bucket.
         :return: if found k list of agent ids otherwise it returns None.
         """
+        start = time.time()
+
         list_of_buckets = []
         counter = min_n_of_agents
         merged_problem = None
 
-        if not self.initialize_paths(problem_instance):
+        if not self.initialize_paths(problem_instance, time_out=time_out-(time.time() - start)):
             return False
 
         while counter < (max_n_of_agents + 1):
             if merged_problem is not None:
-                self.update_merged_paths(merged_problem)
+                if not self.update_merged_paths(merged_problem, time_out=time_out-(time.time() - start)):
+                    return False
+
             conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                        self._solver_settings.is_edge_conflict())
 

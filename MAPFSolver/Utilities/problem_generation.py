@@ -46,6 +46,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
     :return: k list of buckets of agents.
     """
     from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
+    from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
     from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
     from .SolverSettings import SolverSettings
     from .useful_functions import print_progress_bar
@@ -77,7 +78,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
             a_star_solver = AStarSolver(solver_settings)
             id_framework = IDFramework(a_star_solver, solver_settings)
             returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,
-                                                                                         max_n_of_agents, 60)
+                                                                                         max_n_of_agents, 600)
 
             if returning_buckets_of_ids:
                 single_buckets_of_ids.extend(returning_buckets_of_ids)
@@ -181,19 +182,19 @@ def generate_random_agents(problem_map, n_of_agents):
     for i in range(n_of_agents):
         assert free_start_lst and free_goal_lst, "No more free spaces for placing the agents..."
 
-        """r = random.randrange(len(free_start_lst))
+        r = random.randrange(len(free_start_lst))
         random_start = free_start_lst[r]
         free_start_lst.remove(random_start)
 
         r = random.randrange(len(free_goal_lst))
         random_goal = free_goal_lst[r]
-        free_goal_lst.remove(random_goal)"""
+        free_goal_lst.remove(random_goal)
 
-        random_start = random.sample(free_start_lst, 1)[0]
+        """random_start = random.sample(free_start_lst, 1)[0]
         free_start_lst.remove(random_start)
 
         random_goal = random.sample(free_goal_lst, 1)[0]
-        free_goal_lst.remove(random_goal)
+        free_goal_lst.remove(random_goal)"""
 
         agents.append(Agent(i, random_start, random_goal))
 

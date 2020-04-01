@@ -1,8 +1,8 @@
 from MAPFSolver import *
 
-min_n_of_agents = 3
-max_n_of_agents = 5
-buckets_size = 20
+min_n_of_agents = 6
+max_n_of_agents = 6
+buckets_size = 50
 
 
 problem_map = generate_random_map(8, 8, 0)
@@ -28,9 +28,9 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
         #print(problem_instance)
 
         #solver = IDFramework(ICTSSolver(solver_settings), solver_settings)
-        solver = CBSSolver(solver_settings)
+        solver = ICTSSolver(solver_settings)
 
-        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True, time_out=30)
+        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True, time_out=300)
 
         if paths:
 
@@ -71,3 +71,4 @@ frame.pack()
 problem_instance.plot_on_gui(frame, paths=paths)
 
 root.mainloop()"""
+

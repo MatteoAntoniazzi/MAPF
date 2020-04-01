@@ -62,12 +62,12 @@ class ICTSSolver(AbstractSolver):
             """
             NORMAL
             """
-            if not self._closed_list.contains_node(cur_state):
+            """if not self._closed_list.contains_node(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand()
                 self._n_of_generated_nodes += len(expanded_nodes)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_nodes(expanded_nodes)
+                self._frontier.add_list_of_nodes(expanded_nodes)"""
 
             """
             CASE 2
@@ -105,7 +105,7 @@ class ICTSSolver(AbstractSolver):
             """
             CASE 4
             """
-            """self._closed_list.add(cur_state)
+            self._closed_list.add(cur_state)
             expanded_nodes = cur_state.expand()
 
             expanded_nodes_not_in_closed_list = []
@@ -115,7 +115,7 @@ class ICTSSolver(AbstractSolver):
 
             self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
             self._n_of_expanded_nodes += 1
-            self._frontier.add_list_of_nodes(expanded_nodes_not_in_closed_list)"""
+            self._frontier.add_list_of_nodes(expanded_nodes_not_in_closed_list)
 
         if return_infos:
             return [], None

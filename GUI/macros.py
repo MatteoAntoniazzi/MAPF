@@ -53,7 +53,7 @@ COLORS_LIST =["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF", 
 
 HEURISTICS_MODES = [
     ("Manhattan Distance", "Manhattan"),
-    ("Reverse Resumable A*", "RRA")
+    ("Abstract Distance with RRA*", "AbstractDistance")
 ]
 
 OBJECTIVE_FUNCTION_MODES = [

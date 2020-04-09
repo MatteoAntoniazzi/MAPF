@@ -1,7 +1,7 @@
 import time
 
+from MAPFSolver.SearchBasedAlgorithms.ICTS.MDDQueue import MDDQueue
 from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDDNode import TotalMDDNode
-from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDDQueue import TotalMDDQueue
 
 
 class TotalMDD:
@@ -19,10 +19,10 @@ class TotalMDD:
         self._time_out = time_out
 
         self._paths = []
-        self._nodes = TotalMDDQueue()
-        self.build_mdd()
+        self._nodes = MDDQueue()
+        self.build_total_mdd()
 
-    def build_mdd(self):
+    def build_total_mdd(self):
         """
         Build the total multi-value decision diagram.
         """
@@ -36,7 +36,7 @@ class TotalMDD:
         root = TotalMDDNode(self._problem_map, self._solver_settings, list_of_root_mdd_nodes)
         self._nodes.add(root)
 
-        frontier = TotalMDDQueue()
+        frontier = MDDQueue()
         frontier.add(root)
 
         while not frontier.is_empty():
@@ -52,7 +52,7 @@ class TotalMDD:
                 return True
 
             if cur_node.goal_test():
-                self._paths = cur_node.get_path_to_root()
+                self._paths = cur_node.get_paths_to_root()
                 return True
 
             expanded_nodes = cur_node.expand()

@@ -44,7 +44,7 @@ class ICTSSolver(AbstractSolver):
             temp_time_out = None if time_out is None else time_out-(time.time() - start)
             cur_state.initialize_node(verbose=verbose, time_out=temp_time_out)
 
-            if cur_state.is_goal():
+            if cur_state.goal_test():
                 paths = cur_state.solution()
                 soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
                                     self._solver_settings.get_goal_occupation_time())

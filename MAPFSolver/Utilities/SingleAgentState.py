@@ -32,7 +32,7 @@ class SingleAgentState(State):
         :return: the list of possible next states.
         """
         expanded_nodes_list = [self.wait_state()]
-        possible_moves = self._map.get_neighbours(self._position)
+        possible_moves = self._map.neighbours(self._position)
         for i in possible_moves:
             expanded_nodes_list.append(SingleAgentState(self._map, self._goal, i, self._solver_settings, parent=self))
         return expanded_nodes_list

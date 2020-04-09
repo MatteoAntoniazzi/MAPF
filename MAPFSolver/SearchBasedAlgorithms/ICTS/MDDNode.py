@@ -19,7 +19,7 @@ class MDDNode:
         Expand the current state. It computes all the possible moves from that position.
         :return: the list of possible next states.
         """
-        possible_moves = self._problem_map.get_neighbours(self._position)
+        possible_moves = self._problem_map.neighbours(self._position)
         possible_moves.insert(0, self._position)   # Wait move
 
         expanded_nodes_list = []
@@ -80,22 +80,6 @@ class MDDNode:
             return [path]
         else:
             return paths
-
-    def build_children_descendant(self):
-        """
-        Complete the building of the MDD. It adds at each node in the final MDD the children starting from the bottom.
-        """
-        node = self
-
-        while node.parent() is not None and len(node.parent()) == 1:
-            node.parent()[0].add_child(node)
-            node = node.parent()[0]
-
-        if node.parent() is not None:
-            if len(node.parent()) > 1:
-                for parent in node.parent():
-                    parent.add_child(node)
-                    parent.build_children_descendant()
 
     def add_parent(self, parent):
         """

@@ -76,10 +76,10 @@ class TotalMDDNode:
                 return False
         return True
 
-    def get_path_to_root(self):
+    def get_paths_to_root(self):
         """
-        Function used to get a possible path from this node going up. The paths can be more than one since
-        each node can have more than one parent. Despite this it'll return only a possible path, if exists.
+        Function used to get a possible set of paths from this node going up. This can be more than one since
+        each node can have more than one parent. Despite this it'll return only a possible set of paths, if exists.
         """
         list_of_paths = []
         for agent in range(len(self._list_of_mdd_nodes)):

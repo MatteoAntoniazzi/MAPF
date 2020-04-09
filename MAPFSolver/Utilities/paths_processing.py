@@ -1,16 +1,16 @@
-def check_conflicts(paths, stay_in_goal, is_edge_conflict):
+def check_conflicts(paths, stay_at_goal, is_edge_conflict):
     """
     Return the two agents ids that has a conflict. In order to identify the conflicts correctly we need to normalize
     the paths lengths. If stay in goal is True I need to normalized the vector since the agents will stay in the goal
     even the next time steps.
     :param paths: paths where check conflicts.
-    :param stay_in_goal: True if the agents stays in the goal after arrived. The paths should stay in goal at the end
+    :param stay_at_goal: True if the agents stays in the goal after arrived. The paths should stay in goal at the end
     one time step
     :param is_edge_conflict: if True also the edge conflicts are checked.
     :return: the two conflicting agents.
     """
     reservation_table = dict()
-    if stay_in_goal:
+    if stay_at_goal:
         paths = normalize_paths_lengths(paths)
 
     for ag_i, path in enumerate(paths):
@@ -33,7 +33,7 @@ def check_conflicts(paths, stay_in_goal, is_edge_conflict):
 
 def check_conflicts_with_type(paths, stay_in_goal, is_edge_conflict):
     """
-    Returns a couple (type of constraint, new child constraints) or None if the state has no conflicts:
+    Returns a couple (type of constraint, new children constraints) or None if the state has no conflicts:
     - In case a vertex conflict is found it will returns the two child conflicts:
     Example: (ai, aj, v, t) -> as [(ai, v, t), (aj, v, t)]
     - In case an edge conflict is found it will returns the two child conflicts:

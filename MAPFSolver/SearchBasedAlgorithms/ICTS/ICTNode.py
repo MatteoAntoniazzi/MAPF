@@ -121,41 +121,6 @@ class ICTNode:
 
         return self._solution
 
-    def compute_solution_2(self, verbose=False):
-        """
-        Compute the combined mdd by iterate over all the possible combinations of paths. Then check if exists a valid
-        solution and in that case it returns it.
-        This version is slower than the one that used the total mdd
-        """
-        if verbose:
-            print("Computing total MDD...", end=' ')
-
-        candidate_paths = []
-        for mdd in self._mdd_vector:
-            candidate_paths.append(mdd.get_paths())
-        candidate_solutions = list(itertools.product(*candidate_paths))
-
-        if verbose:
-            print("Total MDD computed.")
-
-        prefix = "Check validity of " + str(len(candidate_solutions)) + " number of solutions..."
-        if verbose:
-            print_progress_bar(0, len(candidate_solutions), prefix=prefix, suffix='Complete', length=50)
-
-        for i, solution in enumerate(candidate_solutions):
-            if self.check_validity(solution):
-                self._solution = solution
-                if verbose:
-                    print("\nSolution found!")
-                return solution
-            if verbose:
-                print_progress_bar(i + 1, len(candidate_solutions), prefix=prefix, suffix='Complete', length=50)
-
-        if verbose:
-            print("Solution not found!")
-
-        return None
-
     def compute_optimal_costs_vector(self):
         """
         Returns the the optimal costs vector. It will have all the optimal costs for each agent.
@@ -171,7 +136,7 @@ class ICTNode:
             path_costs_vector.append(cost)
         return path_costs_vector
 
-    def is_goal(self):
+    def goal_test(self):
         """
         Returns true if in the node a valid solution is found. Remember to call initialize_node() method before.
         """
@@ -203,18 +168,53 @@ class ICTNode:
         if self._solver_settings.get_objective_function() == "Makespan":
             return max(self._path_costs_vector)
 
-    def check_validity(self, solution):
-        """
-        Check if a solution has no conflicts.
-        Will be checked that:
-            1. no agents occupy the same position in the same time step;
-            2. no agent overlap (switch places).
-        """
-        conflicts = check_conflicts(solution, self._solver_settings.stay_at_goal(),
-                                    self._solver_settings.is_edge_conflict())
-        if conflicts is None:
-            return True
-        return False
-
     def __str__(self):
         return "{ NODE:" + str(self._path_costs_vector) + " }"
+
+
+"""def compute_solution_2(self, verbose=False):
+    Compute the combined mdd by iterate over all the possible combinations of paths. Then check if exists a valid
+    solution and in that case it returns it.
+    This version is slower than the one that used the total mdd
+    
+    if verbose:
+        print("Computing total MDD...", end=' ')
+
+    candidate_paths = []
+    for mdd in self._mdd_vector:
+        candidate_paths.append(mdd.get_paths())
+    candidate_solutions = list(itertools.product(*candidate_paths))
+
+    if verbose:
+        print("Total MDD computed.")
+
+    prefix = "Check validity of " + str(len(candidate_solutions)) + " number of solutions..."
+    if verbose:
+        print_progress_bar(0, len(candidate_solutions), prefix=prefix, suffix='Complete', length=50)
+
+    for i, solution in enumerate(candidate_solutions):
+        if self.check_validity(solution):
+            self._solution = solution
+            if verbose:
+                print("\nSolution found!")
+            return solution
+        if verbose:
+            print_progress_bar(i + 1, len(candidate_solutions), prefix=prefix, suffix='Complete', length=50)
+
+    if verbose:
+        print("Solution not found!")
+
+    return None"""
+
+"""def check_validity(self, solution):
+    Check if a solution has no conflicts.
+    Will be checked that:
+        1. no agents occupy the same position in the same time step;
+        2. no agent overlap (switch places).
+        
+    conflicts = check_conflicts(solution, self._solver_settings.stay_at_goal(),
+                                self._solver_settings.is_edge_conflict())
+    if conflicts is None:
+        return True
+    return False"""
+

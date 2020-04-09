@@ -14,7 +14,7 @@ class Map:
         self._w = w
         self._obstacles_xy = obstacles
 
-    def get_neighbours(self, xy):
+    def neighbours(self, xy):
         """
         Returns the positions of the neighbours in (x, y) Coordinates. It considers as neighbours only the horizontal
         and vertical neighbours, not the traversals ones, so it'll move left, right, up and down.

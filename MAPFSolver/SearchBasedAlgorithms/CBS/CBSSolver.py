@@ -38,7 +38,6 @@ class CBSSolver(AbstractSolver):
         self.initialize_problem(problem_instance)
 
         paths = self.high_level_search(verbose=verbose, time_out=time_out)
-        output_infos = None
 
         if paths:
             soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),

@@ -36,8 +36,12 @@ class IDFramework(AbstractSolver):
         """
         start = time.time()
 
-        if not self.initialize_paths(problem_instance, time_out - (time.time() - start)):
-            return False
+        if time_out is not None:
+            if not self.initialize_paths(problem_instance, time_out - (time.time() - start)):
+                return False
+        else:
+            if not self.initialize_paths(problem_instance):
+                return False
 
         conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                    self._solver_settings.is_edge_conflict())
@@ -52,14 +56,25 @@ class IDFramework(AbstractSolver):
 
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
 
-            if self.update_merged_paths(merged_problem, time_out - (time.time() - start)):
-                conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
-                                           self._solver_settings.is_edge_conflict())
-            else:
-                output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                          self._n_of_expanded_nodes, time.time() - start)
+            if time_out is not None:
+                if self.update_merged_paths(merged_problem, time_out - (time.time() - start)):
+                    conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
+                                               self._solver_settings.is_edge_conflict())
+                else:
+                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                              self._n_of_expanded_nodes, time.time() - start)
 
-                return [] if not return_infos else ([], output_infos)
+                    return [] if not return_infos else ([], output_infos)
+
+            else:
+                if self.update_merged_paths(merged_problem):
+                    conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
+                                               self._solver_settings.is_edge_conflict())
+                else:
+                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                              self._n_of_expanded_nodes, time.time() - start)
+
+                    return [] if not return_infos else ([], output_infos)
 
         paths = self._paths
         soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),

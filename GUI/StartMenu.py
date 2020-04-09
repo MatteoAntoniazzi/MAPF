@@ -57,6 +57,7 @@ class StartMenu:
         self.selected_change_scene_instances_button_text = StringVar()
         self.edge_conflicts_var = BooleanVar()
         self.stay_in_goal_var = BooleanVar()
+        self.time_out_var = IntVar()
 
         self.initialize_variables()
 
@@ -67,6 +68,7 @@ class StartMenu:
         # Settings Frame: placed in the left part of the Frame, it contains all the settings that can be selected
         self.settings_frame = Frame(self.frame, width=SETTINGS_FRAME_WIDTH, height=SETTINGS_FRAME_HEIGHT)
         self.settings_frame.pack_propagate(False)
+        self.settings_frame.bind("<Button-1>", self.callback)
         self.settings_frame.pack(fill=Y, expand=False, side=LEFT)
 
         # Simulation Frame: placed in the right part of the frame, it will display the MAPF simulation
@@ -78,6 +80,7 @@ class StartMenu:
 
         # Choose Map Frame: placed in the left part of the Settings Frame, it contains all the possible maps
         self.choose_map_frame = Frame(self.settings_frame)
+        self.choose_map_frame.bind("<Button-1>", self.callback)
         self.choose_map_frame.pack(fill=Y, padx=10, pady=2, side=LEFT)
 
         # Choose Map Canvas: placed inside the Choose Map Frame
@@ -88,11 +91,15 @@ class StartMenu:
 
         # Algorithm Settings Frame: placed in the right part of the Settings Frame, it contains all the settings
         self.algorithm_settings_frame = Frame(self.settings_frame)
+        self.algorithm_settings_frame.bind("<Button-1>", self.callback)
         self.algorithm_settings_frame.pack(fill=Y, padx=20, pady=5, side=LEFT)
 
         self.algorithm_settings_frame_initialization()
 
         self.do_loop()
+
+    def callback(self, event):
+        self.frame.focus_set()
 
     def initialize_variables(self):
         """
@@ -110,6 +117,7 @@ class StartMenu:
         self.selected_change_scene_instances_button_text.set("NEXT SCENE")
         self.edge_conflicts_var.set(True)
         self.stay_in_goal_var.set(True)
+        self.time_out_var.set(0)
 
     def choose_map_frame_initialization(self):
         """
@@ -189,7 +197,7 @@ class StartMenu:
         lbl_title = Label(self.algorithm_settings_frame, text="OBJECTIVE FUNCTION", font=self.font_titles, fg=self.color_titles)
         lbl_title.pack(anchor=W, pady=self.pady_titles)
 
-        # Heuristics Radiobuttons
+        # Objective function Radiobuttons
         for text, mode in OBJECTIVE_FUNCTION_MODES:
             b = Radiobutton(self.algorithm_settings_frame, text=text, variable=self.selected_objective_function_var,
                             borderwidth=0, value=mode)
@@ -237,10 +245,22 @@ class StartMenu:
         self.buttons_list.append(edge_button)
         edge_button.pack(anchor=W)
 
+        # Time out Label
+        time_out_label = Label(self.algorithm_settings_frame, text="TIME OUT", font=self.font_titles, fg=self.color_titles)
+        time_out_label.pack(anchor=W, pady=self.pady_titles)
+
+        # Time out canvas
+        time_out_canvas = Canvas(self.algorithm_settings_frame, highlightthickness=0)
+        time_out_canvas.pack(fill=X)
+        self.initialize_time_out_canvas(time_out_canvas)
+
         # Prepare Button
         prepare_button = Button(self.algorithm_settings_frame, text="PREPARE", command=self.prepare_simulation_function)
         self.buttons_list.append(prepare_button)
         prepare_button.pack(anchor=E, pady=self.pady_titles*2)
+
+    def fun(self):
+        print(self.time_out_var.get())
 
     def initialize_permanence_in_goal_canvas(self, canvas):
         """
@@ -249,8 +269,8 @@ class StartMenu:
         # Load button images
         root_path = pathlib.Path(__file__).parent
 
-        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (30, 30))
-        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (30, 30))
+        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (20, 20))
+        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (20, 20))
 
         # Goal Occupation Time Down Button
         self.goal_occupation_time_down_button = Button(canvas, image=arrow_down_img,
@@ -296,10 +316,10 @@ class StartMenu:
         # Load button images
         root_path = pathlib.Path(__file__).parent
 
-        arrow_right_img = self.load_image(root_path / "Images/arrow_right.png", (30, 30))
-        arrow_left_img = self.load_image(root_path / "Images/arrow_left.png", (30, 30))
-        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (30, 30))
-        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (30, 30))
+        arrow_right_img = self.load_image(root_path / "Images/arrow_right.png", (20, 20))
+        arrow_left_img = self.load_image(root_path / "Images/arrow_left.png", (20, 20))
+        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (20, 20))
+        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (20, 20))
 
         # Change Scene Button
         scene_down_button = Button(canvas, image=arrow_left_img, command=self.change_scene_button)
@@ -338,8 +358,8 @@ class StartMenu:
         # Load button images
         root_path = pathlib.Path(__file__).parent
 
-        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (30, 30))
-        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (30, 30))
+        arrow_up_img = self.load_image(root_path / "Images/arrow_up.png", (20, 20))
+        arrow_down_img = self.load_image(root_path / "Images/arrow_down.png", (20, 20))
 
         # Number of Agents Down Button
         n_of_agents_down_button = Button(canvas, image=arrow_down_img, command=self.n_of_agents_down_button)
@@ -362,6 +382,18 @@ class StartMenu:
         self.buttons_list.append(change_scene_instances_button)
         change_scene_instances_button.pack(side=LEFT, padx=(50, 0))
 
+    def initialize_time_out_canvas(self, canvas):
+        """
+        Initialize the time out Canvas
+        """
+        # Time out entry
+        time_out_entry = Entry(canvas, textvariable=self.time_out_var, width=4, highlightthickness=0)
+        time_out_entry.pack(side=LEFT, padx=0)
+
+        # seconds label
+        seconds_lbl = Label(canvas, text="seconds")
+        seconds_lbl.pack(side=LEFT, padx=0)
+
     def prepare_simulation_function(self):
         """
         Launch the simulation and display it on the Simulation Frame.
@@ -372,7 +404,7 @@ class StartMenu:
         # Create an instance of the class SolverSettings
         solver_settings = SolverSettings(self.selected_heuristic_var.get(), self.selected_objective_function_var.get(),
                                          self.stay_in_goal_var.get(), self.selected_goal_occupation_time.get(),
-                                         self.edge_conflicts_var.get())
+                                         self.edge_conflicts_var.get(), self.time_out_var.get())
 
         # Prepare to show the simulation on the given frame
         prepare_simulation(self.reader, self.simulation_frame, self.selected_algorithm_var.get(),

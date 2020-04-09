@@ -65,7 +65,7 @@ class MultiAgentState(State):
         current_positions = self.get_positions_list()
         next_positions = multi_state.get_positions_list()
 
-        next_active_positions = multi_state.get_active_positions_list()
+        next_active_positions = multi_state.get_active_positions()
         if len(next_active_positions) != len(set(next_active_positions)):
             return True
 
@@ -108,7 +108,7 @@ class MultiAgentState(State):
 
         return colliding_robots
 
-    def get_active_positions_list(self):
+    def get_active_positions(self):
         """
         Return the list of positions occupied by the agents.
         """

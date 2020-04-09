@@ -8,7 +8,7 @@ class SolverSettings:
     """
 
     def __init__(self, heuristic="Manhattan", objective_function="SOC", stay_at_goal=True, goal_occupation_time=1,
-                 edge_conflict=True):
+                 edge_conflict=True, time_out=None):
         """
         Initialization of the variables representing the solver settings.
         :param heuristic: heuristic used. ("Manhattan" or "Abstract Distance with RRA*")
@@ -25,6 +25,7 @@ class SolverSettings:
         self._stay_at_goal = stay_at_goal
         self._goal_occupation_time = goal_occupation_time
         self._edge_conflict = edge_conflict
+        self._time_out = time_out
 
         assert self._goal_occupation_time > 0, "Goal occupation time must be greater than zero!"
 
@@ -78,6 +79,12 @@ class SolverSettings:
         Return True if the edge conflicts are considered in addition to the vertex conflicts.
         """
         return self._edge_conflict
+
+    def get_time_out(self):
+        """
+        Return the time out value. How much the solver will run at max.
+        """
+        return self._time_out
 
     def __str__(self):
         return "Heuristics: " + self._heuristic_str + ".\tObjective function: " + str(self._objective_function) + \

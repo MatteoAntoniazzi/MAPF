@@ -20,11 +20,12 @@ class MDD:
         self._agent = agent
         self._cost = cost
         self._solver_settings = solver_settings
-        self._root = None
-        self._nodes = MDDQueue()
-        self.build_mdd()
 
+        self._nodes = MDDQueue()
+        self._root = None
         self._goal_node = None
+
+        self.build_mdd()
 
     def build_mdd(self):
         """
@@ -46,7 +47,7 @@ class MDD:
             if cur_node.time_step() == self._cost:
                 if cur_node.goal_test():
                     self._goal_node = cur_node
-                    cur_node.build_children_descendant()
+                    build_children_descendant(cur_node)
 
             expanded_nodes = cur_node.expand()
 
@@ -76,3 +77,25 @@ class MDD:
         Returns the max cost of this MDD.
         """
         return self._cost
+
+
+def build_children_descendant(goal_node):
+    """
+    Complete the building of the MDD. It adds at each node in the final MDD the children starting from the bottom.
+    Because we need to keep only the nodes involved in paths that ends in the goal state. So we construct this MDD
+    by starting from the bottom and going up, adding for each node the list of valid children. Since we start from
+    we just need to add the nodes we encounter going up.
+    This in order to have a way to going down through the nodes starting from the root.
+    """
+    node = goal_node
+
+    while node.parent() is not None and len(node.parent()) == 1:
+        node.parent()[0].add_child(node)
+        node = node.parent()[0]
+
+    if node.parent() is not None:
+        if len(node.parent()) > 1:
+            for parent in node.parent():
+                parent.add_child(node)
+                build_children_descendant(parent)
+

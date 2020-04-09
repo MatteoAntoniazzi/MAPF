@@ -39,17 +39,10 @@ problem_instance = ProblemInstance(problem_map, problem_agents)
 solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
                                  goal_occupation_time=1, edge_conflict=False, time_out=1)
 #solver = IDFramework(AStarSolver(solver_settings), solver_settings)
-solver = MStarSolver(solver_settings)
+solver = AStarSolver(solver_settings)
 
 paths = solver.solve(problem_instance, verbose=True)
 for i, path in enumerate(paths):
     print("PATH", i, ": ", path)
 
 plot_paths(problem_instance, solver_settings, paths)
-
-
-'''
-RESULTS:    stay        not stay    1       2       3       4       5
-A*:         30,9                    30,10   30,9    30,9    30,9    30,9
-A*+OD:      30,10                   30,10   30,10   30,10   30,10   30,10
-'''

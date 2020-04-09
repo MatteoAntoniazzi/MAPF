@@ -1,3 +1,5 @@
+import threading
+
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver

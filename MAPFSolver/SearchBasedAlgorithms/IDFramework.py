@@ -43,6 +43,7 @@ class IDFramework(AbstractSolver):
         thread = Thread(target=self.solve_problem, args=(problem_instance, verbose,))
         thread.start()
         thread.join(timeout=self._solver_settings.get_time_out())
+
         self._stop_event.set()
 
         soc = calculate_soc(self._solution, self._solver_settings.stay_at_goal(),

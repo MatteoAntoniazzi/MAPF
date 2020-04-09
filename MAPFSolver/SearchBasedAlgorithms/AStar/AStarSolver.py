@@ -3,6 +3,7 @@ from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.StatesQueue import StatesQueue
 from .MultiAgentState import MultiAgentState
+from threading import Thread, Event
 import time
 
 
@@ -21,42 +22,64 @@ class AStarSolver(AbstractSolver):
         self._closed_list = None
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
+        self._solution = []
 
-    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
+        self._stop_event = None
+
+    def solve(self, problem_instance, verbose=False, return_infos=False):
         """
         Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
         :param problem_instance: problem instance to solve
         :param verbose: if True will be printed some computation infos on terminal.
         :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :param time_out: max time for computing the solution. If the time is over it returns an empty solution.
-        The time is expressed in seconds.
         :return: list of paths, and if return_infos is True some output information.
         """
+        self._stop_event = Event()
         start = time.time()
 
+        thread = Thread(target=self.solve_problem, args=(problem_instance, verbose,))
+        thread.start()
+        thread.join(timeout=self._solver_settings.get_time_out())
+
+        self._stop_event.set()
+
+        if self._solution:
+            soc = calculate_soc(self._solution, self._solver_settings.stay_at_goal(),
+                                self._solver_settings.get_goal_occupation_time())
+            makespan = calculate_makespan(self._solution, self._solver_settings.stay_at_goal(),
+                                          self._solver_settings.get_goal_occupation_time())
+            output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
+                                                      self._n_of_expanded_nodes, time.time() - start)
+            if verbose:
+                print("PROBLEM SOLVED: ", output_infos)
+
+            return self._solution if not return_infos else (self._solution, output_infos)
+        else:
+            output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
+                                                      self._n_of_expanded_nodes, time.time() - start)
+
+            return [] if not return_infos else ([], output_infos)
+
+    def solve_problem(self, problem_instance, verbose=False):
+        """
+        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
+        :param problem_instance: problem instance to solve
+        :param verbose: if True will be printed some computation infos on terminal.
+        :return: list of paths, and if return_infos is True some output information.
+        """
         self.initialize_problem(problem_instance)
 
         while not self._frontier.is_empty():
 
-            if time_out is not None:
-                if time.time() - start > time_out:
-                    break
+            if self._stop_event.is_set():
+                break
 
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
             if cur_state.is_completed():
-                paths = cur_state.get_paths_to_root()
-                soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
-                                    self._solver_settings.get_goal_occupation_time())
-                makespan = calculate_makespan(paths, self._solver_settings.stay_at_goal(),
-                                              self._solver_settings.get_goal_occupation_time())
-                output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
-                                                          self._n_of_expanded_nodes, time.time()-start)
-                if verbose:
-                    print("PROBLEM SOLVED: ", output_infos)
-
-                return paths if not return_infos else (paths, output_infos)
+                self._solution = cur_state.get_paths_to_root()
+                return
 
             if not self._solver_settings.stay_at_goal():
                 # In case agents disappear at goals we cannot delete duplicates since can happen that an agent wait that
@@ -82,12 +105,12 @@ class AStarSolver(AbstractSolver):
                 erano sicuramente con g minore o uguale dato che la f era la minore e h non sovrastima mai il valore 
                 effettivo.
                 """
-                if not self._closed_list.contains_state_same_positions(cur_state):
+                """if not self._closed_list.contains_state_same_positions(cur_state):
                     self._closed_list.add(cur_state)
                     expanded_nodes = cur_state.expand(verbose=verbose)
                     self._n_of_generated_nodes += len(expanded_nodes)
                     self._n_of_expanded_nodes += 1
-                    self._frontier.add_list_of_states(expanded_nodes)
+                    self._frontier.add_list_of_states(expanded_nodes)"""
 
                 """
                 CASE 2
@@ -132,7 +155,7 @@ class AStarSolver(AbstractSolver):
                 """
                 CASE 4
                 """
-                """self._closed_list.add(cur_state)
+                self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
     
                 expanded_nodes_not_in_closed_list = []
@@ -149,12 +172,7 @@ class AStarSolver(AbstractSolver):
     
                 self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
-
-        output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                  self._n_of_expanded_nodes, time.time() - start)
-
-        return [] if not return_infos else ([], output_infos)
+                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)
 
     def initialize_problem(self, problem_instance):
         """

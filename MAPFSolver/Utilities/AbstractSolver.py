@@ -15,14 +15,12 @@ class AbstractSolver:
         self._solver_settings = solver_settings
 
     @abc.abstractmethod
-    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
+    def solve(self, problem_instance, verbose=False, return_infos=False):
         """
         Solve the given MAPF problem and, if exists, it returns a solution.
         :param problem_instance: instance of the problem to solve.
         :param verbose: if True, infos will be printed on terminal.
         :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
-        :param time_out: max time for computing the solution. If the time is over it returns an empty solution.
-        The time is expressed in milliseconds.
         :return the solution as list of paths, and, if return_infos is True, some output information.
         """
 

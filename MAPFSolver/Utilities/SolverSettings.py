@@ -18,6 +18,8 @@ class SolverSettings:
         will stay in the goal before disappearing.
         :param edge_conflict: if True, also the edge conflicts will be considered in addition to the vertex
         conflicts.
+        :param time_out: max time for computing the solution. If the time is over it returns an empty solution.
+        The time is expressed in seconds.
         """
         self._heuristic_str = heuristic
         self._heuristic_obj = None

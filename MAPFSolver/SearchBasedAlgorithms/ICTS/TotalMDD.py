@@ -10,15 +10,15 @@ class TotalMDD:
     It also consider only the feasible nodes, by checking the presence of conflicts.
     """
 
-    def __init__(self, problem_map, solver_settings, list_of_mdd, time_out):
+    def __init__(self, problem_map, solver_settings, list_of_mdd, stop_event):
         self._problem_map = problem_map
         self._solver_settings = solver_settings
         self._list_of_mdd = list_of_mdd
         self._cost = max([mdd.get_cost() for mdd in self._list_of_mdd])
 
-        self._time_out = time_out
+        self._stop_event = stop_event
 
-        self._paths = []
+        self._solution = []
         self._nodes = MDDQueue()
         self.build_total_mdd()
 
@@ -26,8 +26,6 @@ class TotalMDD:
         """
         Build the total multi-value decision diagram.
         """
-        start = time.time()
-
         # list of initial mdd_nodes, (the first element of the list of nodes)
         list_of_root_mdd_nodes = []
         for agent_mdd in self._list_of_mdd:
@@ -43,32 +41,27 @@ class TotalMDD:
             frontier.sort_by_time_step()
             cur_node = frontier.pop()
 
-            if self._time_out is not None:
-                if time.time() - start > self._time_out:
-                    break
+            if self._stop_event.is_set():
+                break
 
             if cur_node.time_step() > self._cost:
-                print("ERRORE! NON PUO' SUPERARE IL COSTO!!")
-                return True
+                break
 
             if cur_node.goal_test():
-                self._paths = cur_node.get_paths_to_root()
-                return True
+                self._solution = cur_node.get_paths_to_root()
+                return
 
             expanded_nodes = cur_node.expand()
 
             for node in expanded_nodes:
-
                 if self._nodes.contains_node(node):
                     self._nodes.add_parent_to_node(node, cur_node)
                 else:
                     frontier.add(node)
                     self._nodes.add(node)
 
-        return False
-
-    def get_paths(self):
+    def get_solution(self):
         """
         Returns all the possible paths of length equal to their respective cost.
         """
-        return self._paths
+        return self._solution

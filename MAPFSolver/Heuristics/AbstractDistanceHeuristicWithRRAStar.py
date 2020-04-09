@@ -56,6 +56,9 @@ class AbstractDistanceHeuristicWithRRAStar(Heuristic):
         """
         Compute the value of the heuristic in that position to the goal position.
         """
+        print("A")
+        print(self._closed_lists)
+        print("B")
         if self._closed_lists[goal].contains_position(position):
             return self._closed_lists[goal].contains_position(position).g_value()
         if self.resume_rra_star(position, goal):

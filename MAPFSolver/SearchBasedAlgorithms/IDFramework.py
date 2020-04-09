@@ -1,8 +1,8 @@
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
-import time
-
 from MAPFSolver.Utilities.paths_processing import *
+from threading import Thread, Event
+import time
 
 
 class IDFramework(AbstractSolver):
@@ -25,8 +25,39 @@ class IDFramework(AbstractSolver):
         self._biggest_subset = 1
         self._n_of_generated_nodes = 0
         self._n_of_expanded_nodes = 0
+        self._solution = []
 
-    def solve(self, problem_instance, verbose=False, return_infos=False, time_out=None):
+        self._stop_event = Event()
+
+    def solve(self, problem_instance, verbose=False, return_infos=False):
+        """
+        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
+        :param problem_instance: problem instance to solve
+        :param verbose: if True will be printed some computation infos on terminal.
+        :param return_infos: if True returns in addition to the paths a struct with the output information.
+        :return: list of paths, and if return_infos is True some output information.
+        """
+        self._stop_event = Event()
+        start = time.time()
+
+        thread = Thread(target=self.solve_problem, args=(problem_instance, verbose,))
+        thread.start()
+        thread.join(timeout=self._solver_settings.get_time_out())
+        self._stop_event.set()
+
+        soc = calculate_soc(self._solution, self._solver_settings.stay_at_goal(),
+                            self._solver_settings.get_goal_occupation_time())
+        makespan = calculate_makespan(self._solution, self._solver_settings.stay_at_goal(),
+                                      self._solver_settings.get_goal_occupation_time())
+
+        output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes, self._n_of_expanded_nodes,
+                                                  time.time() - start)
+        if verbose:
+            print("Problem ended: ", output_infos)
+
+        return self._solution if not return_infos else (self._solution, output_infos)
+
+    def solve_problem(self, problem_instance, verbose=False):
         """
         Solve the MAPF problem using the solver given in the initialization with Independence detection, returning the
         path as lists of list of (x, y) positions.
@@ -34,62 +65,27 @@ class IDFramework(AbstractSolver):
         them into a new group and so the next time they will be solved together.
         The time needed is exponential in the dimension of the largest group.
         """
-        start = time.time()
-
-        if time_out is not None:
-            if not self.initialize_paths(problem_instance, time_out - (time.time() - start)):
-                return False
-        else:
-            if not self.initialize_paths(problem_instance):
-                return False
+        if not self.initialize_paths(problem_instance):
+            return False
 
         conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                    self._solver_settings.is_edge_conflict())
         while conflict is not None:
 
-            if time_out is not None:
-                if (time.time() - start) > time_out:
-                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                              self._n_of_expanded_nodes, time.time() - start)
-
-                    return [] if not return_infos else ([], output_infos)
+            if self._stop_event.is_set():
+                break
 
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
 
-            if time_out is not None:
-                if self.update_merged_paths(merged_problem, time_out - (time.time() - start)):
-                    conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
-                                               self._solver_settings.is_edge_conflict())
-                else:
-                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                              self._n_of_expanded_nodes, time.time() - start)
+            if not self.update_merged_paths(merged_problem):
+                break
 
-                    return [] if not return_infos else ([], output_infos)
+            conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
+                                       self._solver_settings.is_edge_conflict())
 
-            else:
-                if self.update_merged_paths(merged_problem):
-                    conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
-                                               self._solver_settings.is_edge_conflict())
-                else:
-                    output_infos = self.generate_output_infos(None, None, self._n_of_generated_nodes,
-                                                              self._n_of_expanded_nodes, time.time() - start)
+        self._solution = self._paths
 
-                    return [] if not return_infos else ([], output_infos)
-
-        paths = self._paths
-        soc = calculate_soc(paths, self._solver_settings.stay_at_goal(),
-                            self._solver_settings.get_goal_occupation_time())
-        makespan = calculate_makespan(paths, self._solver_settings.stay_at_goal(),
-                                      self._solver_settings.get_goal_occupation_time())
-        output_infos = self.generate_output_infos(soc, makespan, self._n_of_generated_nodes,
-                                                  self._n_of_expanded_nodes, time.time() - start)
-
-        if verbose:
-            print("PROBLEM SOLVED: ", output_infos)
-
-        return self._paths if not return_infos else (self._paths, output_infos)
-
-    def initialize_paths(self, problem_instance, time_out=None):
+    def initialize_paths(self, problem_instance):
         """
         Initialize the groups with singleton groups. The list problem will contains the single agent problem for each
         agent. Solve the problems in this way and return the paths (with possible conflicts).
@@ -97,16 +93,11 @@ class IDFramework(AbstractSolver):
         :param time_out: maximum amount of time for solving the problems.
         :return:
         """
-        start = time.time()
-
         for agent in problem_instance.get_original_agents():
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            if time_out:
-                paths, output_infos = self._solver.solve(problem, return_infos=True, time_out=time_out-(time.time() - start))
-            else:
-                paths, output_infos = self._solver.solve(problem, return_infos=True)
+            paths, output_infos = self._solver.solve(problem, return_infos=True)
             self._n_of_generated_nodes += output_infos["generated_nodes"]
             self._n_of_expanded_nodes += output_infos["expanded_nodes"]
             self._paths.extend(paths)
@@ -115,26 +106,6 @@ class IDFramework(AbstractSolver):
                 return False
 
         return True
-
-    def all_agents_in_the_same_subset(self, problem_instance, verbose=False):
-        """
-        Return True if the dimension of the largest subset is equal to the number of agents.
-        When agents are all in the same independent group found by ID.
-        """
-        if not self.initialize_paths(problem_instance):
-            return False
-
-        # Check collisions
-        conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
-                                   self._solver_settings.is_edge_conflict())
-        while conflict is not None:
-            if self._biggest_subset == len(problem_instance.get_agents()):
-                return True
-            merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
-            self.update_merged_paths(merged_problem)
-            conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
-                                       self._solver_settings.is_edge_conflict())
-        return False
 
     def merge_group(self, conflicting_agents, problem_instance, verbose=False):
         """
@@ -188,11 +159,11 @@ class IDFramework(AbstractSolver):
 
         return True
 
-    def update_merged_paths(self, merged_problem, time_out=None):
+    def update_merged_paths(self, merged_problem):
         """
         Recompute the paths of the merged problem.
         """
-        paths, output_infos = self._solver.solve(merged_problem, return_infos=True, time_out=time_out)
+        paths, output_infos = self._solver.solve(merged_problem, return_infos=True)
         if not paths:
             return False
         self._n_of_generated_nodes += output_infos["generated_nodes"]

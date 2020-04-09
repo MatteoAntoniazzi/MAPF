@@ -80,6 +80,9 @@ def calculate_soc(paths, stay_in_goal, goal_occupation_time):
     goal is false.
     :return: Sum Of Cost value
     """
+    if not paths:
+        return None
+
     soc = 0
     if stay_in_goal:
         for path in paths:
@@ -100,6 +103,9 @@ def calculate_makespan(paths, stay_in_goal, goal_occupation_time):
     goal is false.
     :return: Makespan value
     """
+    if not paths:
+        return None
+
     if stay_in_goal:
         makespan = max([len(path)-1 for path in paths])
     else:

@@ -1,11 +1,8 @@
 from time import time
 
 from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDD import TotalMDD
-from MAPFSolver.Utilities.paths_processing import check_conflicts
-from MAPFSolver.Utilities.useful_functions import print_progress_bar
 from MAPFSolver.SearchBasedAlgorithms.ICTS.MDD import MDD
 from MAPFSolver.Utilities.AStar import AStar
-import itertools
 
 
 class ICTNode:
@@ -27,19 +24,14 @@ class ICTNode:
         self._solution = None
         self._mdd_vector = None
 
-    def initialize_root(self):
+    def initialize_node(self, stop_event, verbose=False):
         """
-        Initialize the root node. The output of this function will be different based on the objective function we are
-        using.
+        This function initialize the node computing the various MDDs, and verify if a solution exists.
         """
-        if self._solver_settings.get_objective_function() == "SOC":
-            self._path_costs_vector = self.compute_optimal_costs_vector()
-
-        if self._solver_settings.get_objective_function() == "Makespan":
-            optimal_costs_vector = self.compute_optimal_costs_vector()
-            max_value = max(optimal_costs_vector)
-            for i, agent in enumerate(self._problem_instance.get_agents()):
-                self._path_costs_vector[i] = max_value
+        if verbose:
+            print("Initializing node: ", self._path_costs_vector)
+        self._mdd_vector = self.compute_mdds(verbose)
+        self.compute_solution(stop_event, verbose)
 
     def expand(self):
         """
@@ -73,15 +65,6 @@ class ICTNode:
 
         return candidate_list
 
-    def initialize_node(self, verbose=False, time_out=None):
-        """
-        This function initialize the node computing the various MDDs, and verify if a solution exists.
-        """
-        if verbose:
-            print("Initializing node: ", self._path_costs_vector)
-        self._mdd_vector = self.compute_mdds(verbose)
-        self.compute_solution(verbose, time_out)
-
     def compute_mdds(self, verbose=False):
         """
         Compute the mdd for each agents.
@@ -97,7 +80,7 @@ class ICTNode:
             print("MDDs computed.")
         return mdd_vector
 
-    def compute_solution(self, verbose=False, time_out=None):
+    def compute_solution(self, stop_event, verbose=False):
         """
         Compute the total mdd and check if a solution exists.
         """
@@ -106,8 +89,8 @@ class ICTNode:
 
         start = time()
 
-        total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector, time_out)
-        self._solution = total_mdd.get_paths()
+        total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector, stop_event)
+        self._solution = total_mdd.get_solution()
 
         # Complete solution paths with the goal occupation time if needed.
         if not self._solver_settings.stay_at_goal():
@@ -120,6 +103,20 @@ class ICTNode:
             print("Computation time:", time() - start)
 
         return self._solution
+
+    def initialize_root(self):
+        """
+        Initialize the root node. The output of this function will be different based on the objective function we are
+        using.
+        """
+        if self._solver_settings.get_objective_function() == "SOC":
+            self._path_costs_vector = self.compute_optimal_costs_vector()
+
+        if self._solver_settings.get_objective_function() == "Makespan":
+            optimal_costs_vector = self.compute_optimal_costs_vector()
+            max_value = max(optimal_costs_vector)
+            for i, agent in enumerate(self._problem_instance.get_agents()):
+                self._path_costs_vector[i] = max_value
 
     def compute_optimal_costs_vector(self):
         """

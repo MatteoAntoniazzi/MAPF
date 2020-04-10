@@ -70,8 +70,8 @@ FORES = [Fore.BLACK, Fore.LIGHTBLACK_EX, Fore.RED, Fore.LIGHTRED_EX, Fore.GREEN,
          Fore.LIGHTYELLOW_EX, Fore.BLUE, Fore.LIGHTBLUE_EX, Fore.MAGENTA, Fore.LIGHTMAGENTA_EX, Fore.CYAN,
          Fore.LIGHTCYAN_EX, Fore.WHITE, Fore.LIGHTWHITE_EX]
 
-N_OF_STEPS = 100  # N of step for a move. (From a cell to another)
-SPEED_1X = 10      # Speed of moving (Higher is the value slower robots will move
+N_OF_STEPS = 50  # N of step for a move. (From a cell to another)
+SPEED_1X = 20      # Speed of moving (Higher is the value slower robots will move
 MAX_SPEED = SPEED_1X * 2
 
 '''

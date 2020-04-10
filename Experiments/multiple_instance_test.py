@@ -1,8 +1,8 @@
 from MAPFSolver import *
 
-min_n_of_agents = 6
-max_n_of_agents = 6
-buckets_size = 50
+min_n_of_agents = 3
+max_n_of_agents = 5
+buckets_size = 10
 
 
 problem_map = generate_random_map(8, 8, 0)
@@ -23,14 +23,14 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
     for b in range(buckets_size):
         problem_instance = ProblemInstance(problem_map, problem_agents_buckets[k][b])
         solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
-                                         goal_occupation_time=1, edge_conflict=True)
+                                         goal_occupation_time=1, edge_conflict=True, time_out=300)
 
         #print(problem_instance)
 
         #solver = IDFramework(ICTSSolver(solver_settings), solver_settings)
         solver = ICTSSolver(solver_settings)
 
-        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True, time_out=300)
+        paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 
         if paths:
 

@@ -45,8 +45,6 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
     :param n_of_buckets: number of buckets for each number of agents.
     :return: k list of buckets of agents.
     """
-    from MAPFSolver.SearchBasedAlgorithms.AStar.AStarSolver import AStarSolver
-    from MAPFSolver.SearchBasedAlgorithms.CBS.CBSSolver import CBSSolver
     from MAPFSolver.SearchBasedAlgorithms.IDFramework import IDFramework
     from .SolverSettings import SolverSettings
     from .useful_functions import print_progress_bar
@@ -74,9 +72,8 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
             solver_settings = SolverSettings(heuristic="AbstractDistance", stay_at_goal=True,
-                                             edge_conflict=is_edge_conflicts, time_out=500)
-            a_star_solver = AStarSolver(solver_settings)
-            id_framework = IDFramework(a_star_solver, solver_settings)
+                                             edge_conflict=is_edge_conflicts, time_out=5)
+            id_framework = IDFramework("A*", solver_settings)
             returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,
                                                                                          max_n_of_agents)
 

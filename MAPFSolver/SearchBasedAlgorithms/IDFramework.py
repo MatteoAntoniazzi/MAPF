@@ -1,6 +1,7 @@
+import copy
+
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
-from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.paths_processing import *
 from MAPFSolver.Utilities.useful_functions import get_solver
 from threading import Thread, Event
@@ -104,14 +105,8 @@ class IDFramework(AbstractSolver):
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            solver_settings = SolverSettings(heuristic=self._solver_settings.get_heuristic_str(),
-                                             objective_function=self._solver_settings.get_objective_function(),
-                                             stay_at_goal=self._solver_settings.stay_at_goal(),
-                                             goal_occupation_time=self._solver_settings.get_goal_occupation_time(),
-                                             edge_conflict=self._solver_settings.is_edge_conflict(),
-                                             time_out=self._solver_settings.get_time_out() - (time.time()-self._start_time))
-            #solver_settings = copy.copy(self._solver_settings)
-            #solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
+            solver_settings = copy.copy(self._solver_settings)
+            solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
             solver = get_solver(self._solver_str, solver_settings)
             paths, output_infos = solver.solve(problem, return_infos=True)
             self._n_of_generated_nodes += output_infos["generated_nodes"]
@@ -163,14 +158,8 @@ class IDFramework(AbstractSolver):
         Recompute the paths using the new problems configuration.
         """
         for problem in self._problems:
-            solver_settings = SolverSettings(heuristic=self._solver_settings.get_heuristic_str(),
-                                             objective_function=self._solver_settings.get_objective_function(),
-                                             stay_at_goal=self._solver_settings.stay_at_goal(),
-                                             goal_occupation_time=self._solver_settings.get_goal_occupation_time(),
-                                             edge_conflict=self._solver_settings.is_edge_conflict(),
-                                             time_out=self._solver_settings.get_time_out() - (time.time()-self._start_time))
-            #solver_settings = copy.copy(self._solver_settings)
-            #solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
+            solver_settings = copy.copy(self._solver_settings)
+            solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
             solver = get_solver(self._solver_str, solver_settings)
             paths, output_infos = solver.solve(problem, return_infos=True)
             self._n_of_generated_nodes += output_infos["generated_nodes"]
@@ -188,15 +177,8 @@ class IDFramework(AbstractSolver):
         """
         Recompute the paths of the merged problem.
         """
-        solver_settings = SolverSettings(heuristic=self._solver_settings.get_heuristic_str(),
-                                         objective_function=self._solver_settings.get_objective_function(),
-                                         stay_at_goal=self._solver_settings.stay_at_goal(),
-                                         goal_occupation_time=self._solver_settings.get_goal_occupation_time(),
-                                         edge_conflict=self._solver_settings.is_edge_conflict(),
-                                         time_out=self._solver_settings.get_time_out() - (
-                                                     time.time() - self._start_time))
-        # solver_settings = copy.copy(self._solver_settings)
-        # solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
+        solver_settings = copy.copy(self._solver_settings)
+        solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
         solver = get_solver(self._solver_str, solver_settings)
         paths, output_infos = solver.solve(merged_problem, return_infos=True)
         if not paths:

@@ -82,6 +82,12 @@ class SolverSettings:
         """
         return self._edge_conflict
 
+    def set_time_out(self, time_out):
+        """
+        Return the time out value. How much the solver will run at max.
+        """
+        self._time_out = time_out
+
     def get_time_out(self):
         """
         Return the time out value. How much the solver will run at max.

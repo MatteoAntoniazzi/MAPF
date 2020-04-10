@@ -74,11 +74,11 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
             solver_settings = SolverSettings(heuristic="AbstractDistance", stay_at_goal=True,
-                                             edge_conflict=is_edge_conflicts)
+                                             edge_conflict=is_edge_conflicts, time_out=500)
             a_star_solver = AStarSolver(solver_settings)
             id_framework = IDFramework(a_star_solver, solver_settings)
             returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,
-                                                                                         max_n_of_agents, 600)
+                                                                                         max_n_of_agents)
 
             if returning_buckets_of_ids:
                 single_buckets_of_ids.extend(returning_buckets_of_ids)

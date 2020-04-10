@@ -1,6 +1,8 @@
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
 from MAPFSolver.Utilities.ProblemInstance import ProblemInstance
+from MAPFSolver.Utilities.SolverSettings import SolverSettings
 from MAPFSolver.Utilities.paths_processing import *
+from MAPFSolver.Utilities.useful_functions import get_solver
 from threading import Thread, Event
 import time
 
@@ -10,16 +12,18 @@ class IDFramework(AbstractSolver):
     Independence detection (ID) framework.
     """
 
-    def __init__(self, solver, solver_settings):
+    def __init__(self, solver_str, solver_settings):
         """
         Initialize the Independence Detection Framework with the solver to put on top of it.
         The number of generated/expanded nodes keep count of all the nodes generated/expanded during the solving. So, it
         will be the whole sum counting all the iterations.
-        :param solver: solver to put on top of ID.
+        :param solver_str: string of the solver to put on top of ID.
+        ["Cooperative A*", "A*", "A* with Operator Decomposition", "Increasing Cost Tree Search",
+        "Conflict Based Search", "M*"]
         :param solver_settings: settings of the solver.
         """
         super().__init__(solver_settings)
-        self._solver = solver
+        self._solver_str = solver_str
         self._problems = []
         self._paths = []
         self._biggest_subset = 1
@@ -27,6 +31,7 @@ class IDFramework(AbstractSolver):
         self._n_of_expanded_nodes = 0
         self._solution = []
 
+        self._start_time = None
         self._stop_event = Event()
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
@@ -37,6 +42,7 @@ class IDFramework(AbstractSolver):
         :param return_infos: if True returns in addition to the paths a struct with the output information.
         :return: list of paths, and if return_infos is True some output information.
         """
+        self._start_time = time.time()
         self._stop_event = Event()
         start = time.time()
 
@@ -98,7 +104,16 @@ class IDFramework(AbstractSolver):
             self._problems.append(ProblemInstance(problem_instance.get_map(), [agent]))
 
         for problem in self._problems:
-            paths, output_infos = self._solver.solve(problem, return_infos=True)
+            solver_settings = SolverSettings(heuristic=self._solver_settings.get_heuristic_str(),
+                                             objective_function=self._solver_settings.get_objective_function(),
+                                             stay_at_goal=self._solver_settings.stay_at_goal(),
+                                             goal_occupation_time=self._solver_settings.get_goal_occupation_time(),
+                                             edge_conflict=self._solver_settings.is_edge_conflict(),
+                                             time_out=self._solver_settings.get_time_out() - (time.time()-self._start_time))
+            #solver_settings = copy.copy(self._solver_settings)
+            #solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
+            solver = get_solver(self._solver_str, solver_settings)
+            paths, output_infos = solver.solve(problem, return_infos=True)
             self._n_of_generated_nodes += output_infos["generated_nodes"]
             self._n_of_expanded_nodes += output_infos["expanded_nodes"]
             self._paths.extend(paths)
@@ -148,7 +163,16 @@ class IDFramework(AbstractSolver):
         Recompute the paths using the new problems configuration.
         """
         for problem in self._problems:
-            paths, output_infos = self._solver.solve(problem, return_infos=True)
+            solver_settings = SolverSettings(heuristic=self._solver_settings.get_heuristic_str(),
+                                             objective_function=self._solver_settings.get_objective_function(),
+                                             stay_at_goal=self._solver_settings.stay_at_goal(),
+                                             goal_occupation_time=self._solver_settings.get_goal_occupation_time(),
+                                             edge_conflict=self._solver_settings.is_edge_conflict(),
+                                             time_out=self._solver_settings.get_time_out() - (time.time()-self._start_time))
+            #solver_settings = copy.copy(self._solver_settings)
+            #solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
+            solver = get_solver(self._solver_str, solver_settings)
+            paths, output_infos = solver.solve(problem, return_infos=True)
             self._n_of_generated_nodes += output_infos["generated_nodes"]
             self._n_of_expanded_nodes += output_infos["expanded_nodes"]
 
@@ -164,7 +188,17 @@ class IDFramework(AbstractSolver):
         """
         Recompute the paths of the merged problem.
         """
-        paths, output_infos = self._solver.solve(merged_problem, return_infos=True)
+        solver_settings = SolverSettings(heuristic=self._solver_settings.get_heuristic_str(),
+                                         objective_function=self._solver_settings.get_objective_function(),
+                                         stay_at_goal=self._solver_settings.stay_at_goal(),
+                                         goal_occupation_time=self._solver_settings.get_goal_occupation_time(),
+                                         edge_conflict=self._solver_settings.is_edge_conflict(),
+                                         time_out=self._solver_settings.get_time_out() - (
+                                                     time.time() - self._start_time))
+        # solver_settings = copy.copy(self._solver_settings)
+        # solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
+        solver = get_solver(self._solver_str, solver_settings)
+        paths, output_infos = solver.solve(merged_problem, return_infos=True)
         if not paths:
             return False
         self._n_of_generated_nodes += output_infos["generated_nodes"]
@@ -175,7 +209,7 @@ class IDFramework(AbstractSolver):
 
         return True
 
-    def get_some_conflicting_ids_for_buckets(self, problem_instance, min_n_of_agents, max_n_of_agents, time_out):
+    def get_some_conflicting_ids_for_buckets(self, problem_instance, min_n_of_agents, max_n_of_agents):
         """
         This function generate buckets from a min to a max with the ids of the conflicting agents.
         This function returns the buckets from the min to at most the max unless a problem bigger than the max is found.
@@ -187,18 +221,19 @@ class IDFramework(AbstractSolver):
         :param max_n_of_agents: maximum value of number of agent for which we want a bucket.
         :return: if found k list of agent ids otherwise it returns None.
         """
+        self._start_time = time.time()
         start = time.time()
 
         list_of_buckets = []
         counter = min_n_of_agents
         merged_problem = None
 
-        if not self.initialize_paths(problem_instance, time_out=time_out-(time.time() - start)):
+        if not self.initialize_paths(problem_instance):
             return False
 
         while counter < (max_n_of_agents + 1):
             if merged_problem is not None:
-                if not self.update_merged_paths(merged_problem, time_out=time_out-(time.time() - start)):
+                if not self.update_merged_paths(merged_problem):
                     return False
 
             conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
@@ -223,4 +258,6 @@ class IDFramework(AbstractSolver):
         return self._biggest_subset
 
     def __str__(self):
-        return self._solver.__str__() + " with ID Framework."
+        return self._solver_str + " with ID Framework."
+
+

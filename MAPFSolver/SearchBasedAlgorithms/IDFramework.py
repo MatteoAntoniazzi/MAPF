@@ -81,12 +81,12 @@ class IDFramework(AbstractSolver):
         while conflict is not None:
 
             if self._stop_event.is_set():
-                break
+                return
 
             merged_problem = self.merge_group(conflict, problem_instance, verbose=verbose)
 
             if not self.update_merged_paths(merged_problem):
-                break
+                return
 
             conflict = check_conflicts(self._paths, self._solver_settings.stay_at_goal(),
                                        self._solver_settings.is_edge_conflict())
@@ -204,7 +204,6 @@ class IDFramework(AbstractSolver):
         :return: if found k list of agent ids otherwise it returns None.
         """
         self._start_time = time.time()
-        start = time.time()
 
         list_of_buckets = []
         counter = min_n_of_agents

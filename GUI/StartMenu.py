@@ -216,7 +216,7 @@ class StartMenu:
         self.initialize_permanence_in_goal_canvas(permanence_in_goal_canvas)
 
         # Scene Selection Label
-        lbl_title = Label(self.algorithm_settings_frame, text="SCENE SELECTION / SCENE FILE NUMBER",
+        lbl_title = Label(self.algorithm_settings_frame, text="SCENE SELECTION (TYPE AND FILE NUMBER)",
                           font=self.font_titles, fg=self.color_titles)
         lbl_title.pack(anchor=W, pady=self.pady_titles)
 

@@ -45,6 +45,7 @@ class StartMenu:
         self.reader = Reader()
 
         # GUIdd selectable variables
+        self.waiting_var = StringVar()
         self.selected_algorithm_var = StringVar()
         self.independence_detection_var = BooleanVar()
         self.selected_map_var = IntVar()
@@ -77,6 +78,10 @@ class StartMenu:
                                       highlightthickness=1)
         self.simulation_frame.pack_propagate(False)
         self.simulation_frame.pack(fill=None, expand=False, side=LEFT)
+
+        # Waiting label
+        self.waiting_lbl = Label(self.simulation_frame, textvariable=self.waiting_var)
+        self.waiting_lbl.place(relx=.5, rely=.5, anchor="center")
 
         # Choose Map Frame: placed in the left part of the Settings Frame, it contains all the possible maps
         self.choose_map_frame = Frame(self.settings_frame)
@@ -118,6 +123,7 @@ class StartMenu:
         self.edge_conflicts_var.set(True)
         self.stay_in_goal_var.set(True)
         self.time_out_var.set(0)
+        self.waiting_var.set("")
 
     def choose_map_frame_initialization(self):
         """
@@ -398,6 +404,11 @@ class StartMenu:
         """
         Launch the simulation and display it on the Simulation Frame.
         """
+        print("bella")
+        self.waiting_var.set("Wait for the solution to be computed...")
+        print("ciao")
+        self.simulation_frame.update()
+
         # Disable all the Buttons
         self.disable_settings_buttons()
 
@@ -413,6 +424,7 @@ class StartMenu:
         # Enable all the Buttons
         try:
             self.enable_settings_buttons()
+            self.waiting_var.set("")
         except TclError:
             exit(-1)
 

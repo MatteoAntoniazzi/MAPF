@@ -105,6 +105,14 @@ class Visualize:
         """
         self.draw_world()
         self.draw_agents()
+        if not self._paths:
+            self.start_button.configure(state=DISABLED)
+
+            self.map_canvas.create_text(self._frame_width / 2, self._frame_height / 2, justify=CENTER,
+                                        font=("Purisa", get_font_dimension(self.dynamic_cell_w,
+                                                                           self.dynamic_cell_h)),
+                                        fill="Red", text="PATHS NOT COMPUTED\nThe program is not able to compute the "
+                                                         "solution\nin the given timeout")
         self.do_loop()
 
     def set_up_scrollbar(self):
@@ -184,8 +192,9 @@ class Visualize:
         """
         for widget in self._frame.winfo_children():
             widget.destroy()
-        from GUI.start_simulation import plot_on_gui
-        plot_on_gui(self._problem_instance, self._solver_settings, self._frame, self._paths, self._output_infos)
+        self.__init__(self._problem_instance, self._solver_settings, self._frame, self._paths, self._output_infos)
+        self.draw_world()
+        self.draw_agents()
 
     def quit_function(self):
         """

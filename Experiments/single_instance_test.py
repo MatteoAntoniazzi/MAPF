@@ -37,9 +37,9 @@ problem_instance = ProblemInstance(problem_map, problem_agents)
 #problem_instance = generate_problem_m_star_slides()
 
 solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
-                                 goal_occupation_time=1, edge_conflict=True, time_out=1)
-solver = IDFramework("Conflict Based Search", solver_settings)
-#solver = CooperativeAStarSolver(solver_settings)
+                                 goal_occupation_time=1, edge_conflict=True, time_out=0)
+#solver = IDFramework("Conflict Based Search", solver_settings)
+solver = CooperativeAStarSolver(solver_settings)
 
 paths = solver.solve(problem_instance, verbose=True)
 for i, path in enumerate(paths):

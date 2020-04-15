@@ -27,7 +27,10 @@ class SolverSettings:
         self._stay_at_goal = stay_at_goal
         self._goal_occupation_time = goal_occupation_time
         self._edge_conflict = edge_conflict
-        self._time_out = time_out
+        if time_out is not None:
+            self._time_out = time_out if time_out > 0 else None
+        else:
+            self._time_out = None
 
         assert self._goal_occupation_time > 0, "Goal occupation time must be greater than zero!"
 

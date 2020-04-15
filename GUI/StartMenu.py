@@ -79,10 +79,6 @@ class StartMenu:
         self.simulation_frame.pack_propagate(False)
         self.simulation_frame.pack(fill=None, expand=False, side=LEFT)
 
-        # Waiting label
-        self.waiting_lbl = Label(self.simulation_frame, textvariable=self.waiting_var)
-        self.waiting_lbl.place(relx=.5, rely=.5, anchor="center")
-
         # Choose Map Frame: placed in the left part of the Settings Frame, it contains all the possible maps
         self.choose_map_frame = Frame(self.settings_frame)
         self.choose_map_frame.bind("<Button-1>", self.callback)
@@ -404,9 +400,9 @@ class StartMenu:
         """
         Launch the simulation and display it on the Simulation Frame.
         """
-        print("bella")
-        self.waiting_var.set("Wait for the solution to be computed...")
-        print("ciao")
+        # Waiting label
+        waiting_lbl = Label(self.simulation_frame, text="Wait for the solution to be computed...")
+        waiting_lbl.place(relx=.5, rely=.5, anchor="center")
         self.simulation_frame.update()
 
         # Disable all the Buttons
@@ -424,7 +420,7 @@ class StartMenu:
         # Enable all the Buttons
         try:
             self.enable_settings_buttons()
-            self.waiting_var.set("")
+            waiting_lbl.destroy()
         except TclError:
             exit(-1)
 

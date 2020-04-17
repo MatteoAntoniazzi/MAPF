@@ -390,6 +390,7 @@ class StartMenu:
         """
         # Time out entry
         time_out_entry = Entry(canvas, textvariable=self.time_out_var, width=4, highlightthickness=0)
+        self.buttons_list.append(time_out_entry)
         time_out_entry.pack(side=LEFT, padx=0)
 
         # seconds label

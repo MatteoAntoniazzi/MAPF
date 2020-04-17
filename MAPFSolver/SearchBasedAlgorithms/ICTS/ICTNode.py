@@ -23,6 +23,7 @@ class ICTNode:
 
         self._solution = None
         self._mdd_vector = None
+        self._total_mdd = None
 
     def initialize_node(self, stop_event, verbose=False):
         """
@@ -89,8 +90,8 @@ class ICTNode:
 
         start = time()
 
-        total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector, stop_event)
-        self._solution = total_mdd.get_solution()
+        self._total_mdd = TotalMDD(self._problem_instance.get_map(), self._solver_settings, self._mdd_vector, stop_event)
+        self._solution = self._total_mdd.get_solution()
 
         # Complete solution paths with the goal occupation time if needed.
         if not self._solver_settings.stay_at_goal():

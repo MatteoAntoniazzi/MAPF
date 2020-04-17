@@ -67,3 +67,9 @@ class MDDQueue:
         Sort the queue by the node time steps.
         """
         self._queue.sort(key=lambda x: x.time_step(), reverse=False)
+
+    def size(self):
+        """
+        Return the size of the queue.
+        """
+        return len(self._queue)

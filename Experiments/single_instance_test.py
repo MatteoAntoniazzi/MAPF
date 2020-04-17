@@ -2,8 +2,7 @@ import pathlib
 
 from MAPFSolver import *
 from GUI import plot_paths
-from multiprocessing import Process
-import time
+
 
 
 root_path = pathlib.Path(__file__).parent.parent.parent

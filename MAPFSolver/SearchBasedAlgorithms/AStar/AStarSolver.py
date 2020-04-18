@@ -104,12 +104,12 @@ class AStarSolver(AbstractSolver):
                 erano sicuramente con g minore o uguale dato che la f era la minore e h non sovrastima mai il valore 
                 effettivo.
                 """
-                """if not self._closed_list.contains_state_same_positions(cur_state):
+                if not self._closed_list.contains_state_same_positions(cur_state):
                     self._closed_list.add(cur_state)
                     expanded_nodes = cur_state.expand(verbose=verbose)
                     self._n_of_generated_nodes += len(expanded_nodes)
                     self._n_of_expanded_nodes += 1
-                    self._frontier.add_list_of_states(expanded_nodes)"""
+                    self._frontier.add_list_of_states(expanded_nodes)
 
                 """
                 CASE 2
@@ -154,7 +154,7 @@ class AStarSolver(AbstractSolver):
                 """
                 CASE 4
                 """
-                self._closed_list.add(cur_state)
+                """self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
     
                 expanded_nodes_not_in_closed_list = []
@@ -171,7 +171,7 @@ class AStarSolver(AbstractSolver):
     
                 self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)
+                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
 
     def initialize_problem(self, problem_instance):
         """

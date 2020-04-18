@@ -147,6 +147,9 @@ class MultiAgentState(State):
         self._h = 0
         if self._solver_settings.get_objective_function() == "SOC":
             for single_state in self._single_agents_states:
+                if single_state.h_value is None:
+                    print("AAAAAAAAAAAAAAAA")
+                    print(single_state)
                 self._h += single_state.h_value()
         if self._solver_settings.get_objective_function() == "Makespan":
             self._h = max([single_state.h_value() for single_state in self._single_agents_states])

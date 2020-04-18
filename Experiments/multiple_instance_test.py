@@ -1,13 +1,12 @@
 from MAPFSolver import *
 
-min_n_of_agents = 3
-max_n_of_agents = 4
-buckets_size = 20
+min_n_of_agents = 5
+max_n_of_agents = 5
+buckets_size = 100
 
 
-problem_map = generate_random_map(8, 8, 0)
-problem_agents_buckets = generate_agent_buckets_with_coupling_mechanism(problem_map, True, min_n_of_agents,
-                                                                        max_n_of_agents, buckets_size)
+problem_map = generate_random_map(32, 32, 0.2)
+problem_agents_buckets = generate_random_agent_buckets(problem_map, min_n_of_agents, max_n_of_agents, buckets_size)
 
 print("----------------------------------------------------------------------------------------------------")
 for k in range(max_n_of_agents - min_n_of_agents + 1):
@@ -23,9 +22,9 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
     for b in range(buckets_size):
         problem_instance = ProblemInstance(problem_map, problem_agents_buckets[k][b])
         solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
-                                         goal_occupation_time=1, edge_conflict=True, time_out=20)
+                                         goal_occupation_time=1, edge_conflict=True, time_out=300)
 
-        #print(problem_instance)
+        print(problem_instance)
 
         #solver = IDFramework(ICTSSolver(solver_settings), solver_settings)
         solver = AStarODSolver(solver_settings)

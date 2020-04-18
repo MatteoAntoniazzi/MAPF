@@ -29,7 +29,7 @@ for k in range(buckets_size):
     solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
                                      goal_occupation_time=1, edge_conflict=True, time_out=300)
 
-    solver = MStarSolver(solver_settings)
+    solver = AStarSolver(solver_settings)
 
     paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 
@@ -47,10 +47,6 @@ for k in range(buckets_size):
 
     print_progress_bar(k + 1, buckets_size, prefix=prefix_str, suffix='Complete', length=50)
 
-for k in range(buckets_size):
-    plot_paths(problem_instances[k], solver_settingss[k], problem_paths[k])
-
-
 print("----------------------------------------------------------------------------------------------------")
 if failed_times == buckets_size:
     print("NESSUN SUCCESSO CON QUESTO TIME OUT")
@@ -62,6 +58,10 @@ else:
     print("Cost:                {:0.2f}".format(total_cost / (buckets_size - failed_times)))
     print("SUCCESS:             {:d} of {:d}".format((buckets_size - failed_times), buckets_size))
 print("----------------------------------------------------------------------------------------------------")
+
+for k in range(buckets_size):
+    plot_paths(problem_instances[k], solver_settingss[k], problem_paths[k])
+
 
 """root = Tk()
 frame = Frame(root)

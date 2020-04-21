@@ -109,8 +109,9 @@ class IDFramework(AbstractSolver):
             solver_settings.set_time_out(self._solver_settings.get_time_out() - (time.time()-self._start_time))
             solver = get_solver(self._solver_str, solver_settings)
             paths, output_infos = solver.solve(problem, return_infos=True)
-            self._n_of_generated_nodes += output_infos["generated_nodes"]
-            self._n_of_expanded_nodes += output_infos["expanded_nodes"]
+            if output_infos["generated_nodes"]:
+                self._n_of_generated_nodes += output_infos["generated_nodes"]
+                self._n_of_expanded_nodes += output_infos["expanded_nodes"]
             self._paths.extend(paths)
 
             if not paths:
@@ -183,8 +184,9 @@ class IDFramework(AbstractSolver):
         paths, output_infos = solver.solve(merged_problem, return_infos=True)
         if not paths:
             return False
-        self._n_of_generated_nodes += output_infos["generated_nodes"]
-        self._n_of_expanded_nodes += output_infos["expanded_nodes"]
+        if output_infos["generated_nodes"]:
+            self._n_of_generated_nodes += output_infos["generated_nodes"]
+            self._n_of_expanded_nodes += output_infos["expanded_nodes"]
 
         for i, agent_id in enumerate(merged_problem.get_original_agents_id_list()):
             self._paths[agent_id] = paths[i]

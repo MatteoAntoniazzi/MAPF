@@ -2,8 +2,8 @@ from GUI import plot_paths
 from MAPFSolver import *
 
 
-n_of_agents = 5
-buckets_size = 100
+n_of_agents = 20
+buckets_size = 20
 
 
 print("----------------------------------------------------------------------------------------------------")
@@ -27,9 +27,9 @@ for k in range(buckets_size):
     problem_agents = generate_random_agents(problem_map, n_of_agents)
     problem_instance = ProblemInstance(problem_map, problem_agents)
     solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
-                                     goal_occupation_time=1, edge_conflict=True, time_out=300)
+                                     goal_occupation_time=1, edge_conflict=True, time_out=450)
 
-    solver = AStarSolver(solver_settings)
+    solver = MStarSolver(solver_settings)
 
     paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 

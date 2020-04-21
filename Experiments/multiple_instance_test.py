@@ -1,11 +1,11 @@
 from MAPFSolver import *
 
-min_n_of_agents = 5
-max_n_of_agents = 5
+min_n_of_agents = 2
+max_n_of_agents = 8
 buckets_size = 100
 
 
-problem_map = generate_random_map(32, 32, 0.2)
+problem_map = generate_random_map(3, 3, 0)
 problem_agents_buckets = generate_random_agent_buckets(problem_map, min_n_of_agents, max_n_of_agents, buckets_size)
 
 print("----------------------------------------------------------------------------------------------------")
@@ -24,10 +24,8 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
         solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
                                          goal_occupation_time=1, edge_conflict=True, time_out=300)
 
-        print(problem_instance)
-
         #solver = IDFramework(ICTSSolver(solver_settings), solver_settings)
-        solver = AStarODSolver(solver_settings)
+        solver = AStarSolver(solver_settings)
 
         paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 
@@ -42,7 +40,7 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
             total_time += output_infos["computation_time"]
             total_cost += output_infos["sum_of_costs"]
 
-            print(output_infos["generated_nodes"])
+            #print(output_infos["generated_nodes"])
 
             #k_primo += biggest_subsest
 

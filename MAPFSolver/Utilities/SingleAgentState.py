@@ -108,8 +108,8 @@ class SingleAgentState(State):
 
     def is_completed(self):
         """
-        Return True if the current state is completed. If stay in goal settings is set it just check that the agent has
-        reached his goal, otherwise it checks that the agent has reached his goal and has already spent the goal
+        Return True if the current state is completed. If stay at goal assumption is set it just check that the agent
+        has reached his goal, otherwise it checks that the agent has reached his goal and has already spent the goal
         occupation time there.
         If the settings requires that agents stays in goal also after arrived we just check the goal test, otherwise we
         check that the agent has already spent the needed time stopped in the goal.
@@ -131,7 +131,7 @@ class SingleAgentState(State):
     def is_gone(self):
         """
         Return True if the agent has completed his task and he is already been removed from his goal at the given time
-        step. If the stay_in_goal setting is set than the agent will never be gone so it always returns False.
+        step. If the stay_at_goal assumption is set than the agent will never be gone so it always returns False.
         Is different from is_completed because an agent can be completed but he disappear the next time_step.
         Se, we have to check that he's already spent the needed time in the goal before this state.
         """
@@ -166,14 +166,14 @@ class SingleAgentState(State):
         path = []
         node = self
 
-        if not self._solver_settings.stay_at_goal():  # Aggiungo alla lista il goal per goal_occ_time volte
+        if not self._solver_settings.stay_at_goal():  # Add to the list the goal position "goal_occ_time" times.
             counter = self._solver_settings.get_goal_occupation_time()
             while node.goal_test() and counter > 0:
                 path.append(node._position)
                 node = node.parent()
                 counter -= 1
 
-        while node.parent() is not None: # Elimino gli extra che non mi servono.
+        while node.parent() is not None:  # Delete the extra states we don't need.
             if node.parent().goal_test():
                 node = node.parent()
             else:
@@ -188,7 +188,7 @@ class SingleAgentState(State):
 
     def equal_position(self, other):
         """
-        Return True if the state and the given state has the same position.
+        Return True if the state and the other state has the same position.
         :param other: state to compare position.
         """
         assert isinstance(other, SingleAgentState)
@@ -196,7 +196,7 @@ class SingleAgentState(State):
 
     def equal(self, other):
         """
-        Return True if the state and the given state has the same position and the same time step.
+        Return True if the state and the other state has the same position and the same time step.
         :param other: state to compare position.
         """
         assert isinstance(other, SingleAgentState)

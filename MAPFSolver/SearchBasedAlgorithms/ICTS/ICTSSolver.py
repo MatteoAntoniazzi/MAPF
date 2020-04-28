@@ -24,7 +24,7 @@ class ICTSSolver(AbstractSolver):
         self._frontier = None
         self._closed_list = None
         self._n_of_generated_nodes = 0
-        self._n_of_expanded_nodes = 0
+        self._n_of_expanded_nodes = 1
         self._solution = []
 
         self._stop_event = None

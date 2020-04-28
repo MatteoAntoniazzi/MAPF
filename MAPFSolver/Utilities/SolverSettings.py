@@ -43,7 +43,7 @@ class SolverSettings:
 
     def get_heuristic_str(self):
         """
-        Return the heuristic used as string. ("Manhattan" or "RRA")
+        Return the heuristic used as string. ("Manhattan" or "Abstract Distance with RRA*")
         """
         return self._heuristic_str
 

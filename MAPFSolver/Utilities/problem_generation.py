@@ -20,8 +20,8 @@ def generate_random_problem(map_width, map_height, obstacle_probability, n_of_ag
 def generate_problem_from_map_and_scene(reader, n_of_agents):
     """
     Generate a problem instance from map file and scene file inserted.
-    :param reader:
-    :param n_of_agents:
+    :param reader: reader object.
+    :param n_of_agents: number of agents to load.
     :return: an instance of ProblemInstance
     """
     from .ProblemInstance import ProblemInstance
@@ -35,7 +35,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
                                                    n_of_buckets):
     """
     It returns a bucket of agent for all the desired number of agent k. The length of the list will be
-    (max_n_of_agents - min_n_of_agents). For each k will have a set of k agents.
+    (max_n_of_agents - min_n_of_agents). For each k will have a set of n_of_buckets agents.
     Example: min is 2 and max is 3 and n_of_buckets is 3.
     Return: [[[a0, a1], [a2, a3], [a4, a5]], [[a10, a11, a12], [a13, a14, a15], [a16, a17, a18]]]
     :param problem_map: map of the problem where generate the agents.
@@ -68,7 +68,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
 
         while len(single_buckets_of_ids) < desired_range_length:
 
-            problem_agents = generate_random_agents(problem_map, n_of_free_cells-1)  # Da sistemare....
+            problem_agents = generate_random_agents(problem_map, n_of_free_cells-1)
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
             solver_settings = SolverSettings(heuristic="AbstractDistance", stay_at_goal=True,
@@ -97,21 +97,13 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
 
     print("Buckets generated.")
 
-    """for i, k in enumerate(buckets_of_agents):
-        print("Num of agents:", i + min_n_of_agents)
-        for j, b in enumerate(k):
-            print("Bucket:", j)
-            for a in b:
-                print(a, ' ', end='')
-            print('')"""
-
     return buckets_of_agents
 
 
 def generate_random_agent_buckets(problem_map, min_n_of_agents, max_n_of_agents, n_of_buckets):
     """
     It returns a bucket of agent for all the desired number of agent k. The length of the list will be
-    (max_n_of_agents - min_n_of_agents). For each k will have a set of k agents.
+    (max_n_of_agents - min_n_of_agents). For each k will have a set of n_of_buckets agents.
     Example: min is 2 and max is 3 and n_of_buckets is 3.
     Return: [[[a0, a1], [a2, a3], [a4, a5]], [[a10, a11, a12], [a13, a14, a15], [a16, a17, a18]]]
     :param problem_map: map of the problem where generate the agents.
@@ -179,19 +171,11 @@ def generate_random_agents(problem_map, n_of_agents):
     for i in range(n_of_agents):
         assert free_start_lst and free_goal_lst, "No more free spaces for placing the agents..."
 
-        r = random.randrange(len(free_start_lst))
-        random_start = free_start_lst[r]
-        free_start_lst.remove(random_start)
-
-        r = random.randrange(len(free_goal_lst))
-        random_goal = free_goal_lst[r]
-        free_goal_lst.remove(random_goal)
-
-        """random_start = random.sample(free_start_lst, 1)[0]
+        random_start = random.sample(free_start_lst, 1)[0]
         free_start_lst.remove(random_start)
 
         random_goal = random.sample(free_goal_lst, 1)[0]
-        free_goal_lst.remove(random_goal)"""
+        free_goal_lst.remove(random_goal)
 
         agents.append(Agent(i, random_start, random_goal))
 
@@ -325,7 +309,7 @@ def get_free_lst(problem_map):
     return free_lst
 
 
-def generate_problem_m_star_slides():
+"""def generate_problem_m_star_paper():
     from .Map import Map
     from .Agent import Agent
     from .ProblemInstance import ProblemInstance
@@ -337,4 +321,4 @@ def generate_problem_m_star_slides():
 
     problem_agents = [Agent(0, (1, 4), (6, 0)), Agent(1, (1, 6), (7, 6)), Agent(2, (6, 6), (0, 6))]
 
-    return ProblemInstance(problem_map, problem_agents)
+    return ProblemInstance(problem_map, problem_agents)"""

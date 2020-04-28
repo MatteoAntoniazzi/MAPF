@@ -40,8 +40,8 @@ MAPS_NAMES_LIST = {
 class Reader:
     """
     This class takes care of the loading of map and agents from the corresponding map files and scenario files.
-    In order to load a certain file the methods set_map(), set_scenario_type() and set_scenario_file_number() must be called
-    before calling the corresponding load_map_file() or load_scenario_file().
+    In order to load a certain file the methods set_map(), set_scenario_type() and set_scenario_file_number() must be
+    called before calling the corresponding load_map_file() or load_scenario_file().
     """
 
     def __init__(self, map_number=0, scenario_type="even", scenario_file_number=1):
@@ -214,11 +214,5 @@ def get_scenario_file_path(map_number, scenario_type, scenario_number):
     root_path = pathlib.Path(__file__).parent.parent.parent
     scenario_file_path = str(root_path / "Maps/scenarios-") + scenario_type + "/" + map_name + "-" + scenario_type + "-" + str(
         scenario_number) + ".scen"
-    print(scenario_file_path)
     return scenario_file_path
 
-    # def setup_args(self):
-    #     parser = argparse.ArgumentParser()
-    #     parser.add_argument("map", type=str, help=".map Map file")
-    #     parser.add_argument("scenario", type=str, help=".scen Scenario file")
-    #     return parser.parse_args()

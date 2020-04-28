@@ -167,14 +167,3 @@ class AStar:
 
         starter_state = SingleAgentState(problem_map, goal_pos, start_pos, self._solver_settings)
         self._frontier.add(starter_state)
-
-
-"""
-prob_map = generate_random_map(8, 8, 0)
-solver_settings = SolverSettings(objective_function="SOC", stay_in_goal=True,  goal_occupation_time=4,
-                                 is_edge_conflict=True)
-solver = AStar(solver_settings)
-
-solution_path = solver.find_path_with_constraints(prob_map, (6, 6), (0, 4), [((4, 6), 3)], [((5, 6), (4, 6), 2)])
-print(solution_path)
-"""

@@ -40,11 +40,12 @@ class MStarSolver(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
-        :param problem_instance: problem instance to solve
-        :param verbose: if True will be printed some computation infos on terminal.
-        :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :return: list of paths, and if return_infos is True some output information.
+        Solve the given MAPF problem using the M* algorithm  and it returns, if exists, a solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :return the solution as list of paths, and, if return_infos is True, a tuple composed by the solution and a
+        struct with output information.
         """
         self._stop_event = Event()
         start = time.time()
@@ -68,7 +69,7 @@ class MStarSolver(AbstractSolver):
 
     def solve_problem(self, problem_instance, verbose=False):
         """
-        Solve the MAPF problem using the M* algorithm returning the paths as lists of list of (x, y) positions.
+        Solve the MAPF problem using the M* algorithm.
         It start following the optimal policy and each time a conflict occur it updates the collision set and back
         propagate it to the ancestors. So, when the collision set is not empty it will considers for those agents all
         the possible moves.

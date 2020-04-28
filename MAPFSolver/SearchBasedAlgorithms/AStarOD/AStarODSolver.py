@@ -28,11 +28,13 @@ class AStarODSolver(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
-        :param problem_instance: problem instance to solve
-        :param verbose: if True will be printed some computation infos on terminal.
-        :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :return: list of paths, and if return_infos is True some output information.
+        Solve the given MAPF problem with the A* algorithm with operator decomposition and it returns, if exists, a
+        solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :return the solution as list of paths, and, if return_infos is True, a tuple composed by the solution and a
+        struct with output information.
         """
         self._stop_event = Event()
         start = time.time()
@@ -56,9 +58,8 @@ class AStarODSolver(AbstractSolver):
 
     def solve_problem(self, problem_instance, verbose=False):
         """
-        Solve the MAPF problem using the A* algorithm with Operator Decomposition returning the paths as lists of list
-        of (x, y) positions.
-        :param problem_instance: problem instance to solve
+        Solve the MAPF problem using the A* algorithm with Operator Decomposition.
+        :param problem_instance: problem instance to solve.
         :param verbose: if True will be printed some computation infos on terminal.
         """
         self.initialize_problem(problem_instance)
@@ -91,9 +92,6 @@ class AStarODSolver(AbstractSolver):
                     self._frontier.add_list_of_states(expanded_nodes)
 
             else:
-                """
-                NORMAL
-                """
                 if not cur_state.is_a_standard_state() or not self._closed_list.contains_state_same_positions(cur_state):
                     if cur_state.is_a_standard_state():
                         self._closed_list.add(cur_state)
@@ -102,23 +100,6 @@ class AStarODSolver(AbstractSolver):
                     self._n_of_generated_nodes += len(expanded_nodes)
                     self._n_of_expanded_nodes += 1
                     self._frontier.add_list_of_states(expanded_nodes)
-
-                """
-                CASE 2
-                """
-                """if cur_state.is_a_standard_state():
-                    self._closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand(verbose=verbose)
-    
-                expanded_nodes_not_in_closed_list = []
-    
-                for node in expanded_nodes:
-                    if not node.is_a_standard_state() or not self._closed_list.contains_state_same_positions(node):
-                        expanded_nodes_not_in_closed_list.append(node)
-    
-                self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
-                self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
 
     def initialize_problem(self, problem_instance):
         """

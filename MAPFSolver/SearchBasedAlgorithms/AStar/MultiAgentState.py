@@ -59,8 +59,8 @@ class MultiAgentState(State):
         """
         Return True if a conflict occur in the given multi agent state.
         Will be checked that:
-        1. no agents occupy the same position in the same time step;
-        2. no agent overlap (switch places).
+        1. no agents occupy the same position in the same time step (vertex conflict);
+        2. no agent overlap (edge conflict).
         """
         current_positions = self.get_positions_list()
         next_positions = multi_state.get_positions_list()
@@ -82,8 +82,9 @@ class MultiAgentState(State):
         """
         Return the set of robots which collide in the given multi agent state.
         Will be checked that:
-        1. no agents occupy the same position in the same time step;
-        2. no agent overlap (switch places).
+        Will be checked that:
+        1. no agents occupy the same position in the same time step (vertex conflict);
+        2. no agent overlap (edge conflict).
         """
         colliding_robots = set()
 
@@ -120,8 +121,8 @@ class MultiAgentState(State):
 
     def goal_test(self):
         """
-        Return True if all agents have arrived to the goal position. Remember that it not consider the occupation time,
-        so if the agents will remain in the goal position for tot time step this will continue to occupy that position.
+        Return True if all agents have arrived to the goal position. Remember that it not consider the occupation time.
+        If stay at goal is False use the is_completed() method.
         """
         for single_state in self._single_agents_states:
             if not single_state.goal_test():
@@ -147,9 +148,6 @@ class MultiAgentState(State):
         self._h = 0
         if self._solver_settings.get_objective_function() == "SOC":
             for single_state in self._single_agents_states:
-                if single_state.h_value is None:
-                    print("AAAAAAAAAAAAAAAA")
-                    print(single_state)
                 self._h += single_state.h_value()
         if self._solver_settings.get_objective_function() == "Makespan":
             self._h = max([single_state.h_value() for single_state in self._single_agents_states])

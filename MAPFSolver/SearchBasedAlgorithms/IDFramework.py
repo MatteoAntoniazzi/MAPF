@@ -37,11 +37,13 @@ class IDFramework(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
-        :param problem_instance: problem instance to solve
-        :param verbose: if True will be printed some computation infos on terminal.
-        :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :return: list of paths, and if return_infos is True some output information.
+        Solve the given MAPF problem with the specified algorithm with the ID framework and it returns, if exists, a
+        solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :return the solution as list of paths, and, if return_infos is True, a tuple composed by the solution and a
+        struct with output information.
         """
         self._start_time = time.time()
         self._stop_event = Event()
@@ -98,7 +100,6 @@ class IDFramework(AbstractSolver):
         Initialize the groups with singleton groups. The list problem will contains the single agent problem for each
         agent. Solve the problems in this way and return the paths (with possible conflicts).
         :param problem_instance: instance of the problem to solve.
-        :param time_out: maximum amount of time for solving the problems.
         :return:
         """
         for agent in problem_instance.get_original_agents():
@@ -238,6 +239,9 @@ class IDFramework(AbstractSolver):
         return list_of_buckets
 
     def get_dimension_of_biggest_subset(self):
+        """
+        Return the dimension of the biggest subset.
+        """
         return self._biggest_subset
 
     def __str__(self):

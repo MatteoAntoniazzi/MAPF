@@ -1,5 +1,3 @@
-import time
-
 from MAPFSolver.SearchBasedAlgorithms.ICTS.MDDQueue import MDDQueue
 from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDDNode import TotalMDDNode
 

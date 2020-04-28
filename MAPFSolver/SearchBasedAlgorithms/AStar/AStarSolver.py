@@ -1,5 +1,3 @@
-import threading
-
 from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makespan
 from MAPFSolver.Utilities.SingleAgentState import SingleAgentState
 from MAPFSolver.Utilities.AbstractSolver import AbstractSolver
@@ -11,7 +9,7 @@ import time
 
 class AStarSolver(AbstractSolver):
     """
-    Classical A* multi agent algorithm. It is complete and optimal.
+    Classical A* multi-agent algorithm. It is complete and optimal.
     """
 
     def __init__(self, solver_settings):
@@ -30,11 +28,12 @@ class AStarSolver(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
-        :param problem_instance: problem instance to solve
-        :param verbose: if True will be printed some computation infos on terminal.
-        :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :return: list of paths, and if return_infos is True some output information.
+        Solve the given MAPF problem using the A* algorithm and it returns, if exists, a solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :return the solution as list of paths, and, if return_infos is True, a tuple composed by the solution and a
+        struct with output information.
         """
         self._stop_event = Event()
         start = time.time()
@@ -62,7 +61,7 @@ class AStarSolver(AbstractSolver):
 
     def solve_problem(self, problem_instance, verbose=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
+        Solve the MAPF problem using the A* algorithm.
         :param problem_instance: problem instance to solve
         :param verbose: if True will be printed some computation infos on terminal.
         """
@@ -98,63 +97,16 @@ class AStarSolver(AbstractSolver):
                     self._frontier.add_list_of_states(expanded_nodes)
 
             else:
-                """
-                NORMAL: dovrebbe esere giusto cosi senza bisogno di fare il controllo che il g non sia minore di qullo
-                gia' presente nella closed list. Infatti se ho gia' espanso quello stato con quelle deteminate posizioni
-                erano sicuramente con g minore o uguale dato che la f era la minore e h non sovrastima mai il valore 
-                effettivo.
-                """
-                """if not self._closed_list.contains_state_same_positions(cur_state):
+                # Standard version: no detect duplicates in the frontier.
+                if not self._closed_list.contains_state_same_positions(cur_state):
                     self._closed_list.add(cur_state)
                     expanded_nodes = cur_state.expand(verbose=verbose)
                     self._n_of_generated_nodes += len(expanded_nodes)
                     self._n_of_expanded_nodes += 1
-                    self._frontier.add_list_of_states(expanded_nodes)"""
+                    self._frontier.add_list_of_states(expanded_nodes)
 
-                """
-                CASE 2
-                """
+                # Version 2: duplicate detection in the frontier.
                 """self._closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand(verbose=verbose)
-    
-                expanded_nodes_not_in_closed_list = []
-    
-                for node in expanded_nodes:
-                    if not self._closed_list.contains_state_same_positions(node):
-                        expanded_nodes_not_in_closed_list.append(node)
-    
-                self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
-                self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
-
-                """
-                CASE 3
-                """
-                """closed_state = self._closed_list.contains_state_same_positions(cur_state)
-    
-                if closed_state is None:
-                    self._closed_list.add(cur_state)
-                    expanded_nodes = cur_state.expand(verbose=verbose)
-    
-                    expanded_nodes_not_in_frontier = []
-    
-                    for node in expanded_nodes:
-                        frontier_state = self._frontier.contains_state_same_positions(node)
-                        if frontier_state is None:
-                            expanded_nodes_not_in_frontier.append(node)
-                        else:
-                            # Check that the g-value is minor than the one present in the frontier
-                            if node.g_value() < frontier_state.g_value():
-                                self._frontier.update(node)
-    
-                    self._n_of_generated_nodes += len(expanded_nodes_not_in_frontier)
-                    self._n_of_expanded_nodes += 1
-                    self._frontier.add_list_of_states(expanded_nodes_not_in_frontier)"""
-
-                """
-                CASE 4
-                """
-                self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand(verbose=verbose)
     
                 expanded_nodes_not_in_closed_list = []
@@ -165,13 +117,12 @@ class AStarSolver(AbstractSolver):
                         if frontier_state is None:
                             expanded_nodes_not_in_closed_list.append(node)
                         else:
-                            # Check that the g-value is minor than the one present in the frontier
                             if node.g_value() < frontier_state.g_value():
                                 self._frontier.update(node)
     
                 self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
                 self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)
+                self._frontier.add_list_of_states(expanded_nodes_not_in_closed_list)"""
 
     def initialize_problem(self, problem_instance):
         """

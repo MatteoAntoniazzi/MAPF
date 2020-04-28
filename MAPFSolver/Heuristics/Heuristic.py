@@ -5,9 +5,6 @@ class Heuristic(object):
 
     __metaclass__ = abc.ABCMeta
 
-    """
-    ================== A* functions =================
-    """
     @abc.abstractmethod
     def compute_heuristic(self, position, goal):
         """

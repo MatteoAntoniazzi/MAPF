@@ -18,7 +18,7 @@ class ICTSSolver(AbstractSolver):
     def __init__(self, solver_settings):
         """
         Initialize the ICTS solver.
-        :param solver_settings: settings used by the A* solver.
+        :param solver_settings: settings used by the ICTS solver.
         """
         super().__init__(solver_settings)
         self._frontier = None
@@ -31,11 +31,12 @@ class ICTSSolver(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
-        :param problem_instance: problem instance to solve
-        :param verbose: if True will be printed some computation infos on terminal.
-        :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :return: list of paths, and if return_infos is True some output information.
+        Solve the given MAPF problem with the ICTS algorithm and it returns, if exists, a solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :return the solution as list of paths, and, if return_infos is True, a tuple composed by the solution and a
+        struct with output information.
         """
         self._stop_event = Event()
         start = time.time()
@@ -59,7 +60,7 @@ class ICTSSolver(AbstractSolver):
 
     def solve_problem(self, problem_instance, verbose=False):
         """
-        Solve the MAPF problem using the ICTS algorithm returning the paths as lists of list of (x, y) positions.
+        Solve the MAPF problem using the ICTS algorithm.
         :param problem_instance: problem instance to solve
         :param verbose: if True will be printed some computation infos on terminal.
         :return: list of paths, and if return_infos is True some output information.
@@ -79,9 +80,7 @@ class ICTSSolver(AbstractSolver):
                 self._solution = cur_state.solution()
                 return
 
-            """
-            NORMAL
-            """
+            # Standard version: no detect duplicates in the frontier.
             """if not self._closed_list.contains_node(cur_state):
                 self._closed_list.add(cur_state)
                 expanded_nodes = cur_state.expand()
@@ -89,42 +88,7 @@ class ICTSSolver(AbstractSolver):
                 self._n_of_expanded_nodes += 1
                 self._frontier.add_list_of_nodes(expanded_nodes)"""
 
-            """
-            CASE 2
-            """
-            """self._closed_list.add(cur_state)
-            expanded_nodes = cur_state.expand()
-
-            expanded_nodes_not_in_closed_list = []
-            for node in expanded_nodes:
-                if not self._closed_list.contains_node(node):
-                    expanded_nodes_not_in_closed_list.append(node)
-
-            self._n_of_generated_nodes += len(expanded_nodes_not_in_closed_list)
-            self._n_of_expanded_nodes += 1
-            self._frontier.add_list_of_nodes(expanded_nodes_not_in_closed_list)"""
-
-            """
-            CASE 3
-            """
-            """if not self._closed_list.contains_node(cur_state):
-                self._closed_list.add(cur_state)
-                expanded_nodes = cur_state.expand()
-
-                expanded_nodes_not_in_frontier = []
-
-                for node in expanded_nodes:
-                    if not self._frontier.contains_node(node):
-                    
-                        expanded_nodes_not_in_frontier.append(node)
-
-                self._n_of_generated_nodes += len(expanded_nodes_not_in_frontier)
-                self._n_of_expanded_nodes += 1
-                self._frontier.add_list_of_nodes(expanded_nodes_not_in_frontier)"""
-
-            """
-            CASE 4
-            """
+            # Version 2: duplicate detection in the frontier.
             self._closed_list.add(cur_state)
             expanded_nodes = cur_state.expand()
 

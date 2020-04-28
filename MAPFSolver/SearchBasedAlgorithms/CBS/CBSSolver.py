@@ -9,10 +9,10 @@ import time
 
 class CBSSolver(AbstractSolver):
     """
-    The key idea of CBS (Conflict based search) is to grow a set of constraints for each of the agents and find paths that are consistent with
-    these constraints. If these paths have conflicts, and are thus invalid, the conflicts are resolved by adding new
-    constraints. CBS works in two levels. At the high level conflicts are found and constraints are added. The low-level
-    updates the agents paths to be consistent with the new constraints.
+    The key idea of CBS (Conflict based search) is to grow a set of constraints for each of the agents and find paths
+    that are consistent with these constraints. If these paths have conflicts, and are thus invalid, the conflicts are
+    resolved by adding new constraints. CBS works in two levels. At the high level conflicts are found and constraints
+    are added. The low-level updates the agents paths to be consistent with the new constraints.
     """
 
     def __init__(self, solver_settings):
@@ -30,11 +30,12 @@ class CBSSolver(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
-        :param problem_instance: problem instance to solve
-        :param verbose: if True will be printed some computation infos on terminal.
-        :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :return: list of paths, and if return_infos is True some output information.
+        Solve the given MAPF problem using the CBS algorithm and it returns, if exists, a solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :return the solution as list of paths, and, if return_infos is True, a tuple composed by the solution and a
+        struct with output information.
         """
         self._stop_event = Event()
         start = time.time()
@@ -88,7 +89,6 @@ class CBSSolver(AbstractSolver):
                 self._solution = cur_state.solution()
                 break
 
-            # Expand the Constraint Tree
             expanded_nodes = cur_state.expand()
             self._n_of_generated_nodes += len(expanded_nodes)
             self._n_of_expanded_nodes += 1
@@ -103,5 +103,4 @@ class CBSSolver(AbstractSolver):
         self._n_of_expanded_nodes = 0
 
         starter_state = ConstraintTreeNode(problem_instance, self._solver_settings)
-
         self._frontier.add(starter_state)

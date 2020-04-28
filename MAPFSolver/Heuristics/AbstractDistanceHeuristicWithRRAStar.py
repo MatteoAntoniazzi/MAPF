@@ -4,14 +4,9 @@ from .Heuristic import Heuristic
 
 class AbstractDistanceHeuristicWithRRAStar(Heuristic):
     """
-    The RRA* algorithm executes a modified A* search in a reverse direction. The search starts at the agent’s goal G,
-    and heads towards the agent’s initial position O. Instead of terminating at O, the search continues until a
-    specified node N is expanded. As the search executes in a reverse direction, this means that the optimal distance
-    from N to G is known once the RRA* search completes. The Manhattan distance is used as a heuristic for the RRA*
-    search, meeting the consistency.
-    Whenever an abstract distance is requested from N to G, RRA* checks whether N exists in its Closed table. If so,
-    the optimal distance of that node is already known and can be returned immediately. If not, the RRA* search is
-    resumed until node N is expanded.
+    Abstract distance heuristic. This heuristics can be viewed as perfect estimates of the distance to the destination.
+    It is computed by running single-agent search from a location to the the goal with all the other agents removed.
+    RRA* algorithm is used to computed the values.
     """
 
     def __init__(self, problem_instance):
@@ -19,7 +14,7 @@ class AbstractDistanceHeuristicWithRRAStar(Heuristic):
         Initialize the heuristic. It creates one open list dictionary, where the key is the goal position of the agent
         and the value is the open list of that goal, and a closed list, where the key is again the goal position of the
         agent. Instead of using the agent as key, we've choose to use his goal position.
-        :param problem_instance:
+        :param problem_instance: instance of the problem to compute the heuristic values.
         """
         self._problem_instance = problem_instance
         self._open_lists = dict()

@@ -1,6 +1,3 @@
-from MAPFSolver.SearchBasedAlgorithms.ICTS.MDDNode import MDDNode
-
-
 class MDDQueue:
     """
     Structure used as queue for the MDD nodes.

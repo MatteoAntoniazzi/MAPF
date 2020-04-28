@@ -94,7 +94,7 @@ class TotalMDDNode:
             node = node._parent[0]
 
         for i, mdd_node in enumerate(node._list_of_mdd_nodes):
-            if not mdd_node.is_dummy():  # Dovrebbe essere inutile
+            if not mdd_node.is_dummy():
                 list_of_paths[i].append(mdd_node.position())
             list_of_paths[i].reverse()
 

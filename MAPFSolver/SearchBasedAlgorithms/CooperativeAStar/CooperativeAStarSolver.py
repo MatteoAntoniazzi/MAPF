@@ -13,7 +13,7 @@ class CooperativeAStarSolver(AbstractSolver):
     def __init__(self, solver_settings):
         """
         Initialize the Cooperative A* solver.
-        :param solver_settings: settings used by the A* solver.
+        :param solver_settings: settings used by the Cooperative A* solver.
         """
         super().__init__(solver_settings)
         self._reservation_table = None
@@ -24,11 +24,12 @@ class CooperativeAStarSolver(AbstractSolver):
 
     def solve(self, problem_instance, verbose=False, return_infos=False):
         """
-        Solve the MAPF problem using the A* algorithm returning the paths as lists of list of (x, y) positions.
-        :param problem_instance: problem instance to solve
-        :param verbose: if True will be printed some computation infos on terminal.
-        :param return_infos: if True returns in addition to the paths a struct with the output information.
-        :return: list of paths, and if return_infos is True some output information.
+        Solve the given MAPF problem with the Cooperative A* algorithm and it returns, if exists, a solution.
+        :param problem_instance: instance of the problem to solve.
+        :param verbose: if True, infos will be printed on terminal.
+        :param return_infos: if True in addition to the paths will be returned also a structure with output infos.
+        :return the solution as list of paths, and, if return_infos is True, a tuple composed by the solution and a
+        struct with output information.
         """
         self._stop_event = Event()
         start = time.time()
@@ -52,7 +53,7 @@ class CooperativeAStarSolver(AbstractSolver):
 
     def solve_problem(self, problem_instance, verbose=False):
         """
-        Solve the given MAPF problem using the Cooperative A* algorithm and, if exists, it returns a solution.
+        Solve the given MAPF problem using the Cooperative A* algorithm.
         :param problem_instance: instance of the problem to solve.
         :param verbose: if True, infos will be printed on terminal.
         """

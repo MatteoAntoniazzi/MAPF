@@ -1,8 +1,7 @@
-from time import time
-
 from MAPFSolver.SearchBasedAlgorithms.ICTS.TotalMDD import TotalMDD
 from MAPFSolver.SearchBasedAlgorithms.ICTS.MDD import MDD
 from MAPFSolver.Utilities.AStar import AStar
+from time import time
 
 
 class ICTNode:

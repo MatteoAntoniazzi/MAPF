@@ -184,4 +184,4 @@ class MDDNode:
             string += ' Parents pos:' + str([p.position() for p in self._parent])
         if self._children:
             string += ' Children pos:' + str([str(p.position()) + " " + str(p.time_step()) for p in self._children])
-        return  string
+        return string

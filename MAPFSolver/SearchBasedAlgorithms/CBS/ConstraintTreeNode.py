@@ -4,14 +4,7 @@ from MAPFSolver.Utilities.paths_processing import calculate_soc, calculate_makes
 
 class ConstraintTreeNode:
     """
-    This class represents a single node of the constraint tree. It contains a set of constraints that the solution must
-    respect. It has two types of constraints:
-    - vertex constraints: represents the constraints resulting from a vertex conflict. Their form is the following:
-                          (agent_id, position, time_step)
-    - edge constraints: represents the constraints resulting from an edge conflict. Their form is the following:
-                        (agent_id, initial_position, final_position, final_time_step)
-    The attribute agent_to_recompute is used to speed up the process and avoid to recompute each time the path for each
-    agent.
+    This class represents a single node of the constraint tree.
     """
 
     def __init__(self, problem_instance, solver_settings, parent=None, vertex_constraints=None, edge_constraints=None,
@@ -21,11 +14,14 @@ class ConstraintTreeNode:
         :param problem_instance: instance of the problem.
         :param solver_settings: settings of the solver.
         :param parent: parent node.
-        :param vertex_constraints: list of vertex constraints.
-        :param edge_constraints: list of edge constraints.
-        :param agent_to_recompute: if it's not the root and this node change from his predecessor only for a constraint,
-        this represent the agent involved in that constraint. In this way we avoid to recompute all the other paths, but
-        we recompute only the path of the agent involved.
+        :param vertex_constraints: list of vertex constraints. They represents the constraints resulting from vertex
+        conflicts. Their form is the following: (agent_id, position, time_step)
+        :param edge_constraints: list of edge constraints. They represents the constraints resulting from edge
+        conflicts. Their form is the following: (agent_id, initial_position, final_position, final_time_step)
+        :param agent_to_recompute: is used to speed up the process and avoid to recompute each time the path for each
+        agent. if it's not the root and this node change from his predecessor only for a constraint, this represent the
+        agent involved in that constraint. In this way we avoid to recompute all the other paths, but we recompute only
+        the path of the agent involved.
         """
         self._problem_instance = problem_instance
         self._solver_settings = solver_settings
@@ -76,8 +72,7 @@ class ConstraintTreeNode:
         solver = AStar(self._solver_settings)
 
         path = solver.find_path_with_constraints(self._problem_instance.get_map(), agent.get_start(),
-                                                 agent.get_goal(), agent_vertex_constraints,
-                                                 agent_edge_constraints)
+                                                 agent.get_goal(), agent_vertex_constraints, agent_edge_constraints)
         return path
 
     def expand(self):

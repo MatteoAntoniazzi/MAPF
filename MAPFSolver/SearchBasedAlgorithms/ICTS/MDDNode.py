@@ -148,8 +148,8 @@ class MDDNode:
         """
         Return True if the node can block other nodes. It means that can be a normal node, or if it is a dummy node we
         have 2 cases:
-        - stay_in_goal is True: in this case all dummy nodes are blocking.
-        - stay_in_goal is False: in this case we've to look at the goal occupation time.
+        - stay_at_goal is True: in this case all dummy nodes are blocking.
+        - stay_at_goal is False: in this case we've to look at the goal occupation time.
             the state is blocking if is dummy and the number of dummy predecessors is < GOAL_OCC_TIME-1
             example: GOAL_OCC_TIME=3 and the node is dummy and the number of dummy predecessors is 2. This node is not
                      a blocking node since behind him he has the goal node (1 TS) e due dummy nodes (TS 2). So, in the

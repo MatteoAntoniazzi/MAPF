@@ -36,6 +36,8 @@ class ConstraintTreeNode:
             self._solution = parent.solution().copy()
             path = self.single_agent_low_level_search(self._problem_instance.get_agents()[agent_to_recompute])
             self._solution[agent_to_recompute] = path
+            if not path:
+                self._solution = None
 
         self._total_cost = self.calculate_cost()
 
@@ -49,6 +51,9 @@ class ConstraintTreeNode:
         solution = []
         for agent in self._problem_instance.get_agents():
             path = self.single_agent_low_level_search(agent)
+            if not path:
+                solution = None
+                break
             solution.append(path)
         return solution
 
@@ -81,6 +86,12 @@ class ConstraintTreeNode:
         agent and the other with the conflict constraint added to the second agent involved in the conflict.
         :return: the two possible next states.
         """
+        if self._solution is None:
+            # it means that in that state at least a path it's impossible
+            # and so it's useless create new states children of that since they will all have
+            # the same constraints that make some path impossible to be computed.
+            return []
+
         if self.conflict is None:
             conflict_type, constraints = check_conflicts_with_type(self._solution, self._solver_settings.stay_at_goal(),
                                                                    self._solver_settings.is_edge_conflict())
@@ -118,7 +129,15 @@ class ConstraintTreeNode:
             node_b = ConstraintTreeNode(self._problem_instance, self._solver_settings, parent=self,
                                         vertex_constraints=self._vertex_constraints.copy(),
                                         edge_constraints=constraints_b, agent_to_recompute=agent)
-        return [node_a, node_b]
+
+        if node_a._solution is not None and node_b._solution is not None:
+            return [node_a, node_b]
+        elif node_a._solution is not None:
+            return [node_a]
+        elif node_b._solution is not None:
+            return [node_b]
+        else:
+            return []
 
     def calculate_cost(self):
         """
@@ -154,8 +173,12 @@ class ConstraintTreeNode:
         """
         Returns True if the solution of the node is valid i.e.the set of paths for all agents have no conflicts
         """
+        if self._solution is None:
+            return False
+
         self.conflict = check_conflicts_with_type(self._solution, self._solver_settings.stay_at_goal(),
                                                   self._solver_settings.is_edge_conflict())
+
         if self.conflict is None:
             return True
         else:

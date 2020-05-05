@@ -5,35 +5,32 @@ import numpy as np
 
 # Dictionary Map Number and corresponding String
 MAPS_NAMES_LIST = {
-    0: "Berlin_1_256",
-    1: "Boston_0_256",
-    2: "brc202d",
-    3: "den312d",
-    4: "den520d",
-    5: "empty-8-8",
-    6: "empty-16-16",
-    7: "empty-32-32",
-    8: "empty-48-48",
-    9: "ht_chantry",
-    10: "ht_mansion_n",
-    11: "lak303d",
-    12: "lt_gallowstemplar_n",
-    13: "maze-32-32-2",
-    14: "maze-32-32-4",
-    15: "maze-128-128-2",
-    16: "maze-128-128-10",
-    17: "orz900d",
-    18: "ost003d",
-    19: "Paris_1_256",
-    20: "random-32-32-10",
-    21: "random-32-32-20",
-    22: "random-64-64-10",
-    23: "random-64-64-20",
-    24: "room-32-32-4",
-    25: "room-64-64-8",
-    26: "room-64-64-16",
-    27: "w_woundedcoast",
-    28: "narrow_corridor"
+    0: "empty-8-8",             # 8.8
+    1: "empty-16-16",           # 16.16
+    2: "empty-32-32",           # 32.32
+    3: "empty-48-48",           # 48.48
+    4: "narrow_corridor",       # 2.9
+    5: "random-32-32-10",       # 32.32
+    6: "random-32-32-20",       # 32.32
+    7: "random-64-64-10",       # 64.64
+    8: "random-64-64-20",       # 64.64
+    9: "room-32-32-4",          # 32.32
+    10: "room-64-64-8",         # 64.64
+    11: "room-64-64-16",        # 64.64
+    12: "maze-32-32-2",         # 32.32
+    13: "maze-32-32-4",         # 32.32
+    14: "maze-128-128-2",       # 128.128
+    15: "maze-128-128-10",      # 128.128
+    16: "lak303d",              # 194.194
+    17: "ost003d",              # 194.194
+    18: "Paris_1_256",          # 256.256
+    19: "Berlin_1_256",         # 256.256
+    20: "Boston_0_256",         # 256.256
+    21: "den312d",              # 81.65
+    22: "den520d",              # 257.256
+    23: "ht_chantry",           # 141.162
+    24: "ht_mansion_n",         # 270.133
+    25: "lt_gallowstemplar_n",  # 180.251
 }
 
 

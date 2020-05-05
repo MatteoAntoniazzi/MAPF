@@ -161,7 +161,7 @@ class SingleAgentState(State):
 
     def get_path_to_root(self):
         """
-        Compute and return the path to the root. If stay_in_goal is True I truncate the repeated end goals.
+        Compute and return the path to the root. If stay_at_goal is True I truncate the repeated end goals.
         """
         path = []
         node = self

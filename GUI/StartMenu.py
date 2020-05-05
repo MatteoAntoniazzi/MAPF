@@ -41,7 +41,7 @@ class StartMenu:
         self.buttons_list = []
         self.goal_occupation_time_down_button = None
         self.goal_occupation_time_up_button = None
-        self.stay_in_goal_button = None
+        self.stay_at_goal_button = None
         self.reader = Reader()
 
         # GUIdd selectable variables
@@ -57,7 +57,7 @@ class StartMenu:
         self.selected_scene_number = IntVar()
         self.selected_change_scene_instances_button_text = StringVar()
         self.edge_conflicts_var = BooleanVar()
-        self.stay_in_goal_var = BooleanVar()
+        self.stay_at_goal_var = BooleanVar()
         self.time_out_var = IntVar()
 
         self.initialize_variables()
@@ -117,7 +117,7 @@ class StartMenu:
         self.selected_scene_number.set(1)
         self.selected_change_scene_instances_button_text.set("NEXT SCENE")
         self.edge_conflicts_var.set(True)
-        self.stay_in_goal_var.set(True)
+        self.stay_at_goal_var.set(True)
         self.time_out_var.set(0)
         self.waiting_var.set("")
 
@@ -294,17 +294,17 @@ class StartMenu:
         self.goal_occupation_time_up_button.configure(state=DISABLED)
 
         # Stay in goal Checkbutton
-        self.stay_in_goal_button = Checkbutton(canvas, text="Never Disappear",
-                                               variable=self.stay_in_goal_var, onvalue=True, offvalue=False,
-                                               command=self.stay_in_goal_button_function)
-        self.stay_in_goal_button.pack(side=LEFT, padx=(15, 0))
-        self.buttons_list.append(self.stay_in_goal_button)
+        self.stay_at_goal_button = Checkbutton(canvas, text="Never Disappear",
+                                               variable=self.stay_at_goal_var, onvalue=True, offvalue=False,
+                                               command=self.stay_at_goal_button_function)
+        self.stay_at_goal_button.pack(side=LEFT, padx=(15, 0))
+        self.buttons_list.append(self.stay_at_goal_button)
 
-    def stay_in_goal_button_function(self):
+    def stay_at_goal_button_function(self):
         """
         Enable/Disable permanence in goal selection button when stay in goal is True.
         """
-        if self.stay_in_goal_var.get():
+        if self.stay_at_goal_var.get():
             self.goal_occupation_time_down_button.configure(state=DISABLED)
             self.goal_occupation_time_up_button.configure(state=DISABLED)
         else:
@@ -411,7 +411,7 @@ class StartMenu:
 
         # Create an instance of the class SolverSettings
         solver_settings = SolverSettings(self.selected_heuristic_var.get(), self.selected_objective_function_var.get(),
-                                         self.stay_in_goal_var.get(), self.selected_goal_occupation_time.get(),
+                                         self.stay_at_goal_var.get(), self.selected_goal_occupation_time.get(),
                                          self.edge_conflicts_var.get(), self.time_out_var.get())
 
         # Prepare to show the simulation on the given frame
@@ -492,7 +492,7 @@ class StartMenu:
         """
         for radio_button in self.buttons_list:
             radio_button.configure(state=NORMAL)
-        if self.stay_in_goal_var.get():
+        if self.stay_at_goal_var.get():
             self.goal_occupation_time_down_button.configure(state=DISABLED)
             self.goal_occupation_time_up_button.configure(state=DISABLED)
 

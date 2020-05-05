@@ -1,17 +1,17 @@
 from MAPFSolver import *
 
-min_n_of_agents = 2
-max_n_of_agents = 8
+min_n_of_agents = 50
+max_n_of_agents = 50
 buckets_size = 100
 
 
-problem_map = generate_random_map(3, 3, 0)
+problem_map = generate_random_map(32, 32, 0.2)
 problem_agents_buckets = generate_random_agent_buckets(problem_map, min_n_of_agents, max_n_of_agents, buckets_size)
 
 print("----------------------------------------------------------------------------------------------------")
 for k in range(max_n_of_agents - min_n_of_agents + 1):
 
-    if k % 1 == 0:
+    if k % 10 == 0:
         total_nodes = 0
         total_exp_nodes = 0
         total_time = 0
@@ -24,10 +24,10 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
         for b in range(buckets_size):
             problem_instance = ProblemInstance(problem_map, problem_agents_buckets[k][b])
             solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
-                                             goal_occupation_time=1, edge_conflict=True, time_out=450)
+                                             goal_occupation_time=1, edge_conflict=True, time_out=60)
 
-            solver = IDFramework("Conflict Based Search", solver_settings)
-            #solver = CBSSolver(solver_settings)
+            # solver = IDFramework("Increasing Cost Tree Search", solver_settings)
+            solver = CooperativeAStarSolver(solver_settings)
 
             paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 

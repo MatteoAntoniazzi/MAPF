@@ -29,7 +29,7 @@ def check_conflicts(paths, stay_at_goal, is_edge_conflict):
     return None
 
 
-def check_conflicts_with_type(paths, stay_in_goal, is_edge_conflict):
+def check_conflicts_with_type(paths, stay_at_goal, is_edge_conflict):
     """
     Returns a couple (type of constraint, new children constraints) or None if the state has no conflicts.
     It is used for the CBS algorithm.
@@ -39,7 +39,7 @@ def check_conflicts_with_type(paths, stay_in_goal, is_edge_conflict):
     Example: [(ai, pos_i, pos_f, ts_f), (aj, pos_i, pos_f, ts_f)]
     """
     reservation_table = dict()
-    if stay_in_goal:
+    if stay_at_goal:
         paths = normalize_paths_lengths(paths)
 
     for ag_i, path in enumerate(paths):
@@ -82,11 +82,11 @@ def calculate_soc(paths, stay_at_goal, goal_occupation_time):
     return soc
 
 
-def calculate_makespan(paths, stay_in_goal, goal_occupation_time):
+def calculate_makespan(paths, stay_at_goal, goal_occupation_time):
     """
     Given the list of paths it return the makespan value. Time spent in goal is not considered.
     :param paths: list of paths.
-    :param stay_in_goal: True if the paths has been computed with the assumption stay at goal.
+    :param stay_at_goal: True if the paths has been computed with the assumption stay at goal.
     :param goal_occupation_time: time that the agent will spent in the goal before disappear. Have sense only if stay in
     goal is false.
     :return: makespan value.
@@ -94,7 +94,7 @@ def calculate_makespan(paths, stay_in_goal, goal_occupation_time):
     if not paths:
         return None
 
-    if stay_in_goal:
+    if stay_at_goal:
         makespan = max([len(path)-1 for path in paths])
     else:
         makespan = max([len(path) for path in paths]) - goal_occupation_time

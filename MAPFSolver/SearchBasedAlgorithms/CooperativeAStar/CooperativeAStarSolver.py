@@ -44,7 +44,7 @@ class CooperativeAStarSolver(AbstractSolver):
         makespan = calculate_makespan(self._solution, self._solver_settings.stay_at_goal(),
                                       self._solver_settings.get_goal_occupation_time())
 
-        output_infos = self.generate_output_infos(soc, makespan, None, None,
+        output_infos = self.generate_output_infos(soc, makespan, 0, 0,
                                                   time.time() - start)
         if verbose:
             print("Problem ended: ", output_infos)

@@ -1,6 +1,6 @@
 from MAPFSolver import *
 
-min_n_of_agents = 2
+min_n_of_agents = 6
 max_n_of_agents = 8
 buckets_size = 100
 
@@ -24,10 +24,10 @@ for k in range(max_n_of_agents - min_n_of_agents + 1):
         for b in range(buckets_size):
             problem_instance = ProblemInstance(problem_map, problem_agents_buckets[k][b])
             solver_settings = SolverSettings(heuristic="AbstractDistance", objective_function="SOC", stay_at_goal=True,
-                                             goal_occupation_time=1, edge_conflict=True, time_out=450)
+                                             goal_occupation_time=1, edge_conflict=False, time_out=450)
 
-            solver = IDFramework("Conflict Based Search", solver_settings)
-            #solver = CBSSolver(solver_settings)
+            #solver = IDFramework("Conflict Based Search", solver_settings)
+            solver = CBSSolver(solver_settings)
 
             paths, output_infos = solver.solve(problem_instance, verbose=False, return_infos=True)
 

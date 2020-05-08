@@ -73,17 +73,25 @@ class CooperativeAStarSolver(AbstractSolver):
             path = solver.find_path_with_reservation_table(problem_instance.get_map(), agent.get_start(),
                                                            agent.get_goal(), self._reservation_table,
                                                            self._completed_pos)
-            if not path:
-                break
+            #if not path:
+                #print("-----------------------------no path found---------------------------")
+                #break
 
             paths.append(path)
 
-            for j, pos in enumerate(path):
-                if not self._reservation_table.get(pos):
-                    self._reservation_table[pos] = []
-                self._reservation_table[pos].append(j)
-            if self._solver_settings.stay_at_goal():
-                self._completed_pos.append(path[-1])
+            if path:
+                for j, pos in enumerate(path):
+                    if not self._reservation_table.get(pos):
+                        self._reservation_table[pos] = []
+                    self._reservation_table[pos].append(j)
+                    self._reservation_table[pos].sort()
+                if self._solver_settings.stay_at_goal():
+                    self._completed_pos.append(path[-1])
+
+            """print("Path:", path)
+            print("Reservation table:", self._reservation_table)
+            print("Completed pos:", self._completed_pos)"""
+
 
         self._solution = paths
 

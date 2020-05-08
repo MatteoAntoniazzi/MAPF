@@ -70,6 +70,10 @@ class AStar:
             self._frontier.sort_by_f_value()
             cur_state = self._frontier.pop()
 
+            if cur_state.f_value() > 80:
+                #print("time limit 100 exceed")
+                break
+
             if cur_state.is_completed():
                 return cur_state.get_path_to_root()
 
@@ -89,9 +93,21 @@ class AStar:
                         # If True means that the position is busy due to an agent that occupy his goal forever.
                         conflict_with_goal = state.get_position() in completed_pos and \
                                              state.time_step() >= busy_times[len(busy_times) - 1]
+
                         # If True means exists another agent already planned that will pass on this position in future.
+                        """print("----------------------------------------")
+                        if state.goal_test():
+                            print("state.goal_test()")
+                        if not (len(busy_times) == 0):
+                            print("not (len(busy_times) == 0)")
+                        if any(y < state.time_step() for y in busy_times):
+                            print("any(y < state.time_step() for y in busy_times)")"""
                         block_previous_agents_when_in_goal = state.goal_test() and not (len(busy_times) == 0) and \
-                                                             not (any(y < state.time_step() for y in busy_times))
+                                                             any(y > state.time_step() for y in busy_times)
+
+                        """if block_previous_agents_when_in_goal:
+                            print("block previous when in goal", state.get_position(), state.time_step())"""
+
                         conflict_with_other_agent = conflict_with_other_agent or conflict_with_goal or \
                                                     block_previous_agents_when_in_goal
 

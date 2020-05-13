@@ -79,12 +79,13 @@ for map_path in maps_paths:
 
         print("Complete:", value-empty, " of:", value, end=". ")
 
-        # AVG LENGTH
-        summation = 0
+        # VECTOR OF LENGHTS
+        lengths = []
         for path in paths:
-            summation += len(path)
-        #print("AVG PATH LENGTH: ", summation/(len(paths)-empty))
+            lengths.append(len(path))
 
-        print("AVG length: %.2f" % (summation/(len(paths)-empty)))
+        print("\t\tMIN:", min(lengths), "\t\tMAX:", max(lengths), "\t\tAVG:", sum(lengths) / len(lengths),
+              "\t\tVECTOR OF LENGTHS:", lengths)
 
-        #plot_paths(problem_instance, solver_settings, paths)
+
+        # plot_paths(problem_instance, solver_settings, paths)

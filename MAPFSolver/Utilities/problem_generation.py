@@ -72,7 +72,7 @@ def generate_agent_buckets_with_coupling_mechanism(problem_map, is_edge_conflict
             problem_instance = ProblemInstance(problem_map, problem_agents)
 
             solver_settings = SolverSettings(heuristic="AbstractDistance", stay_at_goal=True,
-                                             edge_conflict=is_edge_conflicts, time_out=30)
+                                             edge_conflict=is_edge_conflicts, time_out=300)
             id_framework = IDFramework("A*", solver_settings)
             returning_buckets_of_ids = id_framework.get_some_conflicting_ids_for_buckets(problem_instance, temp_min,
                                                                                          max_n_of_agents)
@@ -171,10 +171,18 @@ def generate_random_agents(problem_map, n_of_agents):
     for i in range(n_of_agents):
         assert free_start_lst and free_goal_lst, "No more free spaces for placing the agents..."
 
-        random_start = random.sample(free_start_lst, 1)[0]
+        """random_start = random.sample(free_start_lst, 1)[0]
         free_start_lst.remove(random_start)
 
         random_goal = random.sample(free_goal_lst, 1)[0]
+        free_goal_lst.remove(random_goal)"""
+
+        r = random.randrange(len(free_start_lst))
+        random_start = free_start_lst[r]
+        free_start_lst.remove(random_start)
+
+        r = random.randrange(len(free_goal_lst))
+        random_goal = free_goal_lst[r]
         free_goal_lst.remove(random_goal)
 
         agents.append(Agent(i, random_start, random_goal))

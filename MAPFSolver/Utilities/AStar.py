@@ -105,9 +105,6 @@ class AStar:
                         block_previous_agents_when_in_goal = state.goal_test() and not (len(busy_times) == 0) and \
                                                              any(y > state.time_step() for y in busy_times)
 
-                        if block_previous_agents_when_in_goal:
-                            return []
-
                         """if block_previous_agents_when_in_goal:
                             print("block previous when in goal", state.get_position(), state.time_step())"""
 

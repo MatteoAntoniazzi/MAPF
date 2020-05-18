@@ -3,7 +3,7 @@ Implementation of some of the most famous search-based algorithms for solving th
 
 ### Implemented Algorithms
 1. Hierarchical Cooperative A* (HCA*) [David Silver, 2005]
-2. A*
+2. A*-Based Search
 3. Standley's enhancement: Operator Decomposition (OD) [Trevor Standley, 2010]
 4. Standley's enhancement: Independence Detection (ID) [Trevor Standley, 2010]
 5. Increasing Cost Tree Search (ICTS) [Guni Sharon, 2013]

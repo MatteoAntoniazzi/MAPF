@@ -12,15 +12,15 @@ Implementation of some of the most famous search-based algorithms for solving th
 6. M* [Glenn Wagner, 2011]
 
 ### Implemented Variants of the problem
-- Agents' behaviour at goal:
+Agents' behaviour at goal:
       - Stay at goal;
       - Disappear at goal after a choosable number of time steps;
       
-- Conflicts:
+Conflicts:
       - Vertex conflicts: always checked;
       - Edge conflicts: up to the user;
       
- - Objective functions:
+ Objective functions:
       - Sum of costs (SOC);
       - Makespan
 

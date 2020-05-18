@@ -4,12 +4,11 @@ Implementation of some of the most famous search-based algorithms for solving th
 ### Implemented Algorithms
 1. Hierarchical Cooperative A* (HCA*) [David Silver, 2005]
 2. A*
-3. Standley's enhancements: [Trevor Standley, 2010]
-3.1 Operator Decomposition (OD)
-3.2 Independence Detection (ID)
-4. Increasing Cost Tree Search (ICTS) [Guni Sharon, 2013]
-5. Conflict-Based Search (CBS) [Guni Sharon, 2015]
-6. M* [Glenn Wagner, 2011]
+3. Standley's enhancements: Operator Decomposition (OD) [Trevor Standley, 2010]
+4. Standley's enhancements: Independence Detection (ID) [Trevor Standley, 2010]
+5. Increasing Cost Tree Search (ICTS) [Guni Sharon, 2013]
+6. Conflict-Based Search (CBS) [Guni Sharon, 2015]
+7. M* [Glenn Wagner, 2011]
 
 ### Implemented Variants of the problem
 Agents' behaviour at goal:

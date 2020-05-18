@@ -17,10 +17,10 @@ Agents' behaviour at goal:
       - Disappear at goal after a choosable number of time steps;
       
 Conflicts:
-      - Vertex conflicts: always checked;
-      - Edge conflicts: up to the user;
+* Vertex conflicts: always checked;
+* Edge conflicts: up to the user;
       
- Objective functions:
-      - Sum of costs (SOC);
-      - Makespan
+Objective functions:
+- Sum of costs (SOC);
+ - Makespan
 

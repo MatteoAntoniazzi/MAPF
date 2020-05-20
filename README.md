@@ -6,8 +6,8 @@ Implementation of some of the most famous search-based algorithms for solving th
 2. A*-Based Search
 3. Standley's enhancement: Operator Decomposition (OD) [Trevor Standley, 2010]
 4. Standley's enhancement: Independence Detection (ID) [Trevor Standley, 2010]
-5. Increasing Cost Tree Search (ICTS) [Guni Sharon, 2013]
-6. Conflict-Based Search (CBS) [Guni Sharon, 2015]
+5. Increasing Cost Tree Search (ICTS) [Guni Sharon et al., 2013]
+6. Conflict-Based Search (CBS) [Guni Sharon et al., 2015]
 7. M* [Glenn Wagner, 2011]
 
 ### Implemented Variants of the problem

@@ -8,7 +8,7 @@ Implementation of some of the most famous search-based algorithms for solving th
 4. Standley's enhancement: Independence Detection (ID) [Trevor Standley, 2010]
 5. Increasing Cost Tree Search (ICTS) [Guni Sharon et al., 2013]
 6. Conflict-Based Search (CBS) [Guni Sharon et al., 2015]
-7. M* [Glenn Wagner, 2011]
+7. M* [Glenn Wagner and Howie Choset, 2011]
 
 ### Implemented Variants of the problem
 Agents' behaviour at goal:

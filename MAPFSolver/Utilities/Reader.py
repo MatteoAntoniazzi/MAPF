@@ -113,8 +113,10 @@ class Reader:
 
         if self._change_scenario_instances:
             if self._scenario_type == "even":
+                current_bucket = self._scenario_instances[0][0]
                 values = [x[0] for x in self._scenario_instances]
-                next_bucket_number = self._scenario_instances[len(self._scenario_instances) - 1][0]
+                max_bucket = max(values)
+                next_bucket_number = 0 if current_bucket == max_bucket else current_bucket+1
                 idx = values.index(next_bucket_number)
                 self._scenario_instances = self._scenario_instances[idx:] + self._scenario_instances[:idx - 1]
 
@@ -127,6 +129,8 @@ class Reader:
         for start, goal in instances:
             assert(start not in occupancy_lst), "Overlapping error"
             assert(goal not in occupancy_lst), "Overlapping error"
+
+        print("INSTANCES: ", instances[:n_of_agents])
         return instances[:n_of_agents]
 
     def change_scenario_instances(self):
@@ -151,7 +155,9 @@ class Reader:
             print(".scen version type does not match!")
             exit(-1)
         self._scenario_instances = [convert_nums(l.split('\t')) for l in ls[1:]]
+        print(self._scenario_instances[:10])
         self._scenario_instances.sort(key=lambda e: e[0])
+        print(self._scenario_instances[:10])
 
         for i in self._scenario_instances:
             assert (i[2] == map_width)

@@ -12,20 +12,6 @@ for i in range(1, 11):
     map_path = str(root_path / "MAPF/Maps/test_maps/" / suffix)
     maps_paths.append(map_path)
 
-"""text_file = open("sample.txt", "w")
-for y in range(32):
-    for x in range(32):
-        pos = (x, y)
-        if problem_map.is_obstacle(pos):
-            text_file.write("@")
-        else:
-            text_file.write(".")
-    text_file.write("\n")
-
-text_file.close()"""
-
-
-
 #problem_agents = [Agent(0, (1,1), (2,2))]
 #problem_agents = [Agent(0, (19,10), (1,1))]
 #problem_agents = [Agent(0, (1,5), (0,1)), Agent(1, (2,10), (7,6)), Agent(2, (3,4), (19,7)), Agent(3, (3,9), (0,4)),

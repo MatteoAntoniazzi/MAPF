@@ -1,3 +1,3 @@
 colorama==0.4.3
-numpy==1.18.5
+numpy==1.22.0
 Pillow==8.1.1

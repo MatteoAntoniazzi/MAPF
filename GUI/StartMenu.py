@@ -140,7 +140,7 @@ class StartMenu:
         for map_number in MAPS_NAMES_LIST:
             png_path = "./Maps/pngs/" + MAPS_NAMES_LIST[map_number] + ".png"
             load = Image.open(png_path)
-            load = load.resize((70, 70), Image.ANTIALIAS)
+            load = load.resize((70, 70), Image.LANCZOS)
             self.map_images_list.append(ImageTk.PhotoImage(load))
 
         # Map Label
@@ -511,7 +511,7 @@ class StartMenu:
         :return: the image resized
         """
         load = Image.open(url)
-        load = load.resize(size, Image.ANTIALIAS)
+        load = load.resize(size, Image.LANCZOS)
         img = ImageTk.PhotoImage(load)
         self.random_images_list.append(img)
         return img

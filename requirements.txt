@@ -1,3 +1,4 @@
 colorama==0.4.3
-numpy==1.18.5
-Pillow==8.1.1
+setuptools
+numpy==1.26.4
+Pillow==10.0.1

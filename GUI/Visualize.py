@@ -381,7 +381,7 @@ class Visualize:
         :return: the image resized
         """
         load = PIL.Image.open(url)
-        load = load.resize(size, PIL.Image.ANTIALIAS)
+        load = load.resize(size, PIL.Image.LANCZOS)
         img = PIL.ImageTk.PhotoImage(load)
         self.random_images_list.append(img)
         return img
